@@ -7,7 +7,7 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
-    "seed-master": "tsx scripts/seed-master.ts",
+    "check-db": "tsx scripts/check-database.ts",
     "seed-meals": "tsx scripts/seed-meals.ts",
     "seed-customers": "tsx scripts/seed-customers.ts",
     "seed-employees": "tsx scripts/seed-employees.ts",
