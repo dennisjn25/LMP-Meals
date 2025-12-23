@@ -1,0 +1,554 @@
+/* 
+   Theme: Black, White, Grays
+   Font: Inter
+*/
+
+:root {
+    --bg-color: #0a0a0a;
+    --card-bg: #141414;
+    --text-primary: #ffffff;
+    --text-secondary: #a1a1a1;
+    --accent: #2c2c2c; /* Dark gray accent */
+    --accent-light: #444444;
+    --highlight: #ffffff; /* White for sharp contrast */
+    --font-main: 'Inter', sans-serif;
+    --nav-height: 80px;
+    --container-width: 1200px;
+    --transition: all 0.3s ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    font-family: var(--font-main);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: var(--transition);
+}
+
+ul {
+    list-style: none;
+}
+
+/* Utilities */
+.container {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 12px 28px;
+    border-radius: 4px;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-primary {
+    background-color: var(--highlight);
+    color: #000;
+    border: 2px solid var(--highlight);
+}
+
+.btn-primary:hover {
+    background-color: transparent;
+    color: var(--highlight);
+}
+
+.btn-outline {
+    background-color: transparent;
+    color: var(--highlight);
+    border: 2px solid var(--highlight);
+}
+
+.btn-outline:hover {
+    background-color: var(--highlight);
+    color: #000;
+}
+
+.btn-secondary {
+    background-color: var(--accent);
+    color: var(--text-primary);
+    border: 1px solid var(--accent-light);
+}
+
+.btn-secondary:hover {
+    background-color: var(--accent-light);
+}
+
+.btn-white {
+    background-color: #000;
+    color: #fff;
+    border: 2px solid #000;
+}
+.btn-white:hover {
+    background-color: transparent;
+    border-color: #fff;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.section-header h2 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    color: var(--highlight);
+}
+
+.section-header p {
+    color: var(--text-secondary);
+}
+
+/* Navbar */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--nav-height);
+    background: rgba(10, 10, 10, 0.85);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.5px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
+
+.nav-links a:not(.btn) {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.nav-links a:not(.btn):hover {
+    color: var(--highlight);
+}
+
+.mobile-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.bar {
+    display: block;
+    width: 25px;
+    height: 2px;
+    background-color: var(--text-primary);
+    margin: 5px 0;
+    transition: var(--transition);
+}
+
+/* Hero Section */
+#hero {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: url('assets/images/meal1.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.9));
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    max-width: 800px;
+}
+
+.hero-content h1 {
+    font-size: 4rem;
+    line-height: 1.1;
+    margin-bottom: 20px;
+    font-weight: 800;
+}
+
+.hero-content p {
+    font-size: 1.25rem;
+    color: #e0e0e0;
+    margin-bottom: 40px;
+    font-weight: 300;
+}
+
+.hero-btns {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+/* Stats Section */
+#stats {
+    padding: 60px 0;
+    background-color: var(--bg-color);
+    border-bottom: 1px solid var(--accent);
+}
+
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 40px;
+    text-align: center;
+}
+
+.stat-item h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: var(--text-primary);
+}
+
+.stat-item p {
+    color: var(--text-secondary);
+}
+
+/* How It Works */
+#how-it-works {
+    padding: 100px 0;
+    background-color: var(--bg-color);
+}
+
+.steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.step-card {
+    background: var(--card-bg);
+    padding: 40px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.05);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.step-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255,255,255,0.2);
+}
+
+.step-number {
+    font-size: 4rem;
+    font-weight: 900;
+    color: rgba(255,255,255,0.03);
+    position: absolute;
+    top: 10px;
+    right: 20px;
+}
+
+.step-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.step-card p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    position: relative;
+}
+
+/* Menu Section */
+#menu {
+    padding: 100px 0;
+    background-color: #0f0f0f;
+}
+
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 300px;
+    gap: 15px;
+}
+
+.menu-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.menu-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.menu-item:hover img {
+    transform: scale(1.05);
+}
+
+.menu-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+    padding: 20px;
+    transform: translateY(100px); /* Hide mostly by default or just show title? let's show title */
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 100%;
+    opacity: 0;
+}
+
+.menu-item:hover .menu-overlay {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.menu-overlay h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.menu-overlay p {
+    font-size: 0.9rem;
+    color: #ccc;
+    margin-top: 5px;
+}
+
+/* Grid Spans */
+.item-large {
+    grid-column: span 2;
+    grid-row: span 2;
+}
+
+.center-btn {
+    text-align: center;
+    margin-top: 50px;
+}
+
+/* About Section */
+#about {
+    padding: 100px 0;
+    background-color: var(--bg-color);
+}
+
+.about-container {
+    display: flex;
+    align-items: center;
+    gap: 60px;
+}
+
+.about-content {
+    flex: 1;
+}
+
+.about-content h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: var(--highlight);
+}
+
+.about-content p {
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    font-size: 1.05rem;
+}
+
+.about-image {
+    flex: 1;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.about-image img {
+    width: 100%;
+    height: auto;
+    filter: grayscale(100%);
+    transition: filter 0.5s ease;
+}
+.about-image:hover img {
+    filter: grayscale(0%);
+}
+
+/* CTA Section */
+#cta {
+    padding: 80px 0;
+    background-color: var(--highlight);
+    color: #000;
+    text-align: center;
+}
+
+.cta-content h2 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    letter-spacing: -1px;
+}
+
+.cta-content p {
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+    opacity: 0.8;
+}
+
+/* Footer */
+footer {
+    background-color: #050505;
+    padding: 80px 0 20px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 40px;
+    margin-bottom: 60px;
+}
+
+.footer-col h3 {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    color: var(--highlight);
+}
+
+.footer-col p, .footer-col address, .footer-col a {
+    color: var(--text-secondary);
+    font-style: normal;
+    line-height: 1.8;
+    display: block;
+}
+
+.social-link:hover {
+    color: var(--highlight);
+    text-decoration: underline;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    color: #444;
+    font-size: 0.9rem;
+}
+
+/* Animations */
+.fade-in-up {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.8s forwards;
+}
+
+.delay-1 { animation-delay: 0.2s; }
+.delay-2 { animation-delay: 0.4s; }
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Media Queries */
+@media (max-width: 900px) {
+    .menu-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-auto-rows: 250px;
+    }
+    .item-large {
+        grid-column: span 2;
+        grid-row: span 1;
+    }
+    .about-container {
+        flex-direction: column;
+    }
+    .hero-content h1 {
+        font-size: 3rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .nav-links {
+        display: none; /* simple generic hiding, script will handle */
+        position: absolute;
+        top: var(--nav-height);
+        left: 0;
+        width: 100%;
+        background-color: var(--bg-color);
+        flex-direction: column;
+        padding: 20px;
+        border-bottom: 1px solid var(--accent);
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+
+    .mobile-menu-btn {
+        display: block;
+    }
+
+    .menu-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .item-large {
+        grid-column: span 1;
+    }
+
+    .hero-content h1 {
+        font-size: 2.5rem;
+    }
+}

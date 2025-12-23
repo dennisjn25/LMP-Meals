@@ -5,6 +5,14 @@ const nextConfig: NextConfig = {
   experimental: {
     serverComponentsExternalPackages: ["@prisma/client", "bcryptjs"],
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**.supabase.co",
+      },
+    ],
+  },
   // Exclude stripe-cli from the build
   eslint: {
     ignoreDuringBuilds: true,

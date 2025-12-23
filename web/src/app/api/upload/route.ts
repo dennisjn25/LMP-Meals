@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
+import { createClient } from "@supabase/supabase-js";
 
 export async function POST(request: NextRequest) {
     try {
@@ -17,22 +16,40 @@ export async function POST(request: NextRequest) {
         // Ensure unique filename
         const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '')}`;
 
-        // Ensure directory exists
-        const uploadDir = path.join(process.cwd(), "public/uploads");
-        try {
-            await mkdir(uploadDir, { recursive: true });
-        } catch (e) {
-            // ignore if exists
+        // Initialize Supabase Client
+        // Prefer Service Role Key for backend operations to bypass RLS, otherwise use Anon key
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+        const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+        if (!supabaseUrl || !supabaseKey) {
+            console.error("Missing Supabase credentials");
+            return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
         }
 
-        const filepath = path.join(uploadDir, filename);
+        const supabase = createClient(supabaseUrl, supabaseKey);
 
-        await writeFile(filepath, buffer);
+        // Upload to 'meals' bucket
+        const { error: uploadError } = await supabase.storage
+            .from('meals')
+            .upload(filename, buffer, {
+                contentType: file.type,
+                upsert: false
+            });
 
-        const url = `/uploads/${filename}`;
-        return NextResponse.json({ url });
+        if (uploadError) {
+            console.error("Supabase storage upload error:", uploadError);
+            return NextResponse.json({ error: "Failed to upload image to storage" }, { status: 500 });
+        }
+
+        // Get Public URL
+        const { data: { publicUrl } } = supabase.storage
+            .from('meals')
+            .getPublicUrl(filename);
+
+        return NextResponse.json({ url: publicUrl });
+
     } catch (error) {
-        console.error("Upload failed", error);
+        console.error("Upload handler failed", error);
         return NextResponse.json({ error: "Upload failed" }, { status: 500 });
     }
 }
