@@ -35,6 +35,8 @@ export default function LoginForm() {
             login(values).then((data) => {
                 if (data?.error) {
                     setError(data.error);
+                } else if (data?.success && data?.redirect) {
+                    window.location.href = data.redirect;
                 }
             });
         });

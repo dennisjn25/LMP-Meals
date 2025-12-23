@@ -27,6 +27,8 @@ import ScrollProgress from "@/components/effects/ScrollProgress";
 
 // ... existing imports
 
+
+
 export default function RootLayout({
   children,
 }: Readonly<{

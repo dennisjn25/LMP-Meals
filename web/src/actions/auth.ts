@@ -44,11 +44,17 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
     const redirectTo = existingUser.role === "ADMIN" ? "/admin" : "/";
 
     try {
-        await signIn("credentials", {
+        const result = await signIn("credentials", {
             email,
             password,
-            redirectTo
+            redirect: false,
         });
+
+        if (result?.error) {
+            return { error: "Invalid credentials!" };
+        }
+
+        return { success: "Logged in!", redirect: redirectTo };
     } catch (error) {
         if (error instanceof AuthError) {
             switch (error.type) {
