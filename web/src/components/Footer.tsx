@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 
 export default function Footer() {
@@ -9,7 +11,7 @@ export default function Footer() {
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
                             <div className="logo-shimmer-wrapper" style={{ width: '40px', height: '40px' }}>
                                 <Image
-                                    src="https://ijcowpujufsrdikhegxu.supabase.co/storage/v1/object/public/assets/logo.png"
+                                    src="/logo.png"
                                     width={40}
                                     height={40}
                                     alt="LMP Logo"
@@ -28,25 +30,25 @@ export default function Footer() {
                     <div>
                         <h4 style={{ color: '#fff', marginBottom: '20px', fontSize: '0.9rem' }}>QUICK LINKS</h4>
                         <ul style={{ listStyle: 'none', padding: 0, color: '#9ca3af', fontSize: '0.9rem', lineHeight: 2 }}>
-                            <li><a href="/menu">Menu</a></li>
-                            <li><a href="/story">Our Story</a></li>
+                            <li><a href="/menu" style={{ color: '#9ca3af', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fbbf24'} onMouseLeave={(e) => e.currentTarget.style.color = '#9ca3af'}>Menu</a></li>
+                            <li><a href="/story" style={{ color: '#9ca3af', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fbbf24'} onMouseLeave={(e) => e.currentTarget.style.color = '#9ca3af'}>Our Story</a></li>
                         </ul>
                     </div>
                     <div>
                         <h4 style={{ color: '#fff', marginBottom: '20px', fontSize: '0.9rem' }}>SUPPORT</h4>
                         <ul style={{ listStyle: 'none', padding: 0, color: '#9ca3af', fontSize: '0.9rem', lineHeight: 2 }}>
-                            <li><a href="/contact">Contact Us</a></li>
-                            <li><a href="/how-it-works">Delivery Info</a></li>
-                            <li><a href="/nutrition">Nutrition Info</a></li>
-                            <li><a href="/privacy">Privacy Policy</a></li>
-                            <li><a href="/terms">Terms of Service</a></li>
+                            <li><a href="/contact" style={{ color: '#9ca3af', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fbbf24'} onMouseLeave={(e) => e.currentTarget.style.color = '#9ca3af'}>Contact Us</a></li>
+                            <li><a href="/how-it-works" style={{ color: '#9ca3af', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fbbf24'} onMouseLeave={(e) => e.currentTarget.style.color = '#9ca3af'}>Delivery Info</a></li>
+                            <li><a href="/nutrition" style={{ color: '#9ca3af', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fbbf24'} onMouseLeave={(e) => e.currentTarget.style.color = '#9ca3af'}>Nutrition Info</a></li>
+                            <li><a href="/privacy" style={{ color: '#9ca3af', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fbbf24'} onMouseLeave={(e) => e.currentTarget.style.color = '#9ca3af'}>Privacy Policy</a></li>
+                            <li><a href="/terms" style={{ color: '#9ca3af', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fbbf24'} onMouseLeave={(e) => e.currentTarget.style.color = '#9ca3af'}>Terms of Service</a></li>
                         </ul>
                     </div>
                     <div>
                         <h4 style={{ color: '#fff', marginBottom: '20px', fontSize: '0.9rem' }}>CONNECT</h4>
                         <ul style={{ listStyle: 'none', padding: 0, color: '#9ca3af', fontSize: '0.9rem', lineHeight: 2 }}>
-                            <li><a href="https://www.instagram.com/liberty_meal_prep_llc/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
-                            <li><a href="https://www.tiktok.com/@liberty.meal.prep" target="_blank" rel="noopener noreferrer">TikTok</a></li>
+                            <li><a href="https://www.instagram.com/liberty_meal_prep_llc/" target="_blank" rel="noopener noreferrer" style={{ color: '#9ca3af', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fbbf24'} onMouseLeave={(e) => e.currentTarget.style.color = '#9ca3af'}>Instagram</a></li>
+                            <li><a href="https://www.tiktok.com/@liberty.meal.prep" target="_blank" rel="noopener noreferrer" style={{ color: '#9ca3af', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fbbf24'} onMouseLeave={(e) => e.currentTarget.style.color = '#9ca3af'}>TikTok</a></li>
 
                         </ul>
                         <div style={{ marginTop: '20px', fontSize: '0.8rem', color: '#6b7280' }}>

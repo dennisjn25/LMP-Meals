@@ -40,19 +40,21 @@ export default function AdminLayout({
                         color: 'black',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '10px',
+                        gap: '12px',
                         fontFamily: 'var(--font-heading)'
                     }}>
-                        <div className="logo-shimmer-wrapper" style={{ width: '50px', height: '50px' }}>
+                        <div className="logo-shimmer-wrapper" style={{ position: 'relative', width: '50px', height: '50px', flexShrink: 0, borderRadius: '50%', overflow: 'visible' }}>
                             <Image
                                 src="/logo.png"
-                                width={50}
-                                height={50}
+                                fill
                                 alt="LMP Logo"
-                                style={{ objectFit: 'contain' }}
+                                style={{ objectFit: 'contain', padding: '2px' }}
                             />
                         </div>
-                        <span>Admin</span>
+                        <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.1 }}>
+                            <span style={{ fontSize: '1.2rem', fontWeight: 900 }}>LMP</span>
+                            <span style={{ fontSize: '0.7rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Admin Panel</span>
+                        </div>
                     </div>
                 </Link>
 

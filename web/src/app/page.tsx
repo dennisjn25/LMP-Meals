@@ -163,19 +163,19 @@ export default function Home() {
             marginTop: '60px'
           }}>
             <MealShowcaseCard
-              image="/meals/grilled-chicken-rice-bowl.png"
+              image="/high-protein.png"
               title="High Protein Power"
               description="Lean proteins for muscle building"
               tag="35g+ Protein"
             />
             <MealShowcaseCard
-              image="/meals/chicken-parmesan-light.png"
+              image="/keto-friendly.png"
               title="Keto Friendly"
               description="Low-carb, high-fat perfection"
               tag="<10g Carbs"
             />
             <MealShowcaseCard
-              image="/meals/turkey-taco-bowl.png"
+              image="/balanced-nutrition.png"
               title="Balanced Nutrition"
               description="Perfect macro distribution"
               tag="Balanced"

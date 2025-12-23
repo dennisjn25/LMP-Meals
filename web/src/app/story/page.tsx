@@ -37,7 +37,7 @@ export default function StoryPage() {
                     <br />
 
                     <h1 style={{ fontSize: '4rem', marginBottom: '16px', textShadow: '0 4px 12px rgba(0,0,0,0.8)', color: '#fff', textTransform: 'uppercase', fontFamily: 'var(--font-heading)' }}>OUR STORY</h1>
-                    <p style={{ fontSize: '1.25rem', maxWidth: '600px', margin: '0 auto', textShadow: '0 2px 8px rgba(0,0,0,0.8)', color: '#cbd5e1' }}>
+                    <p style={{ fontSize: '1.25rem', maxWidth: '600px', margin: '0 auto', textShadow: '0 2px 8px rgba(0,0,0,0.8)', color: '#ffffff' }}>
                         Born from a personal journey to health, Liberty Meal Prep brings you delicious, high-quality meals that nourish your body and soul.
                     </p>
                 </div>
@@ -106,7 +106,7 @@ export default function StoryPage() {
                             A Journey of Health<br />& <span style={{ color: '#fbbf24' }}>Service</span>
                         </h2>
 
-                        <div style={{ color: '#f1f5f9', fontSize: '1.1rem', lineHeight: 1.8 }}>
+                        <div style={{ color: '#ffffff', fontSize: '1.1rem', lineHeight: 1.8 }}>
                             <p style={{ marginBottom: '24px' }}>
                                 Liberty Meal Prep was founded by <strong>Justin Dowd</strong>, based in Scottsdale, Arizona. Years ago, Justin faced a personal health challenge that would change his life forever.
                             </p>
@@ -139,7 +139,7 @@ export default function StoryPage() {
             <div style={{ background: '#0F172A', padding: '100px 0', borderTop: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                 <div className="container" style={{ textAlign: 'center' }}>
                     <h2 style={{ fontSize: '3rem', marginBottom: '16px', color: '#fff', fontFamily: 'var(--font-heading)' }}>OUR COMMITMENT</h2>
-                    <p style={{ color: '#94a3b8', marginBottom: '80px', fontSize: '1.2rem', maxWidth: '600px', marginInline: 'auto' }}>To bring delicious, high-quality, mouth-watering, healthy meals to your everyday life</p>
+                    <p style={{ color: '#ffffff', marginBottom: '80px', fontSize: '1.2rem', maxWidth: '600px', marginInline: 'auto' }}>To bring delicious, high-quality, mouth-watering, healthy meals to your everyday life</p>
                     <br /><br />
 
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '40px' }}>
@@ -162,7 +162,7 @@ export default function StoryPage() {
                     boxShadow: '0 20px 50px -20px rgba(0,0,0,0.5)'
                 }}>
                     <h2 style={{ fontSize: '2.5rem', marginBottom: '16px', color: '#fff', fontFamily: 'var(--font-heading)' }}>Understanding Dietary Needs</h2>
-                    <p style={{ color: '#94a3b8', marginBottom: '40px', fontStyle: 'italic', fontSize: '1.1rem' }}>
+                    <p style={{ color: '#f1f5f9', marginBottom: '40px', fontStyle: 'italic', fontSize: '1.1rem' }}>
                         Our commitment to health extends beyond our founder's personal journey
                     </p>
 
@@ -174,13 +174,13 @@ export default function StoryPage() {
                         borderRadius: '0 16px 16px 0'
                     }}>
                         <h3 style={{ fontSize: '1.5rem', marginBottom: '20px', color: '#fff', fontFamily: 'var(--font-heading)' }}>Celiac Disease Awareness</h3>
-                        <p style={{ marginBottom: '20px', color: '#cbd5e1', fontSize: '1.05rem', lineHeight: 1.7 }}>
+                        <p style={{ marginBottom: '20px', color: '#ffffff', fontSize: '1.05rem', lineHeight: 1.7 }}>
                             Having experienced celiac disease firsthand, Justin understands the importance of safe, gluten-free meal options. While not all our meals are gluten-free, we offer a wide variety of options and clearly label all allergens to help you make informed choices.
                         </p>
-                        <p style={{ marginBottom: '20px', color: '#cbd5e1', fontSize: '1.05rem', lineHeight: 1.7 }}>
+                        <p style={{ marginBottom: '20px', color: '#ffffff', fontSize: '1.05rem', lineHeight: 1.7 }}>
                             At Liberty Meal Prep, we believe that dietary restrictions shouldn't mean sacrificing flavor or quality. Our team carefully prepares each meal with attention to ingredient sourcing, cross-contamination prevention, and nutritional balance.
                         </p>
-                        <p style={{ color: '#cbd5e1', fontSize: '1.05rem', lineHeight: 1.7 }}>
+                        <p style={{ color: '#ffffff', fontSize: '1.05rem', lineHeight: 1.7 }}>
                             Whether you're managing celiac disease, following a specific diet, or simply looking for healthier meal options, we're here to support your journey to better health through delicious, nutritious food.
                         </p>
                     </div>
@@ -201,24 +201,24 @@ export default function StoryPage() {
                 }}></div>
                 <div className="container" style={{ maxWidth: '800px', position: 'relative', zIndex: 1 }}>
                     <h2 style={{ fontSize: '3rem', marginBottom: '24px', color: '#fff', fontFamily: 'var(--font-heading)' }}>Serving Greater Phoenix, Arizona</h2>
-                    <p style={{ color: '#94a3b8', fontSize: '1.25rem', marginBottom: '60px' }}>
+                    <p style={{ color: '#ffffff', fontSize: '1.25rem', marginBottom: '60px' }}>
                         Based in the heart of Scottsdale, we're proud to serve our local community with fresh, healthy meals delivered right to your door.
                     </p>
                     <div style={{ display: 'flex', gap: '24px', justifyContent: 'center', flexWrap: 'wrap' }}>
                         <div style={{ background: 'rgba(255,255,255,0.05)', padding: '24px 32px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)' }}>
                             <div style={{ color: '#fbbf24', marginBottom: '8px' }}><MapPin size={24} /></div>
                             <div style={{ fontWeight: 700, fontSize: '1.1rem', marginBottom: '4px', fontFamily: 'var(--font-heading)' }}>Sunday Deliveries</div>
-                            <div style={{ fontSize: '0.9rem', color: '#94a3b8' }}>Within 25 miles of Scottsdale</div>
+                            <div style={{ fontSize: '0.9rem', color: '#f1f5f9' }}>Within 25 miles of Scottsdale</div>
                         </div>
                         <div style={{ background: 'rgba(255,255,255,0.05)', padding: '24px 32px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)' }}>
                             <div style={{ color: '#fbbf24', marginBottom: '8px' }}><ShieldCheck size={24} /></div>
                             <div style={{ fontWeight: 700, fontSize: '1.1rem', marginBottom: '4px', fontFamily: 'var(--font-heading)' }}>Fresh Daily</div>
-                            <div style={{ fontSize: '0.9rem', color: '#94a3b8' }}>Prepared with care</div>
+                            <div style={{ fontSize: '0.9rem', color: '#f1f5f9' }}>Prepared with care</div>
                         </div>
                         <div style={{ background: 'rgba(255,255,255,0.05)', padding: '24px 32px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)' }}>
                             <div style={{ color: '#fbbf24', marginBottom: '8px' }}><Medal size={24} /></div>
                             <div style={{ fontWeight: 700, fontSize: '1.1rem', marginBottom: '4px', fontFamily: 'var(--font-heading)' }}>Veteran Owned</div>
-                            <div style={{ fontSize: '0.9rem', color: '#94a3b8' }}>Since 2023</div>
+                            <div style={{ fontSize: '0.9rem', color: '#f1f5f9' }}>Since 2023</div>
                         </div>
                     </div>
                 </div>
@@ -240,7 +240,7 @@ export default function StoryPage() {
                             Ready to Start Your Journey?
                         </span>
                     </h2>
-                    <p style={{ color: '#e5e7eb', maxWidth: '600px', margin: '0 auto 40px auto', fontSize: '1.2rem', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
+                    <p style={{ color: '#ffffff', maxWidth: '600px', margin: '0 auto 40px auto', fontSize: '1.2rem', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
                         Join us in making healthy eating delicious, convenient, and accessible. Browse our menu and discover meals that nourish your body and delight your taste buds.
                     </p>
                     <a href="/menu" style={{
@@ -290,7 +290,7 @@ function MissionCard({ icon, title, text }: any) {
                 {icon}
             </div>
             <h3 style={{ fontSize: '1.5rem', marginBottom: '16px', color: '#fff', fontFamily: 'var(--font-heading)' }}>{title}</h3>
-            <p style={{ fontSize: '1rem', color: '#94a3b8', lineHeight: 1.6 }}>{text}</p>
+            <p style={{ fontSize: '1rem', color: '#ffffff', lineHeight: 1.6 }}>{text}</p>
         </div>
     )
 }
