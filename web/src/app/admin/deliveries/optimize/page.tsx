@@ -1,6 +1,8 @@
 import { getDeliveries, getDrivers } from "@/actions/delivery";
 import OptimizationClient from "./OptimizationClient";
 
+export const dynamic = "force-dynamic";
+
 export default async function RouteOptimizationPage() {
     const deliveriesRes = await getDeliveries();
     const driversRes = await getDrivers();

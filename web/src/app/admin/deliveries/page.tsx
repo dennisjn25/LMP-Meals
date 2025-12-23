@@ -1,6 +1,8 @@
 import { getDeliveries, getRoutes, getDrivers } from "@/actions/delivery";
 import DeliveriesClient from "./DeliveriesClient";
 
+export const dynamic = "force-dynamic";
+
 export default async function DeliveriesPage() {
     const deliveriesRes = await getDeliveries();
     const routesRes = await getRoutes();

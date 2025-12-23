@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import AdminUserList from "@/components/admin/user-list";
 import Navbar from "@/components/Navbar";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminDashboard() {
     const session = await auth();
 
