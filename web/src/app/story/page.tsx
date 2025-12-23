@@ -107,13 +107,13 @@ export default function StoryPage() {
                         </h2>
 
                         <div style={{ color: '#ffffff', fontSize: '1.1rem', lineHeight: 1.8 }}>
-                            <p style={{ marginBottom: '24px' }}>
+                            <p style={{ marginBottom: '24px', color: '#fff' }}>
                                 Liberty Meal Prep was founded by <strong>Justin Dowd</strong>, based in Scottsdale, Arizona. Years ago, Justin faced a personal health challenge that would change his life forever.
                             </p>
-                            <p style={{ marginBottom: '24px' }}>
+                            <p style={{ marginBottom: '24px', color: '#fff' }}>
                                 Diagnosed with <strong>celiac disease</strong>, Justin discovered that traditional meal options weren't meeting his nutritional needs. Determined to take control of his health, he began meal prepping with fresh, gluten-free ingredients, focusing on quality, nutrition, and flavor.
                             </p>
-                            <p style={{ marginBottom: '24px' }}>
+                            <p style={{ marginBottom: '24px', color: '#fff' }}>
                                 What started as a personal solution became a mission: to bring delicious, high-quality, mouth-watering, healthy meals to everyday lives. Justin understood that everyone deserves access to nutritious food that doesn't compromise on taste or convenience.
                             </p>
                             <blockquote style={{
