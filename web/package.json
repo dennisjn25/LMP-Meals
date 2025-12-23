@@ -7,8 +7,15 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
+    "seed-master": "tsx scripts/seed-master.ts",
     "seed-meals": "tsx scripts/seed-meals.ts",
-    "monthly-menu": "tsx scripts/set-monthly-menu.ts"
+    "seed-customers": "tsx scripts/seed-customers.ts",
+    "seed-employees": "tsx scripts/seed-employees.ts",
+    "seed-all": "tsx scripts/seed-all.ts",
+    "seed-comprehensive": "tsx scripts/seed-comprehensive.ts",
+    "validate-db": "tsx scripts/validate-database.ts",
+    "monthly-menu": "tsx scripts/set-monthly-menu.ts",
+    "create-admin": "tsx scripts/create-admin.ts"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",

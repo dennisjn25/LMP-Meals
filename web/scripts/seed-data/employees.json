@@ -1,0 +1,62 @@
+[
+    {
+        "name": "Justin Dowd",
+        "email": "admin@lmpmeals.com",
+        "phone": "(555) 123-4567",
+        "position": "Owner & CEO",
+        "department": "Kitchen, Delivery",
+        "status": "ACTIVE",
+        "salary": 85000,
+        "notes": "Founder and primary administrator"
+    },
+    {
+        "name": "Josh Dennis",
+        "email": "josh@lmpmeals.com",
+        "phone": "(555) 987-6543",
+        "position": "COO",
+        "department": "Kitchen, Delivery",
+        "status": "ACTIVE",
+        "salary": 80000,
+        "notes": "Chief Operating Officer"
+    },
+    {
+        "name": "Maria Garcia",
+        "email": "maria.garcia@lmpmeals.com",
+        "phone": "(555) 234-5678",
+        "position": "Head Chef",
+        "department": "Kitchen",
+        "status": "ACTIVE",
+        "salary": 55000,
+        "notes": "Responsible for meal preparation and kitchen operations"
+    },
+    {
+        "name": "James Wilson",
+        "email": "james.wilson@lmpmeals.com",
+        "phone": "(555) 345-6789",
+        "position": "Delivery Driver",
+        "department": "Logistics",
+        "status": "ACTIVE",
+        "salary": 42000,
+        "notes": "Primary delivery driver for local routes"
+    },
+    {
+        "name": "Lisa Anderson",
+        "email": "lisa.anderson@lmpmeals.com",
+        "phone": "(555) 456-7890",
+        "position": "Office Manager",
+        "department": "Administration",
+        "status": "ACTIVE",
+        "salary": 48000,
+        "notes": "Handles customer service and administrative tasks"
+    },
+    {
+        "name": "Robert Martinez",
+        "email": "robert.martinez@lmpmeals.com",
+        "phone": "(555) 567-8901",
+        "position": "Sous Chef",
+        "department": "Kitchen",
+        "status": "ACTIVE",
+        "salary": 45000,
+        "notes": "Assists with meal prep and inventory management"
+    }
+]

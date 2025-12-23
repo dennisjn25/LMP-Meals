@@ -1,0 +1,50 @@
+[
+    {
+        "name": "Justin Dowd",
+        "email": "admin@lmpmeals.com",
+        "role": "ADMIN",
+        "password": "LMP2024Admin!",
+        "emailVerified": true,
+        "sendReceiptEmail": true
+    },
+    {
+        "name": "Josh Dennis",
+        "email": "josh@lmpmeals.com",
+        "role": "ADMIN",
+        "password": "LMP2024COO!",
+        "emailVerified": true,
+        "sendReceiptEmail": true
+    },
+    {
+        "name": "Sarah Johnson",
+        "email": "sarah.johnson@example.com",
+        "role": "USER",
+        "password": "Customer123!",
+        "emailVerified": true,
+        "sendReceiptEmail": true
+    },
+    {
+        "name": "Michael Chen",
+        "email": "michael.chen@example.com",
+        "role": "USER",
+        "password": "Customer123!",
+        "emailVerified": true,
+        "sendReceiptEmail": true
+    },
+    {
+        "name": "Emily Rodriguez",
+        "email": "emily.rodriguez@example.com",
+        "role": "USER",
+        "password": "Customer123!",
+        "emailVerified": true,
+        "sendReceiptEmail": false
+    },
+    {
+        "name": "David Thompson",
+        "email": "david.thompson@example.com",
+        "role": "USER",
+        "password": "Customer123!",
+        "emailVerified": true,
+        "sendReceiptEmail": true
+    }
+]
