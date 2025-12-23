@@ -27,7 +27,7 @@ export default function StoryPage() {
                     {/* Logo with Shimmer Effect */}
                     <div className="logo-shimmer-wrapper" style={{ marginBottom: '32px', display: 'inline-block', position: 'relative' }}>
                         <Image
-                            src="/logo.png"
+                            src="https://ijcowpujufsrdikhegxu.supabase.co/storage/v1/object/public/assets/logo.png"
                             alt="Liberty Meal Prep Logo"
                             width={140}
                             height={140}
@@ -60,7 +60,7 @@ export default function StoryPage() {
                             boxShadow: '0 20px 40px -10px rgba(0,0,0,0.5)'
                         }}>
                             <Image
-                                src="/justin_dowd_final.jpg"
+                                src="https://ijcowpujufsrdikhegxu.supabase.co/storage/v1/object/public/assets/justin_dowd_final.jpg"
                                 alt="Justin Dowd - Founder"
                                 fill
                                 style={{ objectFit: 'cover', objectPosition: 'center top' }}

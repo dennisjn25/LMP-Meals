@@ -33,7 +33,7 @@ export default function Navbar() {
                     {/* Left: Logo */}
                     <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '12px', zIndex: 1001 }}>
                         <div className="logo-shimmer-wrapper" style={{ position: 'relative', width: '45px', height: '45px', background: 'transparent', flexShrink: 0 }}>
-                            <Image src="/logo.png" alt="Liberty" fill style={{ objectFit: 'contain', filter: 'brightness(1.2)' }} />
+                            <Image src="https://ijcowpujufsrdikhegxu.supabase.co/storage/v1/object/public/assets/logo.png" alt="Liberty" fill style={{ objectFit: 'contain', filter: 'brightness(1.2)' }} />
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
                             <span className="logo-text" style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '1.2rem', letterSpacing: '-0.02em', color: '#fff' }}>

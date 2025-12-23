@@ -9,7 +9,7 @@ export default function Footer() {
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
                             <div className="logo-shimmer-wrapper" style={{ width: '40px', height: '40px' }}>
                                 <Image
-                                    src="/logo.png"
+                                    src="https://ijcowpujufsrdikhegxu.supabase.co/storage/v1/object/public/assets/logo.png"
                                     width={40}
                                     height={40}
                                     alt="LMP Logo"

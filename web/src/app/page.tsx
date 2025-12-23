@@ -36,7 +36,7 @@ export default function Home() {
           {/* Logo with Shimmer Effect */}
           <div className="logo-shimmer-wrapper" style={{ marginBottom: '32px', display: 'inline-block', position: 'relative' }}>
             <Image
-              src="/logo.png"
+              src="https://ijcowpujufsrdikhegxu.supabase.co/storage/v1/object/public/assets/logo.png"
               alt="Liberty Meal Prep Logo"
               width={180}
               height={180}
@@ -210,17 +210,17 @@ export default function Home() {
             marginTop: '60px'
           }}>
             <PrepDayCard
-              image="/journey/prep-1.png"
+              image="https://ijcowpujufsrdikhegxu.supabase.co/storage/v1/object/public/assets/prep-1.png"
               title="Fresh Preparation"
               description="Every meal is prepared fresh daily by our experienced culinary team using premium ingredients."
             />
             <PrepDayCard
-              image="/healthy-lifestyle.png"
+              image="https://ijcowpujufsrdikhegxu.supabase.co/storage/v1/object/public/assets/healthy-lifestyle.png"
               title="Precision Portioning"
               description="Each meal is carefully portioned to meet exact nutritional specifications for your health goals."
             />
             <PrepDayCard
-              image="/journey/prep-2.png"
+              image="https://ijcowpujufsrdikhegxu.supabase.co/storage/v1/object/public/assets/prep-2.png"
               title="Quality Ingredients"
               description="We source only the finest, locally-sourced ingredients to ensure maximum freshness and nutrition."
             />
@@ -260,22 +260,22 @@ export default function Home() {
             marginBottom: '50px'
           }}>
             <InstagramPost
-              image="/journey/prep-3.png"
+              image="https://ijcowpujufsrdikhegxu.supabase.co/storage/v1/object/public/assets/prep-3.png"
               likes="234"
               caption="Protein-packed perfection 💪"
             />
             <InstagramPost
-              image="/journey/prep-4.png"
+              image="https://ijcowpujufsrdikhegxu.supabase.co/storage/v1/object/public/assets/prep-4.png"
               likes="189"
               caption="Keto made delicious 🥑"
             />
             <InstagramPost
-              image="/journey/prep-5.png"
+              image="https://ijcowpujufsrdikhegxu.supabase.co/storage/v1/object/public/assets/prep-5.png"
               likes="312"
               caption="Balanced nutrition, incredible taste ✨"
             />
             <InstagramPost
-              image="/journey/prep-6.png"
+              image="https://ijcowpujufsrdikhegxu.supabase.co/storage/v1/object/public/assets/prep-6.png"
               likes="445"
               caption="Fresh prep day vibes 👨‍🍳"
             />

@@ -77,7 +77,7 @@ export default function MenuClient({ meals }: { meals: Meal[] }) {
                         {/* Logo with Shimmer Effect */}
                         <div className="logo-shimmer-wrapper" style={{ marginBottom: '32px', display: 'inline-block', position: 'relative' }}>
                             <Image
-                                src="/logo.png"
+                                src="https://ijcowpujufsrdikhegxu.supabase.co/storage/v1/object/public/assets/logo.png"
                                 alt="Liberty Meal Prep Logo"
                                 width={120}
                                 height={120}
