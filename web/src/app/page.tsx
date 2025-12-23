@@ -7,6 +7,7 @@ import { Clock, Heart, Truck, Award, CheckCircle, Star, TrendingUp, Users, Zap, 
 import AnimatedLogoBackground from "@/components/AnimatedLogoBackground";
 import ParticleBackground from "@/components/effects/ParticleBackground";
 import RewardsTracker from "@/components/gamification/RewardsTracker";
+import FeaturedMealsCarousel from "@/components/FeaturedMealsCarousel";
 
 export default function Home() {
   return (
@@ -145,6 +146,8 @@ export default function Home() {
         </div>
       </section>
 
+
+
       {/* MEAL SHOWCASE SECTION */}
       <section style={{
         padding: '100px 0',
@@ -157,29 +160,10 @@ export default function Home() {
           <p className="section-subtitle">Every meal is a masterpiece of flavor and nutrition</p>
 
           <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: '30px',
+            minHeight: '400px', // Prevent layout shift while loading
             marginTop: '60px'
           }}>
-            <MealShowcaseCard
-              image="https://ijcowpujufsrdikhegxu.supabase.co/storage/v1/object/public/assets/high-protein.png"
-              title="High Protein Power"
-              description="Lean proteins for muscle building"
-              tag="35g+ Protein"
-            />
-            <MealShowcaseCard
-              image="https://ijcowpujufsrdikhegxu.supabase.co/storage/v1/object/public/assets/keto-friendly.png"
-              title="Keto Friendly"
-              description="Low-carb, high-fat perfection"
-              tag="<10g Carbs"
-            />
-            <MealShowcaseCard
-              image="https://ijcowpujufsrdikhegxu.supabase.co/storage/v1/object/public/assets/balanced-nutrition.png"
-              title="Balanced Nutrition"
-              description="Perfect macro distribution"
-              tag="Balanced"
-            />
+            <FeaturedMealsCarousel />
           </div>
 
           <div style={{ textAlign: 'center', marginTop: '50px' }}>
@@ -476,49 +460,7 @@ function FloatingStat({ number, label }: { number: string, label: string }) {
   );
 }
 
-function MealShowcaseCard({ image, title, description, tag }: { image: string, title: string, description: string, tag: string }) {
-  return (
-    <div style={{
-      background: '#fff',
-      borderRadius: '16px',
-      overflow: 'hidden',
-      boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-      transition: 'all 0.3s ease',
-      cursor: 'pointer',
-      position: 'relative'
-    }}
-      className="meal-showcase-card"
-    >
-      <div style={{ position: 'relative', height: '220px', background: '#f3f4f6' }}>
-        <Image
-          src={image}
-          alt={title}
-          fill
-          style={{ objectFit: 'cover' }}
-        />
-        <div style={{
-          position: 'absolute',
-          top: '12px',
-          right: '12px',
-          background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)',
-          color: '#fff',
-          padding: '6px 12px',
-          borderRadius: '20px',
-          fontSize: '0.75rem',
-          fontWeight: 700,
-          zIndex: 2,
-          boxShadow: '0 2px 10px rgba(251, 191, 36, 0.4)'
-        }}>
-          {tag}
-        </div>
-      </div>
-      <div style={{ padding: '20px' }}>
-        <h3 style={{ fontSize: '1.2rem', marginBottom: '8px', fontFamily: 'var(--font-heading)' }}>{title}</h3>
-        <p style={{ color: '#6b7280', fontSize: '0.9rem' }}>{description}</p>
-      </div>
-    </div>
-  );
-}
+
 
 function TestimonialCard({ name, role, text, rating }: { name: string, role: string, text: string, rating: number }) {
   return (
