@@ -45,7 +45,7 @@ export default function AdminLayout({
                     }}>
                         <div className="logo-shimmer-wrapper" style={{ position: 'relative', width: '50px', height: '50px', flexShrink: 0, borderRadius: '50%', overflow: 'visible' }}>
                             <Image
-                                src="/logo.png"
+                                src="https://ijcowpujufsrdikhegxu.supabase.co/storage/v1/object/public/assets/logo.png"
                                 fill
                                 alt="LMP Logo"
                                 style={{ objectFit: 'contain', padding: '2px' }}

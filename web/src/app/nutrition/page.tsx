@@ -22,7 +22,7 @@ export default async function NutritionPage() {
                     <header style={{ textAlign: 'center' }}>
                         <div className="logo-shimmer-wrapper" style={{ marginBottom: '32px', display: 'inline-block' }}>
                             <Image
-                                src="/logo.png"
+                                src="https://ijcowpujufsrdikhegxu.supabase.co/storage/v1/object/public/assets/logo.png"
                                 alt="Liberty Meal Prep Logo"
                                 width={100}
                                 height={100}

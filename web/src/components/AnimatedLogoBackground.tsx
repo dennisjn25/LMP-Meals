@@ -8,7 +8,7 @@ export default function AnimatedLogoBackground() {
             {/* Main centered logo with glow */}
             <div className="logo-main">
                 <Image
-                    src="/logo.png"
+                    src="https://ijcowpujufsrdikhegxu.supabase.co/storage/v1/object/public/assets/logo.png"
                     alt="Liberty Meal Prep"
                     width={400}
                     height={400}
@@ -20,7 +20,7 @@ export default function AnimatedLogoBackground() {
             {/* Duplicate logos for depth effect */}
             <div className="logo-layer logo-layer-1">
                 <Image
-                    src="/logo.png"
+                    src="https://ijcowpujufsrdikhegxu.supabase.co/storage/v1/object/public/assets/logo.png"
                     alt=""
                     width={300}
                     height={300}
@@ -30,7 +30,7 @@ export default function AnimatedLogoBackground() {
 
             <div className="logo-layer logo-layer-2">
                 <Image
-                    src="/logo.png"
+                    src="https://ijcowpujufsrdikhegxu.supabase.co/storage/v1/object/public/assets/logo.png"
                     alt=""
                     width={250}
                     height={250}
@@ -40,7 +40,7 @@ export default function AnimatedLogoBackground() {
 
             <div className="logo-layer logo-layer-3">
                 <Image
-                    src="/logo.png"
+                    src="https://ijcowpujufsrdikhegxu.supabase.co/storage/v1/object/public/assets/logo.png"
                     alt=""
                     width={350}
                     height={350}
@@ -50,7 +50,7 @@ export default function AnimatedLogoBackground() {
 
             <div className="logo-layer logo-layer-4">
                 <Image
-                    src="/logo.png"
+                    src="https://ijcowpujufsrdikhegxu.supabase.co/storage/v1/object/public/assets/logo.png"
                     alt=""
                     width={200}
                     height={200}
@@ -60,7 +60,7 @@ export default function AnimatedLogoBackground() {
 
             <div className="logo-layer logo-layer-5">
                 <Image
-                    src="/logo.png"
+                    src="https://ijcowpujufsrdikhegxu.supabase.co/storage/v1/object/public/assets/logo.png"
                     alt=""
                     width={400}
                     height={400}
