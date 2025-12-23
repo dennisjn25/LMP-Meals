@@ -48,6 +48,64 @@ function SuccessContent() {
         );
     }
 
+    // Payment verification - prevent bypassing payment
+    if (!order || order.status !== 'PAID') {
+        return (
+            <div className="glass-panel" style={{ padding: '60px', textAlign: 'center' }}>
+                <div style={{
+                    width: '80px',
+                    height: '80px',
+                    background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    margin: '0 auto 24px',
+                    boxShadow: '0 10px 30px rgba(245, 158, 11, 0.3)'
+                }}>
+                    <Loader2 className="animate-spin" size={48} color="#fff" />
+                </div>
+
+                <h1 style={{ fontSize: '2.5rem', marginBottom: '16px', color: '#000' }}>Payment Processing</h1>
+
+                <p style={{ color: '#64748b', marginBottom: '32px', fontSize: '1.05rem', lineHeight: 1.7 }}>
+                    We're still processing your payment. This usually takes just a few moments.
+                    <br /><br />
+                    You'll receive a confirmation email once your payment is complete.
+                    <br />
+                    If you don't receive confirmation within 5 minutes, please contact us.
+                </p>
+
+                {order && (
+                    <div style={{ background: '#fef3c7', padding: '20px', borderRadius: '12px', marginBottom: '32px', border: '2px solid #fbbf24' }}>
+                        <div style={{ fontWeight: 600, marginBottom: '8px' }}>Order Number: {order.orderNumber}</div>
+                        <div style={{ fontSize: '0.9rem', color: '#92400e' }}>
+                            Status: {order.status}
+                        </div>
+                    </div>
+                )}
+
+                <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                    <a href="/" className="btn-black" style={{ padding: '14px 32px' }}>
+                        Return Home
+                    </a>
+                    <a href="mailto:justin@lmpmeals.com" style={{
+                        padding: '14px 32px',
+                        border: '2px solid #000',
+                        color: '#000',
+                        fontWeight: 700,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.05em',
+                        textDecoration: 'none',
+                        display: 'inline-block'
+                    }}>
+                        Contact Support
+                    </a>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="glass-panel" style={{ padding: '60px', textAlign: 'center' }}>
             <div style={{
