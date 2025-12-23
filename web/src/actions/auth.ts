@@ -33,8 +33,13 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
 
     const { email, password } = validatedFields.data;
 
-    const existingUser = await db.user.findUnique({
-        where: { email }
+    const existingUser = await db.user.findFirst({
+        where: {
+            email: {
+                equals: email,
+                mode: "insensitive"
+            }
+        }
     });
 
     if (!existingUser || !existingUser.email || !existingUser.password) {
