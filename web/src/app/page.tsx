@@ -46,7 +46,7 @@ export default function Home() {
           <br />
 
           {/* Enhanced VETERAN OWNED Badge */}
-          <div style={{
+          <div className="veteran-badge" style={{
             display: 'inline-flex',
             alignItems: 'center',
             gap: '12px',
@@ -409,6 +409,15 @@ export default function Home() {
           }
           50% {
             box-shadow: 0 0 30px rgba(251, 191, 36, 0.6);
+          }
+        }
+
+        @media (max-width: 768px) {
+          .veteran-badge {
+            padding: 8px 16px !important;
+            font-size: 0.8rem !important;
+            gap: 8px !important;
+            max-width: 90%;
           }
         }
       `}</style>
