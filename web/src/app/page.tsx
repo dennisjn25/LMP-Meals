@@ -163,19 +163,19 @@ export default function Home() {
             marginTop: '60px'
           }}>
             <MealShowcaseCard
-              image="https://ijcowpujufsrdikhegxu.supabase.co/storage/v1/object/public/assets/high-protein.png"
+              image="/high-protein.png?v=2"
               title="High Protein Power"
               description="Lean proteins for muscle building"
               tag="35g+ Protein"
             />
             <MealShowcaseCard
-              image="https://ijcowpujufsrdikhegxu.supabase.co/storage/v1/object/public/assets/keto-friendly.png"
+              image="/keto-friendly.png?v=2"
               title="Keto Friendly"
               description="Low-carb, high-fat perfection"
               tag="<10g Carbs"
             />
             <MealShowcaseCard
-              image="https://ijcowpujufsrdikhegxu.supabase.co/storage/v1/object/public/assets/balanced-nutrition.png"
+              image="/balanced-nutrition.png?v=2"
               title="Balanced Nutrition"
               description="Perfect macro distribution"
               tag="Balanced"
