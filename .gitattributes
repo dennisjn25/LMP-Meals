@@ -1,9 +1,21 @@
 # Auto detect text files and perform LF normalization
 * text=auto
-*.jpeg filter=lfs diff=lfs merge=lfs -text
-*.gif filter=lfs diff=lfs merge=lfs -text
-*.svg filter=lfs diff=lfs merge=lfs -text
-*.mp4 filter=lfs diff=lfs merge=lfs -text
-*.mov filter=lfs diff=lfs merge=lfs -text
-*.png filter=lfs diff=lfs merge=lfs -text
-*.jpg filter=lfs diff=lfs merge=lfs -text
+
+# LFS tracking for specific large asset types only if necessary
+# We are disabling LFS for standard web images to fix Vercel deployment issues
+# *.jpeg filter=lfs diff=lfs merge=lfs -text
+# *.gif filter=lfs diff=lfs merge=lfs -text
+# *.svg filter=lfs diff=lfs merge=lfs -text
+# *.mp4 filter=lfs diff=lfs merge=lfs -text
+# *.mov filter=lfs diff=lfs merge=lfs -text
+# *.png filter=lfs diff=lfs merge=lfs -text
+# *.jpg filter=lfs diff=lfs merge=lfs -text
+
+# Explicitly treat these as binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.mov binary
+*.mp4 binary
