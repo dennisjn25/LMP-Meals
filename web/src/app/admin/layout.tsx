@@ -43,12 +43,12 @@ export default function AdminLayout({
                         gap: '12px',
                         fontFamily: 'var(--font-heading)'
                     }}>
-                        <div className="logo-shimmer-wrapper" style={{ position: 'relative', width: '50px', height: '50px', flexShrink: 0, borderRadius: '50%', overflow: 'visible' }}>
+                        <div className="logo-shimmer-wrapper" style={{ position: 'relative', width: '50px', height: '50px', flexShrink: 0, overflow: 'visible' }}>
                             <Image
                                 src="https://ijcowpujufsrdikhegxu.supabase.co/storage/v1/object/public/assets/logo.png"
                                 fill
                                 alt="LMP Logo"
-                                style={{ objectFit: 'contain', padding: '2px' }}
+                                style={{ objectFit: 'contain' }}
                             />
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.1 }}>
