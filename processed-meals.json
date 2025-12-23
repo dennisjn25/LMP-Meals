@@ -1,0 +1,222 @@
+[
+  {
+    "name": "Grilled chicken rice bowl",
+    "calories": 500,
+    "protein": 45,
+    "carbs": 55,
+    "fat": 8,
+    "description": "Juicy grilled chicken over fluffy jasmine rice with tender broccoli, finished with a light teriyaki glaze that hits savory without turning sweet. Simple, clean, and reliable fuel that never gets old.",
+    "category": "High Protein",
+    "tags": "High Protein,GF",
+    "price": 13.99
+  },
+  {
+    "name": "Turkey taco bowl",
+    "calories": 520,
+    "protein": 42,
+    "carbs": 58,
+    "fat": 9,
+    "description": "Lean seasoned turkey layered over hearty brown rice with sweet corn, black beans, and salsa verde. All the taco flavor, none of the crash. Bold, filling, and surprisingly light.",
+    "category": "Balanced",
+    "tags": "GF",
+    "price": 13.99
+  },
+  {
+    "name": "Beef and potato hash",
+    "calories": 530,
+    "protein": 40,
+    "carbs": 48,
+    "fat": 14,
+    "description": "Extra lean beef sautéed with golden potatoes, peppers, and onions. Comfort food energy with a clean conscience. This one eats like a weekend breakfast and works like weekday fuel.",
+    "category": "Balanced",
+    "tags": "GF",
+    "price": 14.99
+  },
+  {
+    "name": "Chicken pesto pasta Banza",
+    "calories": 560,
+    "protein": 45,
+    "carbs": 45,
+    "fat": 18,
+    "description": "Grilled chicken tossed with Banza chickpea shells and spinach, coated lightly in basil pesto. Rich flavor, serious protein, and pasta that actually does something for you.",
+    "category": "High Protein",
+    "tags": "High Protein,Higher Fat",
+    "price": 14.99
+  },
+  {
+    "name": "Turkey meatballs marinara Banza",
+    "calories": 520,
+    "protein": 46,
+    "carbs": 50,
+    "fat": 10,
+    "description": "Tender turkey meatballs over Banza shells with slow simmered marinara. Classic Italian comfort rebuilt for performance instead of regret.",
+    "category": "High Protein",
+    "tags": "High Protein",
+    "price": 14.99
+  },
+  {
+    "name": "BBQ chicken mash",
+    "calories": 520,
+    "protein": 44,
+    "carbs": 52,
+    "fat": 9,
+    "description": "Smoky barbecue chicken paired with creamy mashed potatoes and crisp green beans. Backyard flavor, gym friendly macros. Feels indulgent. Behaves responsibly.",
+    "category": "High Protein",
+    "tags": "High Protein,GF",
+    "price": 13.99
+  },
+  {
+    "name": "Turkey chili cup",
+    "calories": 460,
+    "protein": 38,
+    "carbs": 42,
+    "fat": 11,
+    "description": "Hearty lean turkey chili with beans, tomato, and warm spices. Thick, satisfying, and perfect when you want something that feels like it hugs back.",
+    "category": "Balanced",
+    "tags": "GF",
+    "price": 13.99
+  },
+  {
+    "name": "Greek chicken bowl",
+    "calories": 520,
+    "protein": 45,
+    "carbs": 55,
+    "fat": 12,
+    "description": "Grilled chicken over jasmine rice with cucumber, tomato, feta, and cool tzatziki. Fresh, bright, and balanced. Like a Mediterranean vacation that still fits your goals.",
+    "category": "High Protein",
+    "tags": "High Protein,GF",
+    "price": 13.99
+  },
+  {
+    "name": "Beef enchilada skillet",
+    "calories": 500,
+    "protein": 38,
+    "carbs": 40,
+    "fat": 18,
+    "description": "Seasoned lean beef with peppers, enchilada sauce, and a warm corn tortilla. Deep flavor, no heaviness. All the comfort of enchiladas without the nap.",
+    "category": "Balanced",
+    "tags": "Higher Fat,GF",
+    "price": 14.99
+  },
+  {
+    "name": "Chicken alfredo light Banza",
+    "calories": 560,
+    "protein": 45,
+    "carbs": 45,
+    "fat": 18,
+    "description": "Creamy alfredo style sauce folded into Banza shells with grilled chicken and spinach. Comfort food rewritten so you can eat it on a Tuesday and still feel proud.",
+    "category": "High Protein",
+    "tags": "High Protein,Higher Fat",
+    "price": 14.99
+  },
+  {
+    "name": "Lemon herb chicken",
+    "calories": 490,
+    "protein": 45,
+    "carbs": 52,
+    "fat": 7,
+    "description": "Zesty lemon herb chicken with jasmine rice and roasted zucchini. Clean, bright, and refreshing. The kind of meal that resets your appetite instead of weighing it down.",
+    "category": "High Protein",
+    "tags": "High Protein,GF",
+    "price": 13.99
+  },
+  {
+    "name": "Turkey breakfast scramble",
+    "calories": 480,
+    "protein": 40,
+    "carbs": 45,
+    "fat": 10,
+    "description": "Lean turkey, egg whites, potatoes, and spinach cooked into a hearty scramble. Breakfast energy anytime of day. High protein, deeply satisfying, zero excuses.",
+    "category": "Balanced",
+    "tags": "GF",
+    "price": 13.99
+  },
+  {
+    "name": "Beef burrito bowl",
+    "calories": 520,
+    "protein": 42,
+    "carbs": 55,
+    "fat": 13,
+    "description": "Extra lean beef over rice with fresh pico and a light sprinkle of cheese. Simple, bold, and endlessly dependable. The kind of bowl you crave after a long day.",
+    "category": "Balanced",
+    "tags": "GF",
+    "price": 14.99
+  },
+  {
+    "name": "Chicken parmesan light Banza",
+    "calories": 480,
+    "protein": 44,
+    "carbs": 26,
+    "fat": 16,
+    "description": "Breaded baked chicken topped with marinara and melted mozzarella. All the comfort of chicken parm without the heaviness. Familiar flavors that still respect your goals.",
+    "category": "Low Carb",
+    "tags": "High Protein,Low Carb,Higher Fat",
+    "price": 14.99
+  },
+  {
+    "name": "Turkey bolognese Banza",
+    "calories": 560,
+    "protein": 45,
+    "carbs": 45,
+    "fat": 18,
+    "description": "Rich turkey bolognese sauce over Banza shells. Deep, savory, and slow cooked flavor with macros that make sense. This one eats like a cheat meal and isn't.",
+    "category": "High Protein",
+    "tags": "High Protein,Higher Fat",
+    "price": 14.99
+  },
+  {
+    "name": "Chicken fajita bowl",
+    "calories": 520,
+    "protein": 45,
+    "carbs": 55,
+    "fat": 9,
+    "description": "Seasoned chicken with sautéed peppers and onions over rice, finished with salsa. Sizzling flavor, clean ingredients, and just enough heat to keep things interesting.",
+    "category": "High Protein",
+    "tags": "High Protein,GF",
+    "price": 13.99
+  },
+  {
+    "name": "Turkey shepherd pie",
+    "calories": 520,
+    "protein": 40,
+    "carbs": 55,
+    "fat": 11,
+    "description": "Savory turkey topped with creamy mashed potatoes and vegetables. Classic comfort reengineered. Feels like home cooking, fuels like a performance meal.",
+    "category": "Balanced",
+    "tags": "GF",
+    "price": 13.99
+  },
+  {
+    "name": "Beef Korean bowl",
+    "calories": 540,
+    "protein": 40,
+    "carbs": 55,
+    "fat": 14,
+    "description": "Lean beef over jasmine rice with cabbage and a light gochujang sauce. Sweet heat, savory depth, and serious satisfaction without overload.",
+    "category": "Balanced",
+    "tags": "GF",
+    "price": 14.99
+  },
+  {
+    "name": "Chicken buffalo ranch",
+    "calories": 540,
+    "protein": 44,
+    "carbs": 55,
+    "fat": 14,
+    "description": "Buffalo seasoned chicken with rice, carrots, celery, and a light ranch drizzle. Bold, tangy, and addictive in the best way. Heat without regret.",
+    "category": "High Protein",
+    "tags": "High Protein,GF",
+    "price": 13.99
+  },
+  {
+    "name": "Turkey primavera Banza",
+    "calories": 560,
+    "protein": 45,
+    "carbs": 45,
+    "fat": 18,
+    "description": "Lean turkey and colorful vegetables tossed with Banza shells in a light garlic cream sauce. Fresh, creamy, and balanced. Proof that healthy does not mean boring.",
+    "category": "High Protein",
+    "tags": "High Protein,Higher Fat",
+    "price": 14.99
+  }
+]

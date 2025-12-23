@@ -1,0 +1,120 @@
+﻿Analyzing Excel file: E:\Development\Projects\Websites\Liberty-Meal-Prep\Liberty_MealPrep_Operations.xlsx
+
+≡ƒôè All Sheets:
+
+1. Nutrition_Summary
+   Rows: 60
+   Columns: Meal, Calories, Protein_g, Carbs_g, Fat_g
+   Unique meals: 60
+
+2. Recipes
+   Rows: 81
+   Columns: Meal, Ingredient, Oz_per_meal, Cost_per_row
+   Unique meals: 20
+
+   Meals in this sheet:
+     1. Grilled chicken rice bowl
+     2. Turkey taco bowl
+     3. Beef and potato hash
+     4. Chicken pesto pasta Banza
+     5. Turkey meatballs marinara Banza
+     6. BBQ chicken mash
+     7. Turkey chili cup
+     8. Greek chicken bowl
+     9. Beef enchilada skillet
+     10. Chicken alfredo light Banza
+     11. Lemon herb chicken
+     12. Turkey breakfast scramble
+     13. Beef burrito bowl
+     14. Chicken parmesan light Banza
+     15. Turkey bolognese Banza
+     16. Chicken fajita bowl
+     17. Turkey shepherd pie
+     18. Beef Korean bowl
+     19. Chicken buffalo ranch
+     20. Turkey primavera Banza
+
+3. Ingredient_Costs
+   Rows: 47
+   Columns: Ingredient, Cost_per_oz
+
+4. Meal_Cost_Summary
+   Rows: 20
+   Columns: Meal, Cost_per_meal, Weekly_volume, Weekly_meal_cost
+   Unique meals: 20
+
+   Meals in this sheet:
+     1. BBQ chicken mash
+     2. Beef Korean bowl
+     3. Beef and potato hash
+     4. Beef burrito bowl
+     5. Beef enchilada skillet
+     6. Chicken alfredo light Banza
+     7. Chicken buffalo ranch
+     8. Chicken fajita bowl
+     9. Chicken parmesan light Banza
+     10. Chicken pesto pasta Banza
+     11. Greek chicken bowl
+     12. Grilled chicken rice bowl
+     13. Lemon herb chicken
+     14. Turkey bolognese Banza
+     15. Turkey breakfast scramble
+     16. Turkey chili cup
+     17. Turkey meatballs marinara Banza
+     18. Turkey primavera Banza
+     19. Turkey shepherd pie
+     20. Turkey taco bowl
+
+5. Label_Text
+   Rows: 20
+   Columns: Meal, Serving_size, Calories, Protein_g, Carbs_g, Fat_g, Label_text
+   Unique meals: 20
+
+   Meals in this sheet:
+     1. Grilled chicken rice bowl
+     2. Turkey taco bowl
+     3. Beef and potato hash
+     4. Chicken pesto pasta Banza
+     5. Turkey meatballs marinara Banza
+     6. BBQ chicken mash
+     7. Turkey chili cup
+     8. Greek chicken bowl
+     9. Beef enchilada skillet
+     10. Chicken alfredo light Banza
+     11. Lemon herb chicken
+     12. Turkey breakfast scramble
+     13. Beef burrito bowl
+     14. Chicken parmesan light Banza
+     15. Turkey bolognese Banza
+     16. Chicken fajita bowl
+     17. Turkey shepherd pie
+     18. Beef Korean bowl
+     19. Chicken buffalo ranch
+     20. Turkey primavera Banza
+
+6. Weekly_Production
+   Rows: 20
+   Columns: Meal, Weekly_volume
+   Unique meals: 20
+
+   Meals in this sheet:
+     1. BBQ chicken mash
+     2. Beef Korean bowl
+     3. Beef and potato hash
+     4. Beef burrito bowl
+     5. Beef enchilada skillet
+     6. Chicken alfredo light Banza
+     7. Chicken buffalo ranch
+     8. Chicken fajita bowl
+     9. Chicken parmesan light Banza
+     10. Chicken pesto pasta Banza
+     11. Greek chicken bowl
+     12. Grilled chicken rice bowl
+     13. Lemon herb chicken
+     14. Turkey bolognese Banza
+     15. Turkey breakfast scramble
+     16. Turkey chili cup
+     17. Turkey meatballs marinara Banza
+     18. Turkey primavera Banza
+     19. Turkey shepherd pie
+     20. Turkey taco bowl
