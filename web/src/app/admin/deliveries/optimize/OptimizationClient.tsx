@@ -81,12 +81,13 @@ export default function OptimizationClient({ pendingDeliveries, drivers }: { pen
                                 border: '1px solid var(--glass-border)',
                                 borderRadius: '12px',
                                 color: 'white',
-                                outline: 'none'
+                                outline: 'none',
+                                fontSize: '0.95rem'
                             }}
                         >
                             <option value="">Select a driver...</option>
                             {drivers.map(d => (
-                                <option key={d.id} value={d.id}>{d.name} ({d.role})</option>
+                                <option key={d.id} value={d.id}>{d.name}</option>
                             ))}
                         </select>
                     </div>
