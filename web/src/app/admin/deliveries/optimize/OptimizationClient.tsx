@@ -77,19 +77,35 @@ export default function OptimizationClient({ pendingDeliveries, drivers }: { pen
                             style={{
                                 width: '100%',
                                 padding: '12px',
-                                background: 'rgba(255,255,255,0.05)',
-                                border: '1px solid var(--glass-border)',
+                                background: '#ffffff',
+                                border: '1px solid #d1d5db',
                                 borderRadius: '12px',
-                                color: 'white',
+                                color: '#000000',
                                 outline: 'none',
-                                fontSize: '0.95rem'
+                                fontSize: '0.95rem',
+                                cursor: 'pointer'
                             }}
                         >
-                            <option value="">Select a driver...</option>
+                            <option value="" style={{ color: '#6b7280' }}>Select a driver...</option>
                             {drivers.map(d => (
-                                <option key={d.id} value={d.id}>{d.name}</option>
+                                <option key={d.id} value={d.id} style={{ color: '#000000', padding: '8px' }}>{d.name}</option>
                             ))}
                         </select>
+                        <style jsx>{`
+                            select option {
+                                background-color: #ffffff;
+                                color: #000000;
+                                padding: 8px;
+                            }
+                            select option:hover {
+                                background-color: #374151 !important;
+                                color: #ffffff !important;
+                            }
+                            select option:checked {
+                                background-color: #374151;
+                                color: #ffffff;
+                            }
+                        `}</style>
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
