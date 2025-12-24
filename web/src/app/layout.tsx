@@ -23,6 +23,8 @@ import { CartProvider } from "@/context/CartContext";
 import SidebarCart from "@/components/SidebarCart";
 import SessionProvider from "@/components/SessionProvider";
 import ScrollProgress from "@/components/effects/ScrollProgress";
+import AnalyticsTracker from "@/components/AnalyticsTracker";
+import { Suspense } from "react";
 
 // ... existing imports
 
@@ -36,6 +38,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} ${oswald.variable} antialiased`}>
+        <Suspense fallback={null}>
+          <AnalyticsTracker />
+        </Suspense>
         <ScrollProgress />
         <SessionProvider>
           <CartProvider>
