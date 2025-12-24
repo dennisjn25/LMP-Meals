@@ -121,7 +121,7 @@ export default function Home() {
               gap: '8px'
             }}>
               <TrendingUp size={18} />
-              Menu Updated Every Two Weeks
+              Menu Updates Every Thursday at 1AM
             </span>
           </div>
 
