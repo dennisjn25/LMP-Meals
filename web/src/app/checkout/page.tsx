@@ -348,7 +348,7 @@ function CheckoutContent() {
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', color: '#64748b' }}>
                                 <span>Delivery</span>
-                                <span style={{ color: '#10b981', fontWeight: 600 }}>FREE</span>
+                                <span style={{ color: '#64748b', fontWeight: 600 }}>$0.70/mile</span>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.5rem', fontWeight: 800, marginTop: '16px', paddingTop: '16px', borderTop: '2px solid #000' }}>
                                 <span>Total</span>

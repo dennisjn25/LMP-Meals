@@ -62,7 +62,7 @@ export default function MenuClient({ meals }: { meals: Meal[] }) {
     const avgProtein = Math.round(filteredMeals.reduce((sum, m) => sum + m.protein, 0) / (mealCount || 1));
 
     return (
-        <main style={{ minHeight: '100vh', paddingBottom: '80px', background: '#0B0E14', color: '#fff' }}>
+        <main style={{ minHeight: '100vh', background: '#0B0E14', color: '#fff' }}>
             <Navbar />
 
             {/* Hero Header with Animated Background */}
