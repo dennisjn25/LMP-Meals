@@ -16,9 +16,11 @@ const RegisterSchema = z.object({
     phone: z.string().optional(),
     deliveryAddress: z.string().optional(),
     deliveryCity: z.string().optional(),
+    deliveryState: z.string().optional(),
     deliveryZip: z.string().optional(),
     billingAddress: z.string().optional(),
     billingCity: z.string().optional(),
+    billingState: z.string().optional(),
     billingZip: z.string().optional(),
 });
 
@@ -36,9 +38,11 @@ export default function RegisterForm() {
             phone: "",
             deliveryAddress: "",
             deliveryCity: "",
+            deliveryState: "Arizona",
             deliveryZip: "",
             billingAddress: "",
             billingCity: "",
+            billingState: "Arizona",
             billingZip: "",
         },
     });
@@ -110,12 +114,20 @@ export default function RegisterForm() {
                             disabled={isPending}
                             style={{ width: '100%', padding: '12px', background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '4px' }}
                         />
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
                             <input
                                 {...form.register("deliveryCity")}
                                 placeholder="City"
                                 disabled={isPending}
                                 style={{ width: '100%', padding: '12px', background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '4px' }}
+                            />
+                            <input
+                                {...form.register("deliveryState")}
+                                value="Arizona"
+                                readOnly
+                                disabled
+                                style={{ width: '100%', padding: '12px', background: '#f3f4f6', border: '1px solid #e5e7eb', borderRadius: '4px', cursor: 'not-allowed', color: '#6b7280' }}
+                                title="Currently delivering only to Arizona"
                             />
                             <input
                                 {...form.register("deliveryZip")}
@@ -136,10 +148,16 @@ export default function RegisterForm() {
                             disabled={isPending}
                             style={{ width: '100%', padding: '12px', background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '4px' }}
                         />
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
                             <input
                                 {...form.register("billingCity")}
                                 placeholder="City"
+                                disabled={isPending}
+                                style={{ width: '100%', padding: '12px', background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '4px' }}
+                            />
+                            <input
+                                {...form.register("billingState")}
+                                placeholder="State"
                                 disabled={isPending}
                                 style={{ width: '100%', padding: '12px', background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '4px' }}
                             />

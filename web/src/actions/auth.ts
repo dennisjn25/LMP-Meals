@@ -20,9 +20,11 @@ const RegisterSchema = z.object({
     phone: z.string().optional(),
     deliveryAddress: z.string().optional(),
     deliveryCity: z.string().optional(),
+    deliveryState: z.string().optional(),
     deliveryZip: z.string().optional(),
     billingAddress: z.string().optional(),
     billingCity: z.string().optional(),
+    billingState: z.string().optional(),
     billingZip: z.string().optional(),
 });
 
@@ -94,9 +96,11 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
         phone,
         deliveryAddress,
         deliveryCity,
+        deliveryState,
         deliveryZip,
         billingAddress,
         billingCity,
+        billingState,
         billingZip
     } = validatedFields.data;
 
@@ -120,9 +124,11 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
             phone,
             deliveryAddress,
             deliveryCity,
+            deliveryState: deliveryState || "AZ",
             deliveryZip,
             billingAddress,
             billingCity,
+            billingState: billingState || "AZ",
             billingZip
         },
     });

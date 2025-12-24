@@ -468,7 +468,7 @@ function CheckoutContent() {
                                         />
                                     </div>
 
-                                    <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '16px' }}>
+                                    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr)', gap: '16px' }}>
                                         <div>
                                             <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', fontWeight: 600 }}>City *</label>
                                             <input
@@ -478,6 +478,17 @@ function CheckoutContent() {
                                                 defaultValue={session?.user?.deliveryCity || "Scottsdale"}
                                                 className="input-field"
                                                 style={{ width: '100%', padding: '12px', border: '2px solid #e5e7eb', borderRadius: '8px', fontSize: '1rem' }}
+                                            />
+                                        </div>
+                                        <div>
+                                            <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', fontWeight: 600 }}>State *</label>
+                                            <input
+                                                name="state"
+                                                required
+                                                value="Arizona"
+                                                readOnly
+                                                className="input-field"
+                                                style={{ width: '100%', padding: '12px', border: '2px solid #e5e7eb', borderRadius: '8px', fontSize: '1rem', background: '#f8fafc', color: '#64748b', cursor: 'not-allowed' }}
                                             />
                                         </div>
                                         <div>

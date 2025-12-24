@@ -24,8 +24,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 if (validatedFields.success) {
                     const { email, password } = validatedFields.data;
 
-                    const user = await db.user.findUnique({
-                        where: { email }
+                    const user = await db.user.findFirst({
+                        where: {
+                            email: {
+                                equals: email,
+                                mode: 'insensitive'
+                            }
+                        }
                     });
 
                     if (!user || !user.password) return null;
@@ -62,6 +67,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 session.user.deliveryCity = token.deliveryCity;
                 // @ts-ignore
                 session.user.deliveryZip = token.deliveryZip;
+                // @ts-ignore
+                session.user.deliveryState = token.deliveryState;
             }
 
             return session;
@@ -79,6 +86,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             token.phone = existingUser.phone;
             token.deliveryAddress = existingUser.deliveryAddress;
             token.deliveryCity = existingUser.deliveryCity;
+            token.deliveryState = existingUser.deliveryState;
             token.deliveryZip = existingUser.deliveryZip;
 
             return token;

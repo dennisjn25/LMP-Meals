@@ -22,6 +22,7 @@ export default function OptimizationClient({ pendingDeliveries, drivers }: { pen
     const [optimizing, setOptimizing] = useState(false);
     const [previewRoute, setPreviewRoute] = useState<any[]>([]);
     const [deliveriesWithCoords, setDeliveriesWithCoords] = useState<any[]>(pendingDeliveries);
+    const [optimizedStats, setOptimizedStats] = useState({ distance: "0.0", time: 0 });
 
     // Geocode addresses that don't have coords yet
     useEffect(() => {
@@ -44,23 +45,75 @@ export default function OptimizationClient({ pendingDeliveries, drivers }: { pen
     }, [pendingDeliveries]);
 
     const markers = useMemo(() => {
-        return deliveriesWithCoords
+        const source = previewRoute.length > 0 ? previewRoute : deliveriesWithCoords;
+        return source
             .filter(d => d.latitude && d.longitude)
-            .map(d => ({
+            .map((d, index) => ({
                 id: d.id,
                 lat: d.latitude,
                 lng: d.longitude,
                 title: d.order.customerName,
-                label: d.sequence ? d.sequence.toString() : undefined
+                label: (index + 1).toString()
             }));
-    }, [deliveriesWithCoords]);
+    }, [deliveriesWithCoords, previewRoute]);
+
+    const LIBERTY_KITCHEN = { lat: 33.4942, lng: -111.9261 };
+
+    const calculateDistance = (lat1: number, lng1: number, lat2: number, lng2: number) => {
+        const R = 6371; // Earth's radius in km
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLng = (lng2 - lng1) * Math.PI / 180;
+        const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLng / 2) * Math.sin(dLng / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
+    };
 
     const handleOptimize = () => {
         setOptimizing(true);
-        // Simulating optimization delay
+
         setTimeout(() => {
-            setPreviewRoute([...pendingDeliveries]);
+            const deliveries = [...deliveriesWithCoords].filter(d => d.latitude && d.longitude);
+            const optimized: any[] = [];
+            let currentPos = LIBERTY_KITCHEN;
+            let remaining = [...deliveries];
+
+            while (remaining.length > 0) {
+                let nearestIdx = 0;
+                let minDist = Infinity;
+
+                remaining.forEach((d, idx) => {
+                    const dist = calculateDistance(currentPos.lat, currentPos.lng, d.latitude, d.longitude);
+                    if (dist < minDist) {
+                        minDist = dist;
+                        nearestIdx = idx;
+                    }
+                });
+
+                const next = remaining.splice(nearestIdx, 1)[0];
+                optimized.push(next);
+                currentPos = { lat: next.latitude, lng: next.longitude };
+            }
+
+            // Calculate total distance
+            let totalDist = 0;
+            let lastPos = LIBERTY_KITCHEN;
+            optimized.forEach(d => {
+                totalDist += calculateDistance(lastPos.lat, lastPos.lng, d.latitude, d.longitude);
+                lastPos = { lat: d.latitude, lng: d.longitude };
+            });
+            // Return to kitchen
+            totalDist += calculateDistance(lastPos.lat, lastPos.lng, LIBERTY_KITCHEN.lat, LIBERTY_KITCHEN.lng);
+
+            setPreviewRoute(optimized);
             setOptimizing(false);
+
+            setOptimizedStats({
+                distance: totalDist.toFixed(1),
+                time: Math.round(totalDist * 2.5 + optimized.length * 5) // 2.5 min/km + 5 min per stop
+            });
         }, 1500);
     };
 
@@ -151,11 +204,11 @@ export default function OptimizationClient({ pendingDeliveries, drivers }: { pen
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.95rem' }}>
                             <span style={{ color: '#cbd5e1' }}>Est. Total Distance:</span>
-                            <span style={{ fontWeight: 700, color: '#ffffff' }}>0.0 km</span>
+                            <span style={{ fontWeight: 700, color: '#ffffff' }}>{optimizedStats.distance} km</span>
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.95rem' }}>
                             <span style={{ color: '#cbd5e1' }}>Est. Total Time:</span>
-                            <span style={{ fontWeight: 700, color: '#ffffff' }}>0 mins</span>
+                            <span style={{ fontWeight: 700, color: '#ffffff' }}>{optimizedStats.time} mins</span>
                         </div>
                     </div>
 

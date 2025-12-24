@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import AdminUserList from "@/components/admin/user-list";
 import Navbar from "@/components/Navbar";
+import AnalyticsCard from "@/components/admin/AnalyticsCard";
 
 export const dynamic = "force-dynamic";
 
@@ -52,6 +53,7 @@ export default async function AdminDashboard() {
                     Total Users: {users.length}
                 </div>
             </div>
+            <AnalyticsCard />
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
                 <DashboardCard

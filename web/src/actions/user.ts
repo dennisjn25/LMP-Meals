@@ -54,9 +54,11 @@ export async function updateUserAddress(data: {
     phone?: string;
     deliveryAddress?: string;
     deliveryCity?: string;
+    deliveryState?: string;
     deliveryZip?: string;
     billingAddress?: string;
     billingCity?: string;
+    billingState?: string;
     billingZip?: string;
 }) {
     const session = await auth();

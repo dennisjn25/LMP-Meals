@@ -8,9 +8,11 @@ interface AddressSettingsProps {
         phone?: string | null;
         deliveryAddress?: string | null;
         deliveryCity?: string | null;
+        deliveryState?: string | null;
         deliveryZip?: string | null;
         billingAddress?: string | null;
         billingCity?: string | null;
+        billingState?: string | null;
         billingZip?: string | null;
     };
 }
@@ -22,9 +24,11 @@ export default function AddressSettings({ initialData }: AddressSettingsProps) {
         phone: initialData.phone || "",
         deliveryAddress: initialData.deliveryAddress || "",
         deliveryCity: initialData.deliveryCity || "",
+        deliveryState: initialData.deliveryState || "Arizona",
         deliveryZip: initialData.deliveryZip || "",
         billingAddress: initialData.billingAddress || "",
         billingCity: initialData.billingCity || "",
+        billingState: initialData.billingState || "Arizona",
         billingZip: initialData.billingZip || "",
     });
 
@@ -72,7 +76,7 @@ export default function AddressSettings({ initialData }: AddressSettingsProps) {
                                 style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #e5e7eb', background: '#fff' }}
                             />
                         </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
                             <div>
                                 <label style={{ display: 'block', fontSize: '0.85rem', color: '#6b7280', marginBottom: '6px' }}>City</label>
                                 <input
@@ -84,7 +88,17 @@ export default function AddressSettings({ initialData }: AddressSettingsProps) {
                                 />
                             </div>
                             <div>
-                                <label style={{ display: 'block', fontSize: '0.85rem', color: '#6b7280', marginBottom: '6px' }}>Zip Code</label>
+                                <label style={{ display: 'block', fontSize: '0.85rem', color: '#6b7280', marginBottom: '6px' }}>State</label>
+                                <input
+                                    name="deliveryState"
+                                    value="Arizona"
+                                    readOnly
+                                    disabled
+                                    style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #e5e7eb', background: '#f3f4f6', cursor: 'not-allowed', color: '#6b7280' }}
+                                />
+                            </div>
+                            <div>
+                                <label style={{ display: 'block', fontSize: '0.85rem', color: '#6b7280', marginBottom: '6px' }}>Zip</label>
                                 <input
                                     name="deliveryZip"
                                     value={formData.deliveryZip}
@@ -111,7 +125,7 @@ export default function AddressSettings({ initialData }: AddressSettingsProps) {
                                 style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #e5e7eb', background: '#fff' }}
                             />
                         </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
                             <div>
                                 <label style={{ display: 'block', fontSize: '0.85rem', color: '#6b7280', marginBottom: '6px' }}>City</label>
                                 <input
@@ -123,7 +137,17 @@ export default function AddressSettings({ initialData }: AddressSettingsProps) {
                                 />
                             </div>
                             <div>
-                                <label style={{ display: 'block', fontSize: '0.85rem', color: '#6b7280', marginBottom: '6px' }}>Zip Code</label>
+                                <label style={{ display: 'block', fontSize: '0.85rem', color: '#6b7280', marginBottom: '6px' }}>State</label>
+                                <input
+                                    name="billingState"
+                                    value={formData.billingState}
+                                    onChange={handleChange}
+                                    disabled={isPending}
+                                    style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #e5e7eb', background: '#fff' }}
+                                />
+                            </div>
+                            <div>
+                                <label style={{ display: 'block', fontSize: '0.85rem', color: '#6b7280', marginBottom: '6px' }}>Zip</label>
                                 <input
                                     name="billingZip"
                                     value={formData.billingZip}
