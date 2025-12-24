@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 import Image from "next/image";
-import { Clock, Heart, Truck, Award, CheckCircle, Star, TrendingUp, Users, Zap, Instagram, Shield, Music } from "lucide-react";
+import { Clock, Heart, Truck, Award, CheckCircle, Star, TrendingUp, MapPin, Users, Zap, Instagram, Shield, Music } from "lucide-react";
 import AnimatedLogoBackground from "@/components/AnimatedLogoBackground";
 import ParticleBackground from "@/components/effects/ParticleBackground";
 import RewardsTracker from "@/components/gamification/RewardsTracker";
@@ -110,7 +110,7 @@ export default function Home() {
               border: '2px solid rgba(251, 191, 36, 0.4)',
               borderRadius: '12px',
               padding: '12px 24px',
-              marginBottom: '32px',
+              marginBottom: '16px',
               animation: 'fadeInUp 0.8s ease-out 0.3s backwards, cool-fade 3s ease-in-out infinite'
             }}
           >
@@ -125,6 +125,35 @@ export default function Home() {
             }}>
               <TrendingUp size={18} />
               Menu Updates Every Thursday at 1AM
+            </span>
+          </div>
+
+          <br />
+
+          {/* Delivery Pickup Locations Notice */}
+          <div
+            className="pickup-notice-badge"
+            style={{
+              display: 'inline-block',
+              background: 'rgba(16, 185, 129, 0.15)',
+              border: '2px solid rgba(16, 185, 129, 0.4)',
+              borderRadius: '12px',
+              padding: '12px 24px',
+              marginBottom: '32px',
+              animation: 'fadeInUp 0.8s ease-out 0.4s backwards'
+            }}
+          >
+            <span style={{
+              color: '#10b981',
+              fontSize: '0.95rem',
+              fontWeight: 700,
+              letterSpacing: '0.05em',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}>
+              <MapPin size={18} />
+              Delivery Pick-Up Locations Available Soon
             </span>
           </div>
 

@@ -97,9 +97,6 @@ export default function MenuClient({ meals }: { meals: Meal[] }) {
                             <div style={{ display: 'inline-block', padding: '6px 16px', border: '1px solid rgba(148, 163, 184, 0.3)', borderRadius: '100px', background: 'rgba(148, 163, 184, 0.1)', color: '#94a3b8', fontSize: '0.85rem', fontWeight: 600, letterSpacing: '0.05em' }}>
                                 ℹ️ No Substitutes or Special Orders
                             </div>
-                            <div style={{ display: 'inline-block', padding: '6px 16px', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '100px', background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', fontSize: '0.85rem', fontWeight: 600, letterSpacing: '0.05em' }}>
-                                📍 Delivery Pick-Up Locations Available Soon
-                            </div>
                         </div>
 
                         <h1 style={{
