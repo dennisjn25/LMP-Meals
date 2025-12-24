@@ -157,20 +157,7 @@ export default function Home() {
             </span>
           </div>
 
-          <style jsx>{`
-            @keyframes cool-fade {
-              0%, 100% {
-                opacity: 1;
-                transform: scale(1);
-                box-shadow: 0 0 10px rgba(251, 191, 36, 0.2);
-              }
-              50% {
-                opacity: 0.4;
-                transform: scale(0.95);
-                box-shadow: 0 0 20px rgba(251, 191, 36, 0.4);
-              }
-            }
-          `}</style>
+
 
           <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap', animation: 'fadeInUp 0.8s ease-out 0.4s backwards' }}>
             <Link href="/menu" className="btn-black" style={{ fontSize: '1rem', padding: '16px 40px' }}>
@@ -465,6 +452,19 @@ export default function Home() {
           }
           50% {
             box-shadow: 0 0 30px rgba(251, 191, 36, 0.6);
+          }
+        }
+
+        @keyframes cool-fade {
+          0%, 100% {
+            opacity: 1;
+            transform: scale(1);
+            box-shadow: 0 0 10px rgba(251, 191, 36, 0.2);
+          }
+          50% {
+            opacity: 0.4;
+            transform: scale(0.95);
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.4);
           }
         }
 
