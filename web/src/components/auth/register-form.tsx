@@ -40,6 +40,10 @@ export default function RegisterForm() {
                 }
                 if (data.success) {
                     setSuccess(data.success);
+                    // Redirect to login page after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = '/auth/login';
+                    }, 2000);
                 }
             });
         });

@@ -101,12 +101,12 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
         },
     });
 
-    // Send welcome email
+    // Send welcome email with verification link
     try {
         await sendWelcomeEmail({ name, email });
     } catch (error) {
         console.error("Failed to send welcome email:", error);
     }
 
-    return { success: "User created!" };
+    return { success: "Account created successfully! Redirecting to login..." };
 };
