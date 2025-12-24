@@ -6,10 +6,9 @@ import { Loader2, CheckCircle2, Calendar, Phone, MapPin, CreditCard } from "luci
 import { useState, useEffect, Suspense, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
+import { createCheckoutSession } from "@/actions/orders";
 import { isDeliveryAddressValid } from "@/lib/delivery-zips";
 import ReCAPTCHA from "react-google-recaptcha";
-import SquarePaymentForm from "@/components/SquarePaymentForm";
-import { db } from "@/lib/db";
 
 function CheckoutContent() {
     const { items, cartTotal, clearCart } = useCart();
@@ -18,12 +17,16 @@ function CheckoutContent() {
     const finalTotal = cartTotal + taxAmount;
 
     const searchParams = useSearchParams();
-    const [step, setStep] = useState<'form' | 'payment' | 'success'>('form');
-    const [orderData, setOrderData] = useState<any>(null);
-    const [pendingOrderId, setPendingOrderId] = useState<string | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [orderResult, setOrderResult] = useState<{ success: boolean; orderNumber?: string; error?: string } | null>(null);
     const [captchaToken, setCaptchaToken] = useState<string | null>(null);
     const recaptchaRef = useRef<ReCAPTCHA>(null);
+
+    useEffect(() => {
+        if (searchParams.get('canceled')) {
+            setOrderResult({ success: false, error: "Payment was canceled. You can try again when you're ready." });
+        }
+    }, [searchParams]);
 
     // Calculate next Sunday delivery date
     const getNextSunday = () => {
@@ -35,7 +38,7 @@ function CheckoutContent() {
         return nextSunday.toISOString().split('T')[0];
     };
 
-    const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         if (process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && !captchaToken) {
@@ -43,100 +46,64 @@ function CheckoutContent() {
             return;
         }
 
+        setIsSubmitting(true);
+        setOrderResult(null); // Clear previous errors
+
         const formData = new FormData(e.currentTarget);
         const zipCode = formData.get('zipCode') as string;
 
         // Client-side delivery radius check
+        // We accept the zip code as is and let the validator handle trimming/cleanup
         if (!isDeliveryAddressValid(zipCode)) {
             setOrderResult({
                 success: false,
                 error: "We currently only deliver within a 25-mile radius of Scottsdale, AZ. Please check your zip code."
             });
+            setIsSubmitting(false);
             window.scrollTo({ top: 0, behavior: 'smooth' });
             return;
         }
 
-        // Create pending order
         try {
-            const response = await fetch('/api/create-pending-order', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    customerName: `${formData.get('firstName')} ${formData.get('lastName')}`,
-                    customerEmail: formData.get('email') as string,
-                    customerPhone: formData.get('phone') as string,
-                    shippingAddress: formData.get('address') as string,
-                    city: formData.get('city') as string,
-                    zipCode: formData.get('zipCode') as string,
-                    deliveryDate: formData.get('deliveryDate') as string,
-                    total: finalTotal,
-                    captchaToken: captchaToken || undefined,
-                    items: items.map(item => ({
-                        id: item.id,
-                        quantity: item.quantity,
-                        price: item.price,
-                        title: item.title,
-                        image: item.image
-                    }))
-                })
+            // FormData is already created above
+
+            const result = await createCheckoutSession({
+                customerName: `${formData.get('firstName')} ${formData.get('lastName')}`,
+                customerEmail: formData.get('email') as string,
+                customerPhone: formData.get('phone') as string,
+                shippingAddress: formData.get('address') as string,
+                city: formData.get('city') as string,
+                zipCode: formData.get('zipCode') as string,
+                deliveryDate: formData.get('deliveryDate') as string,
+                total: finalTotal,
+                captchaToken: captchaToken || undefined,
+                items: items.map(item => ({
+                    id: item.id,
+                    quantity: item.quantity,
+                    price: item.price,
+                    title: item.title,
+                    image: item.image
+                }))
             });
 
-            const result = await response.json();
-
-            if (result.success && result.orderId) {
-                setPendingOrderId(result.orderId);
-                setOrderData({
-                    customerName: `${formData.get('firstName')} ${formData.get('lastName')}`,
-                    customerEmail: formData.get('email') as string,
-                });
-                setStep('payment');
+            if (result.success && result.url) {
+                // Redirect to Square/Stripe Checkout
+                window.location.href = result.url;
             } else {
-                setOrderResult({ success: false, error: result.error || "Failed to create order" });
+                setOrderResult({ success: false, error: result.error || "Failed to initialize payment" });
+                setIsSubmitting(false);
+                recaptchaRef.current?.reset();
+                setCaptchaToken(null);
             }
         } catch (error) {
-            console.error("Order creation failed", error);
+            console.error("Payment initialization failed", error);
             setOrderResult({ success: false, error: "An unexpected error occurred. Please try again." });
+            setIsSubmitting(false);
         }
-    };
-
-    const handlePaymentSuccess = async (paymentResult: any) => {
-        // Update order status to PAID
-        try {
-            const response = await fetch('/api/confirm-payment', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    orderId: pendingOrderId,
-                    paymentId: paymentResult.paymentId,
-                    paymentStatus: paymentResult.status
-                })
-            });
-
-            const result = await response.json();
-
-            if (result.success) {
-                setOrderResult({
-                    success: true,
-                    orderNumber: result.orderNumber
-                });
-                setStep('success');
-                clearCart();
-            } else {
-                setOrderResult({ success: false, error: result.error || "Payment confirmation failed" });
-            }
-        } catch (error) {
-            console.error("Payment confirmation failed", error);
-            setOrderResult({ success: false, error: "Payment processed but confirmation failed. Please contact support." });
-        }
-    };
-
-    const handlePaymentError = (error: string) => {
-        setOrderResult({ success: false, error });
-        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     // Success page
-    if (step === 'success' && orderResult?.success) {
+    if (orderResult?.success) {
         return (
             <main style={{ minHeight: '100vh', background: '#f8fafc' }}>
                 <Navbar />
@@ -214,10 +181,7 @@ function CheckoutContent() {
                             {orderResult.error}
                         </p>
                         <button
-                            onClick={() => {
-                                setOrderResult(null);
-                                setStep('form');
-                            }}
+                            onClick={() => setOrderResult(null)}
                             className="btn-black"
                         >
                             Try Again
@@ -272,58 +236,6 @@ function CheckoutContent() {
         );
     }
 
-    // Payment step
-    if (step === 'payment') {
-        return (
-            <main style={{ minHeight: '100vh', background: '#f8fafc', paddingBottom: '100px' }}>
-                <Navbar />
-
-                <div className="container" style={{ paddingTop: '120px', maxWidth: '800px' }}>
-                    <div style={{ marginBottom: '40px', textAlign: 'center' }}>
-                        <h1 style={{ fontSize: '2.5rem', marginBottom: '8px' }}>Complete Payment</h1>
-                        <p style={{ color: '#64748b' }}>Enter your card information to complete your order</p>
-                    </div>
-
-                    <div className="glass-panel" style={{ padding: '40px' }}>
-                        <div style={{ marginBottom: '32px', padding: '20px', background: '#f8fafc', borderRadius: '12px' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-                                <span style={{ fontWeight: 600 }}>Order Total:</span>
-                                <span style={{ fontSize: '1.5rem', fontWeight: 800 }}>${finalTotal.toFixed(2)}</span>
-                            </div>
-                            <div style={{ fontSize: '0.85rem', color: '#64748b' }}>
-                                {orderData?.customerName} • {orderData?.customerEmail}
-                            </div>
-                        </div>
-
-                        <SquarePaymentForm
-                            amount={finalTotal}
-                            onPaymentSuccess={handlePaymentSuccess}
-                            onPaymentError={handlePaymentError}
-                        />
-
-                        <button
-                            onClick={() => setStep('form')}
-                            style={{
-                                width: '100%',
-                                marginTop: '16px',
-                                padding: '12px',
-                                background: 'transparent',
-                                border: '2px solid #e5e7eb',
-                                borderRadius: '8px',
-                                color: '#64748b',
-                                fontWeight: 600,
-                                cursor: 'pointer'
-                            }}
-                        >
-                            ← Back to Order Details
-                        </button>
-                    </div>
-                </div>
-            </main>
-        );
-    }
-
-    // Form step (default)
     return (
         <main style={{ minHeight: '100vh', background: '#f8fafc', paddingBottom: '100px' }}>
             <Navbar />
@@ -381,7 +293,7 @@ function CheckoutContent() {
 
                     {/* Checkout Form */}
                     <div className="glass-panel" style={{ padding: '40px' }}>
-                        <form onSubmit={handleFormSubmit} style={{ display: 'grid', gap: '32px' }}>
+                        <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '32px' }}>
 
                             {/* Contact Information */}
                             <div>
@@ -461,6 +373,39 @@ function CheckoutContent() {
                                 </div>
                             </div>
 
+                            {/* Payment */}
+                            <div>
+                                <h3 style={{ fontSize: '1.1rem', marginBottom: '20px', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <div style={{ width: '32px', height: '32px', background: '#000', color: '#fff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.9rem', fontWeight: 700 }}>3</div>
+                                    Payment Method
+                                </h3>
+                                <div style={{ padding: '24px', border: '2px solid #10b981', background: '#f0fdf4', borderRadius: '12px' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+                                        <CreditCard size={28} color="#10b981" />
+                                        <div>
+                                            <div style={{ fontWeight: 700, fontSize: '1.05rem', marginBottom: '4px' }}>Credit or Debit Card</div>
+                                            <div style={{ fontSize: '0.85rem', color: '#065f46' }}>
+                                                🔒 Securely processed by Square
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style={{ background: 'rgba(16, 185, 129, 0.1)', padding: '16px', borderRadius: '8px', fontSize: '0.9rem', color: '#065f46', lineHeight: 1.6 }}>
+                                        <strong>How it works:</strong>
+                                        <br />
+                                        1. Click "Continue to Secure Payment" below
+                                        <br />
+                                        2. You'll be taken to Square's secure payment page
+                                        <br />
+                                        3. Enter your card information safely
+                                        <br />
+                                        4. Complete your order
+                                        <br /><br />
+                                        <strong>We accept:</strong> Visa, Mastercard, American Express, Discover
+                                    </div>
+                                </div>
+                            </div>
+
+
                             {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && (
                                 <div style={{ display: 'flex', justifyContent: 'center', margin: '20px 0' }}>
                                     <ReCAPTCHA
@@ -473,6 +418,7 @@ function CheckoutContent() {
 
                             {/* Submit Button */}
                             <button
+                                disabled={isSubmitting}
                                 type="submit"
                                 className="btn-black"
                                 style={{
@@ -481,15 +427,27 @@ function CheckoutContent() {
                                     display: 'flex',
                                     justifyContent: 'center',
                                     alignItems: 'center',
-                                    gap: '12px'
+                                    gap: '12px',
+                                    opacity: isSubmitting ? 0.7 : 1,
+                                    cursor: isSubmitting ? 'not-allowed' : 'pointer'
                                 }}
                             >
-                                CONTINUE TO PAYMENT →
+                                {isSubmitting ? (
+                                    <>
+                                        <Loader2 className="animate-spin" size={20} />
+                                        REDIRECTING TO SECURE PAYMENT...
+                                    </>
+                                ) : (
+                                    <>
+                                        CONTINUE TO SECURE PAYMENT • ${finalTotal.toFixed(2)}
+                                    </>
+                                )}
                             </button>
 
                             <p style={{ fontSize: '0.85rem', color: '#64748b', textAlign: 'center' }}>
-                                By placing this order, you agree to our terms of service and privacy policy.
-                                Submit your order by 9PM Wednesday, to receive your order by Sunday.
+                                By continuing, you agree to our terms of service and privacy policy.
+                                <br />
+                                Submit your order by 9PM Wednesday to receive delivery by Sunday.
                             </p>
                         </form>
                     </div>
