@@ -174,6 +174,7 @@ export default function MealCard({ meal }: { meal: MealProps }) {
                     fontSize: '1.4rem',
                     marginBottom: '16px',
                     lineHeight: 1.2,
+                    minHeight: '3.4rem',
                     color: '#fff',
                     fontFamily: 'var(--font-heading)',
                     textTransform: 'uppercase',
