@@ -1,6 +1,7 @@
 "use client";
 
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import AnimatedLogoBackground from "@/components/AnimatedLogoBackground";
 import { CheckCircle2, Clock, Truck, Utensils } from "lucide-react";
 
@@ -93,6 +94,8 @@ export default function HowItWorksPage() {
                     </div>
                 </div>
             </div>
+
+            <Footer />
         </main>
     );
 }

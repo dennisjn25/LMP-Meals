@@ -1,6 +1,7 @@
 "use client";
 
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import Image from "next/image";
 import AnimatedLogoBackground from "@/components/AnimatedLogoBackground";
 import { Heart, ShieldCheck, MapPin, Users, Medal } from "lucide-react";
@@ -263,6 +264,7 @@ export default function StoryPage() {
 
 
 
+            <Footer />
         </main>
     );
 }
