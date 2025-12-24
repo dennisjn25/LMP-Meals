@@ -95,7 +95,9 @@ export default function HowItWorksPage() {
                 </div>
             </div>
 
-            <Footer />
+            <div style={{ position: 'relative', zIndex: 10 }}>
+                <Footer />
+            </div>
         </main>
     );
 }

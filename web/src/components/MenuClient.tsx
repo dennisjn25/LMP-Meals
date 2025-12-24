@@ -3,6 +3,7 @@
 import MealCard from "@/components/MealCard";
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import AnimatedLogoBackground from "@/components/AnimatedLogoBackground";
 import ParticleBackground from "@/components/effects/ParticleBackground";
 import Image from "next/image";
@@ -394,6 +395,7 @@ export default function MenuClient({ meals }: { meals: Meal[] }) {
                 )}
             </div>
 
+            <Footer />
         </main>
     );
 }

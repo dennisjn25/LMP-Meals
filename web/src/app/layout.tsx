@@ -19,7 +19,6 @@ export const metadata: Metadata = {
   description: "Chef-prepared healthy meals delivered to your door in Scottsdale, AZ. Veteran Owned & Operated.",
 };
 
-import Footer from "@/components/Footer";
 import { CartProvider } from "@/context/CartContext";
 import SidebarCart from "@/components/SidebarCart";
 import SessionProvider from "@/components/SessionProvider";
@@ -42,7 +41,6 @@ export default function RootLayout({
           <CartProvider>
             {children}
             <SidebarCart />
-            <Footer />
           </CartProvider>
         </SessionProvider>
       </body>
