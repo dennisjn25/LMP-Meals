@@ -53,7 +53,6 @@ function CheckoutContent() {
         const zipCode = formData.get('zipCode') as string;
 
         // Client-side delivery radius check
-        // We accept the zip code as is and let the validator handle trimming/cleanup
         if (!isDeliveryAddressValid(zipCode)) {
             setOrderResult({
                 success: false,
@@ -65,8 +64,8 @@ function CheckoutContent() {
         }
 
         try {
-            // FormData is already created above
-
+            // For now, just create the order directly without payment
+            // This is a temporary fix - we'll add proper Square Web SDK integration later
             const result = await createCheckoutSession({
                 customerName: `${formData.get('firstName')} ${formData.get('lastName')}`,
                 customerEmail: formData.get('email') as string,
@@ -87,7 +86,7 @@ function CheckoutContent() {
             });
 
             if (result.success && result.url) {
-                // Redirect to Square/Stripe Checkout
+                // Redirect to Square Checkout
                 window.location.href = result.url;
             } else {
                 setOrderResult({ success: false, error: result.error || "Failed to initialize payment" });
@@ -377,30 +376,27 @@ function CheckoutContent() {
                             <div>
                                 <h3 style={{ fontSize: '1.1rem', marginBottom: '20px', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px' }}>
                                     <div style={{ width: '32px', height: '32px', background: '#000', color: '#fff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.9rem', fontWeight: 700 }}>3</div>
-                                    Payment Method
+                                    Payment
                                 </h3>
                                 <div style={{ padding: '24px', border: '2px solid #10b981', background: '#f0fdf4', borderRadius: '12px' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-                                        <CreditCard size={28} color="#10b981" />
-                                        <div>
-                                            <div style={{ fontWeight: 700, fontSize: '1.05rem', marginBottom: '4px' }}>Credit or Debit Card</div>
-                                            <div style={{ fontSize: '0.85rem', color: '#065f46' }}>
-                                                🔒 Securely processed by Square
+                                    <div style={{ display: 'flex', alignItems: 'start', gap: '16px', marginBottom: '16px' }}>
+                                        <CreditCard size={32} color="#10b981" style={{ flexShrink: 0, marginTop: '4px' }} />
+                                        <div style={{ flex: 1 }}>
+                                            <div style={{ fontWeight: 700, fontSize: '1.1rem', marginBottom: '8px', color: '#065f46' }}>
+                                                Secure Payment via Square
+                                            </div>
+                                            <div style={{ fontSize: '0.95rem', color: '#065f46', lineHeight: 1.6, marginBottom: '12px' }}>
+                                                When you click "Continue to Secure Payment" below, you'll be redirected to Square's secure payment page where you can safely enter your credit or debit card information.
+                                            </div>
+                                            <div style={{ fontSize: '0.9rem', color: '#047857', background: 'rgba(16, 185, 129, 0.1)', padding: '12px', borderRadius: '8px', lineHeight: 1.5 }}>
+                                                <strong>✓ Bank-level security</strong><br />
+                                                <strong>✓ PCI-DSS certified</strong><br />
+                                                <strong>✓ Your card details are never stored on our servers</strong>
                                             </div>
                                         </div>
                                     </div>
-                                    <div style={{ background: 'rgba(16, 185, 129, 0.1)', padding: '16px', borderRadius: '8px', fontSize: '0.9rem', color: '#065f46', lineHeight: 1.6 }}>
-                                        <strong>How it works:</strong>
-                                        <br />
-                                        1. Click "Continue to Secure Payment" below
-                                        <br />
-                                        2. You'll be taken to Square's secure payment page
-                                        <br />
-                                        3. Enter your card information safely
-                                        <br />
-                                        4. Complete your order
-                                        <br /><br />
-                                        <strong>We accept:</strong> Visa, Mastercard, American Express, Discover
+                                    <div style={{ fontSize: '0.85rem', color: '#065f46', textAlign: 'center', padding: '12px', background: 'rgba(16, 185, 129, 0.05)', borderRadius: '8px' }}>
+                                        🔒 We accept: Visa, Mastercard, American Express, Discover
                                     </div>
                                 </div>
                             </div>
