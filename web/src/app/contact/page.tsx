@@ -34,9 +34,9 @@ export default function ContactPage() {
     }
 
     return (
-        <main style={{ minHeight: '100vh' }}>
+        <main style={{ minHeight: '100dvh' }}>
             <Navbar />
-            <div className="container" style={{ paddingTop: '120px', maxWidth: '1200px' }}>
+            <div className="container" style={{ paddingTop: 'calc(120px + env(safe-area-inset-top))', maxWidth: '1200px' }}>
                 <h1 style={{ fontSize: '3rem', marginBottom: '16px', textAlign: 'center' }}>Get In Touch</h1>
                 <p style={{ textAlign: 'center', color: '#64748b', marginBottom: '60px', fontSize: '1.1rem' }}>
                     Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.

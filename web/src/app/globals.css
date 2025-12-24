@@ -309,11 +309,19 @@ p {
   margin-bottom: 16px;
 }
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+
 /* Logo Shimmer Effect */
 .logo-shimmer-wrapper {
   position: relative;
   overflow: hidden;
   border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   /* Optional: if logo is circular */
 }
 

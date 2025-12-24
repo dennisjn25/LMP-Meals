@@ -3,9 +3,9 @@ import Footer from "@/components/Footer";
 
 export default function PrivacyPolicyPage() {
     return (
-        <main style={{ background: '#f8fafc', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <main style={{ background: '#f8fafc', minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
             <Navbar />
-            <div className="container" style={{ flex: 1, paddingTop: '120px', paddingBottom: '80px' }}>
+            <div className="container" style={{ flex: 1, paddingTop: 'calc(120px + env(safe-area-inset-top))', paddingBottom: '80px' }}>
                 <div style={{ maxWidth: '800px', margin: '0 auto', background: '#fff', padding: '40px', borderRadius: '24px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
                     <h1 style={{ fontSize: '2.5rem', fontFamily: 'var(--font-heading)', marginBottom: '32px', color: '#111827' }}>Privacy Policy</h1>
                     <p style={{ color: '#6b7280', marginBottom: '32px' }}>Last Updated: December 22, 2025</p>

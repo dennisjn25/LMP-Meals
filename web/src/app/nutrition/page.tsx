@@ -11,7 +11,7 @@ export default async function NutritionPage() {
     const meals = await getFeaturedMeals();
 
     return (
-        <main style={{ minHeight: '100vh', background: '#0B0E14', color: '#fff' }}>
+        <main style={{ minHeight: '100dvh', background: '#0B0E14', color: '#fff' }}>
             <Navbar />
 
             {/* Hero Header */}
@@ -19,7 +19,7 @@ export default async function NutritionPage() {
                 <AnimatedLogoBackground />
                 <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(11, 14, 20, 0.85)', zIndex: 1 }}></div>
 
-                <div className="container" style={{ paddingTop: '100px', paddingBottom: '60px', position: 'relative', zIndex: 2 }}>
+                <div className="container" style={{ paddingTop: 'calc(100px + env(safe-area-inset-top))', paddingBottom: '60px', position: 'relative', zIndex: 2 }}>
                     <header style={{ textAlign: 'center' }}>
                         <div className="logo-shimmer-wrapper" style={{ marginBottom: '32px', display: 'inline-block' }}>
                             <Image

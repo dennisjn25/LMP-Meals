@@ -303,6 +303,30 @@ export default function AdminCustomerList({ customers, guestOrders }: { customer
                                     </div>
                                 </div>
 
+                                <div style={{ gridColumn: 'span 2', height: '1px', background: 'rgba(255,255,255,0.05)', margin: '12px 0' }} />
+
+                                <div style={{ gridColumn: 'span 2' }}>
+                                    <h4 style={{ color: '#fbbf24', fontSize: '1rem', fontWeight: 800, marginBottom: '16px', fontFamily: 'var(--font-heading)' }}>Billing Address</h4>
+                                </div>
+                                <div style={{ gridColumn: 'span 2' }}>
+                                    <label style={{ display: 'block', color: '#94a3b8', fontSize: '0.85rem', marginBottom: '8px', fontWeight: 700, textTransform: 'uppercase' }}>Street Address</label>
+                                    <input name="billingAddress" defaultValue={editingCustomer?.billingAddress || ""} style={inputStyle} />
+                                </div>
+                                <div>
+                                    <label style={{ display: 'block', color: '#94a3b8', fontSize: '0.85rem', marginBottom: '8px', fontWeight: 700, textTransform: 'uppercase' }}>City</label>
+                                    <input name="billingCity" defaultValue={editingCustomer?.billingCity || ""} style={inputStyle} />
+                                </div>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                                    <div>
+                                        <label style={{ display: 'block', color: '#94a3b8', fontSize: '0.85rem', marginBottom: '8px', fontWeight: 700, textTransform: 'uppercase' }}>State</label>
+                                        <input name="billingState" defaultValue={editingCustomer?.billingState || "AZ"} style={inputStyle} />
+                                    </div>
+                                    <div>
+                                        <label style={{ display: 'block', color: '#94a3b8', fontSize: '0.85rem', marginBottom: '8px', fontWeight: 700, textTransform: 'uppercase' }}>Zip</label>
+                                        <input name="billingZip" defaultValue={editingCustomer?.billingZip || ""} style={inputStyle} />
+                                    </div>
+                                </div>
+
                                 {error && <div style={{ gridColumn: 'span 2', color: '#ef4444', fontSize: '0.9rem', textAlign: 'center' }}>{error}</div>}
 
                                 <div style={{ gridColumn: 'span 2', display: 'flex', gap: '16px', marginTop: '12px' }}>

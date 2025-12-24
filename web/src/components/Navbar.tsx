@@ -22,17 +22,20 @@ export default function Navbar() {
                 backdropFilter: 'blur(10px)',
                 borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
                 height: '80px',
-                position: 'sticky',
+                position: 'fixed',
                 top: 0,
+                left: 0,
+                right: 0,
                 zIndex: 1000,
                 display: 'flex',
-                alignItems: 'center'
+                alignItems: 'center',
+                paddingTop: 'env(safe-area-inset-top)'
             }}>
                 <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
 
                     {/* Left: Logo */}
                     <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '12px', zIndex: 1001 }}>
-                        <div className="logo-shimmer-wrapper" style={{ position: 'relative', width: '45px', height: '45px', background: 'transparent', flexShrink: 0 }}>
+                        <div className="logo-shimmer-wrapper" style={{ position: 'relative', width: '45px', height: '45px', background: 'transparent', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <Image src="https://ijcowpujufsrdikhegxu.supabase.co/storage/v1/object/public/assets/logo.png" alt="Liberty" fill style={{ objectFit: 'contain', filter: 'brightness(1.2)' }} />
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
@@ -157,7 +160,7 @@ export default function Navbar() {
             {isMenuOpen && (
                 <div style={{
                     position: 'fixed',
-                    top: '80px',
+                    top: 'calc(80px + env(safe-area-inset-top))',
                     left: 0,
                     right: 0,
                     bottom: 0,

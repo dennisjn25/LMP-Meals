@@ -8,16 +8,17 @@ import { Heart, ShieldCheck, MapPin, Users, Medal } from "lucide-react";
 
 export default function StoryPage() {
     return (
-        <main style={{ minHeight: '100vh', background: '#0B0E14', color: '#fff' }}>
+        <main style={{ minHeight: '100dvh', background: '#0B0E14', color: '#fff' }}>
             <Navbar />
 
             {/* HERO HERO */}
             <section style={{
                 position: 'relative',
-                height: '60vh',
+                minHeight: '60dvh',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
+                paddingTop: 'calc(80px + env(safe-area-inset-top))',
                 marginBottom: '80px',
                 overflow: 'hidden'
             }}>
