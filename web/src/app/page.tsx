@@ -102,15 +102,18 @@ export default function Home() {
           </p>
 
           {/* Menu Rotation Notice */}
-          <div style={{
-            display: 'inline-block',
-            background: 'rgba(251, 191, 36, 0.15)',
-            border: '2px solid rgba(251, 191, 36, 0.4)',
-            borderRadius: '12px',
-            padding: '12px 24px',
-            marginBottom: '32px',
-            animation: 'fadeInUp 0.8s ease-out 0.3s backwards'
-          }}>
+          <div
+            className="menu-update-badge"
+            style={{
+              display: 'inline-block',
+              background: 'rgba(251, 191, 36, 0.15)',
+              border: '2px solid rgba(251, 191, 36, 0.4)',
+              borderRadius: '12px',
+              padding: '12px 24px',
+              marginBottom: '32px',
+              animation: 'fadeInUp 0.8s ease-out 0.3s backwards, cool-fade 3s ease-in-out infinite'
+            }}
+          >
             <span style={{
               color: '#fbbf24',
               fontSize: '0.95rem',
@@ -124,6 +127,21 @@ export default function Home() {
               Menu Updates Every Thursday at 1AM
             </span>
           </div>
+
+          <style jsx>{`
+            @keyframes cool-fade {
+              0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+                box-shadow: 0 0 10px rgba(251, 191, 36, 0.2);
+              }
+              50% {
+                opacity: 0.4;
+                transform: scale(0.95);
+                box-shadow: 0 0 20px rgba(251, 191, 36, 0.4);
+              }
+            }
+          `}</style>
 
           <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap', animation: 'fadeInUp 0.8s ease-out 0.4s backwards' }}>
             <Link href="/menu" className="btn-black" style={{ fontSize: '1rem', padding: '16px 40px' }}>
