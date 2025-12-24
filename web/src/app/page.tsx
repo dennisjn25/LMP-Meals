@@ -101,6 +101,30 @@ export default function Home() {
             Mouth-watering, high-quality meals prepared fresh daily. Experience the perfect blend of nutrition, flavor, and convenience.
           </p>
 
+          {/* Menu Rotation Notice */}
+          <div style={{
+            display: 'inline-block',
+            background: 'rgba(251, 191, 36, 0.15)',
+            border: '2px solid rgba(251, 191, 36, 0.4)',
+            borderRadius: '12px',
+            padding: '12px 24px',
+            marginBottom: '32px',
+            animation: 'fadeInUp 0.8s ease-out 0.3s backwards'
+          }}>
+            <span style={{
+              color: '#fbbf24',
+              fontSize: '0.95rem',
+              fontWeight: 700,
+              letterSpacing: '0.05em',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}>
+              <TrendingUp size={18} />
+              Menu Updated Every Two Weeks
+            </span>
+          </div>
+
           <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap', animation: 'fadeInUp 0.8s ease-out 0.4s backwards' }}>
             <Link href="/menu" className="btn-black" style={{ fontSize: '1rem', padding: '16px 40px' }}>
               Browse Our Menu →
