@@ -1,6 +1,7 @@
 "use client";
 
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import { submitContactForm } from "@/actions/contact";
 import { useState } from "react";
 import { Mail, Phone, MapPin, Send, CheckCircle, AlertCircle } from "lucide-react";
@@ -33,7 +34,7 @@ export default function ContactPage() {
     }
 
     return (
-        <main style={{ minHeight: '100vh', paddingBottom: '80px' }}>
+        <main style={{ minHeight: '100vh' }}>
             <Navbar />
             <div className="container" style={{ paddingTop: '120px', maxWidth: '1200px' }}>
                 <h1 style={{ fontSize: '3rem', marginBottom: '16px', textAlign: 'center' }}>Get In Touch</h1>
@@ -264,6 +265,8 @@ export default function ContactPage() {
                     to { transform: rotate(360deg); }
                 }
             `}</style>
+
+            <Footer />
         </main>
     );
 }
