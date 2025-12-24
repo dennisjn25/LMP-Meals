@@ -21,6 +21,47 @@ function CheckoutContent() {
     const [orderResult, setOrderResult] = useState<{ success: boolean; orderNumber?: string; error?: string } | null>(null);
     const [captchaToken, setCaptchaToken] = useState<string | null>(null);
     const recaptchaRef = useRef<ReCAPTCHA>(null);
+    const [card, setCard] = useState<any>(null);
+    const [squareLoaded, setSquareLoaded] = useState(false);
+
+    // Initialize Square Web Payments SDK
+    useEffect(() => {
+        const initSquare = async () => {
+            try {
+                // Wait for Square SDK to load
+                if (!(window as any).Square) {
+                    const script = document.createElement('script');
+                    script.src = 'https://web.squarecdn.com/v1/square.js';
+                    script.async = true;
+                    script.onload = () => initSquare();
+                    document.head.appendChild(script);
+                    return;
+                }
+
+                const Square = (window as any).Square;
+                const appId = process.env.NEXT_PUBLIC_SQUARE_APPLICATION_ID || 'sandbox-sq0idb-_JT8e8xGxmGNJLmBXMkqJA';
+                const locationId = process.env.NEXT_PUBLIC_SQUARE_LOCATION_ID || 'LKZ7A9JGG7V0M';
+
+                const payments = Square.payments(appId, locationId);
+                const cardInstance = await payments.card();
+                await cardInstance.attach('#card-container');
+
+                setCard(cardInstance);
+                setSquareLoaded(true);
+            } catch (error) {
+                console.error('Failed to initialize Square:', error);
+                setOrderResult({ success: false, error: 'Failed to load payment form. Please refresh the page.' });
+            }
+        };
+
+        initSquare();
+
+        return () => {
+            if (card) {
+                card.destroy();
+            }
+        };
+    }, []);
 
     useEffect(() => {
         if (searchParams.get('canceled')) {
@@ -41,13 +82,18 @@ function CheckoutContent() {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        if (!card || !squareLoaded) {
+            setOrderResult({ success: false, error: "Payment form is still loading. Please wait a moment and try again." });
+            return;
+        }
+
         if (process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && !captchaToken) {
             setOrderResult({ success: false, error: "Please complete the security check (reCAPTCHA)." });
             return;
         }
 
         setIsSubmitting(true);
-        setOrderResult(null); // Clear previous errors
+        setOrderResult(null);
 
         const formData = new FormData(e.currentTarget);
         const zipCode = formData.get('zipCode') as string;
@@ -64,38 +110,59 @@ function CheckoutContent() {
         }
 
         try {
-            // For now, just create the order directly without payment
-            // This is a temporary fix - we'll add proper Square Web SDK integration later
-            const result = await createCheckoutSession({
-                customerName: `${formData.get('firstName')} ${formData.get('lastName')}`,
-                customerEmail: formData.get('email') as string,
-                customerPhone: formData.get('phone') as string,
-                shippingAddress: formData.get('address') as string,
-                city: formData.get('city') as string,
-                zipCode: formData.get('zipCode') as string,
-                deliveryDate: formData.get('deliveryDate') as string,
-                total: finalTotal,
-                captchaToken: captchaToken || undefined,
-                items: items.map(item => ({
-                    id: item.id,
-                    quantity: item.quantity,
-                    price: item.price,
-                    title: item.title,
-                    image: item.image
-                }))
+            // Step 1: Tokenize the card
+            const tokenResult = await card.tokenize();
+
+            if (tokenResult.status !== 'OK') {
+                let errorMessage = 'Please check your card details and try again.';
+                if (tokenResult.errors) {
+                    errorMessage = tokenResult.errors.map((e: any) => e.message).join(', ');
+                }
+                setOrderResult({ success: false, error: errorMessage });
+                setIsSubmitting(false);
+                return;
+            }
+
+            const token = tokenResult.token;
+
+            // Step 2: Create order and process payment
+            const response = await fetch('/api/process-inline-payment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    sourceId: token,
+                    amount: Math.round(finalTotal * 100), // Convert to cents
+                    customerName: `${formData.get('firstName')} ${formData.get('lastName')}`,
+                    customerEmail: formData.get('email') as string,
+                    customerPhone: formData.get('phone') as string,
+                    shippingAddress: formData.get('address') as string,
+                    city: formData.get('city') as string,
+                    zipCode: formData.get('zipCode') as string,
+                    deliveryDate: formData.get('deliveryDate') as string,
+                    captchaToken: captchaToken || undefined,
+                    items: items.map(item => ({
+                        id: item.id,
+                        quantity: item.quantity,
+                        price: item.price,
+                        title: item.title,
+                        image: item.image
+                    }))
+                })
             });
 
-            if (result.success && result.url) {
-                // Redirect to Square Checkout
-                window.location.href = result.url;
+            const result = await response.json();
+
+            if (result.success) {
+                setOrderResult({ success: true, orderNumber: result.orderNumber });
+                clearCart();
             } else {
-                setOrderResult({ success: false, error: result.error || "Failed to initialize payment" });
+                setOrderResult({ success: false, error: result.error || "Payment failed. Please try again." });
                 setIsSubmitting(false);
                 recaptchaRef.current?.reset();
                 setCaptchaToken(null);
             }
         } catch (error) {
-            console.error("Payment initialization failed", error);
+            console.error("Payment processing failed", error);
             setOrderResult({ success: false, error: "An unexpected error occurred. Please try again." });
             setIsSubmitting(false);
         }
@@ -372,35 +439,36 @@ function CheckoutContent() {
                                 </div>
                             </div>
 
-                            {/* Payment */}
+                            {/* Payment - INLINE CARD FORM */}
                             <div>
                                 <h3 style={{ fontSize: '1.1rem', marginBottom: '20px', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px' }}>
                                     <div style={{ width: '32px', height: '32px', background: '#000', color: '#fff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.9rem', fontWeight: 700 }}>3</div>
-                                    Payment
+                                    Payment Information
                                 </h3>
-                                <div style={{ padding: '24px', border: '2px solid #10b981', background: '#f0fdf4', borderRadius: '12px' }}>
-                                    <div style={{ display: 'flex', alignItems: 'start', gap: '16px', marginBottom: '16px' }}>
-                                        <CreditCard size={32} color="#10b981" style={{ flexShrink: 0, marginTop: '4px' }} />
-                                        <div style={{ flex: 1 }}>
-                                            <div style={{ fontWeight: 700, fontSize: '1.1rem', marginBottom: '8px', color: '#065f46' }}>
-                                                Secure Payment via Square
-                                            </div>
-                                            <div style={{ fontSize: '0.95rem', color: '#065f46', lineHeight: 1.6, marginBottom: '12px' }}>
-                                                When you click "Continue to Secure Payment" below, you'll be redirected to Square's secure payment page where you can safely enter your credit or debit card information.
-                                            </div>
-                                            <div style={{ fontSize: '0.9rem', color: '#047857', background: 'rgba(16, 185, 129, 0.1)', padding: '12px', borderRadius: '8px', lineHeight: 1.5 }}>
-                                                <strong>✓ Bank-level security</strong><br />
-                                                <strong>✓ PCI-DSS certified</strong><br />
-                                                <strong>✓ Your card details are never stored on our servers</strong>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div style={{ fontSize: '0.85rem', color: '#065f46', textAlign: 'center', padding: '12px', background: 'rgba(16, 185, 129, 0.05)', borderRadius: '8px' }}>
-                                        🔒 We accept: Visa, Mastercard, American Express, Discover
-                                    </div>
+
+                                {/* Square Card Container */}
+                                <div
+                                    id="card-container"
+                                    style={{
+                                        minHeight: '100px',
+                                        padding: '20px',
+                                        border: '2px solid #e5e7eb',
+                                        borderRadius: '12px',
+                                        background: '#fff',
+                                        marginBottom: '16px'
+                                    }}
+                                />
+
+                                <div style={{ fontSize: '0.85rem', color: '#64748b', textAlign: 'center', marginTop: '12px' }}>
+                                    🔒 Secure payment powered by Square • We accept Visa, Mastercard, Amex, Discover
                                 </div>
                             </div>
 
+                            {/* Load Square SDK */}
+                            <script
+                                src="https://web.squarecdn.com/v1/square.js"
+                                type="text/javascript"
+                            />
 
                             {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && (
                                 <div style={{ display: 'flex', justifyContent: 'center', margin: '20px 0' }}>
@@ -431,11 +499,11 @@ function CheckoutContent() {
                                 {isSubmitting ? (
                                     <>
                                         <Loader2 className="animate-spin" size={20} />
-                                        REDIRECTING TO SECURE PAYMENT...
+                                        PROCESSING PAYMENT...
                                     </>
                                 ) : (
                                     <>
-                                        CONTINUE TO SECURE PAYMENT • ${finalTotal.toFixed(2)}
+                                        PLACE ORDER • ${finalTotal.toFixed(2)}
                                     </>
                                 )}
                             </button>
