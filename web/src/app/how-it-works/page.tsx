@@ -7,7 +7,7 @@ import { CheckCircle2, Clock, Truck, Utensils } from "lucide-react";
 
 export default function HowItWorksPage() {
     return (
-        <main style={{ minHeight: '100vh', paddingBottom: '80px', background: '#0B0E14', color: '#fff', position: 'relative' }}>
+        <main style={{ minHeight: '100vh', background: '#0B0E14', color: '#fff', position: 'relative' }}>
             <div style={{ position: 'fixed', inset: 0, zIndex: 0 }}>
                 <AnimatedLogoBackground />
                 <div style={{ position: 'absolute', inset: 0, background: 'rgba(11, 14, 20, 0.9)' }}></div>

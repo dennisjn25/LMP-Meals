@@ -1,6 +1,7 @@
 
 import { getFeaturedMeals } from "@/actions/meals";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import AnimatedLogoBackground from "@/components/AnimatedLogoBackground";
 import Image from "next/image";
 
@@ -10,7 +11,7 @@ export default async function NutritionPage() {
     const meals = await getFeaturedMeals();
 
     return (
-        <main style={{ minHeight: '100vh', paddingBottom: '80px', background: '#0B0E14', color: '#fff' }}>
+        <main style={{ minHeight: '100vh', background: '#0B0E14', color: '#fff' }}>
             <Navbar />
 
             {/* Hero Header */}
@@ -119,6 +120,8 @@ export default async function NutritionPage() {
                     * Nutritional values are approximate and may vary slightly based on ingredients and portion sizes.
                 </div>
             </div>
+
+            <Footer />
         </main>
     );
 }
