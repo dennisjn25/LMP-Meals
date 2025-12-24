@@ -112,6 +112,7 @@ model Order {
   deliveryDate    DateTime?   // Optional delivery date selection
 
   squareOrderId   String?     // Square Order ID
+  squarePaymentId String?     // Square Payment ID
   squareCheckoutId String?    // Square Checkout ID (from payment link)
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt

@@ -6,6 +6,7 @@ import { sendOrderConfirmationEmail } from '@/lib/email';
 import { syncData } from '@/lib/quickbooks-sync';
 import { auth } from '@/auth';
 import { isDeliveryAddressValid } from '@/lib/delivery-zips';
+import { geocodeAddress } from '@/lib/google-maps';
 
 function generateOrderNumber(): string {
     const timestamp = Date.now().toString(36).toUpperCase();
@@ -113,12 +114,25 @@ export async function POST(req: Request) {
             }, { status: 400 });
         }
 
+        // Geocode shipping address for real-time map visualization
+        const geo = await geocodeAddress(`${shippingAddress}, ${city}, AZ ${zipCode}`);
+
         // Update order to PAID
         await db.order.update({
             where: { id: order.id },
             data: {
                 status: 'PAID',
                 squarePaymentId: payment.id
+            }
+        });
+
+        // Create delivery record with geocoded coordinates
+        await db.delivery.create({
+            data: {
+                orderId: order.id,
+                status: "PENDING",
+                latitude: geo?.lat,
+                longitude: geo?.lng
             }
         });
 

@@ -13,11 +13,47 @@ import {
     Navigation
 } from "lucide-react";
 import { createRoute, assignDeliveryToRoute } from "@/actions/delivery";
+import DeliveryMap from "@/components/admin/DeliveryMap";
+import { useEffect, useMemo } from "react";
+import { geocodeAddress } from "@/lib/google-maps";
 
 export default function OptimizationClient({ pendingDeliveries, drivers }: { pendingDeliveries: any[], drivers: any[] }) {
     const [selectedDriver, setSelectedDriver] = useState<string>("");
     const [optimizing, setOptimizing] = useState(false);
     const [previewRoute, setPreviewRoute] = useState<any[]>([]);
+    const [deliveriesWithCoords, setDeliveriesWithCoords] = useState<any[]>(pendingDeliveries);
+
+    // Geocode addresses that don't have coords yet
+    useEffect(() => {
+        const geocodeMissing = async () => {
+            const updated = await Promise.all(pendingDeliveries.map(async (d) => {
+                if (d.latitude && d.longitude) return d;
+
+                const fullAddress = `${d.order.shippingAddress}, ${d.order.city}, AZ ${d.order.zipCode}`;
+                const coords = await geocodeAddress(fullAddress);
+
+                if (coords) {
+                    return { ...d, latitude: coords.lat, longitude: coords.lng };
+                }
+                return d;
+            }));
+            setDeliveriesWithCoords(updated);
+        };
+
+        geocodeMissing();
+    }, [pendingDeliveries]);
+
+    const markers = useMemo(() => {
+        return deliveriesWithCoords
+            .filter(d => d.latitude && d.longitude)
+            .map(d => ({
+                id: d.id,
+                lat: d.latitude,
+                lng: d.longitude,
+                title: d.order.customerName,
+                label: d.sequence ? d.sequence.toString() : undefined
+            }));
+    }, [deliveriesWithCoords]);
 
     const handleOptimize = () => {
         setOptimizing(true);
@@ -207,63 +243,37 @@ export default function OptimizationClient({ pendingDeliveries, drivers }: { pen
                 overflow: 'hidden',
                 position: 'relative',
                 minHeight: '600px',
-                backgroundSize: 'cover',
-                backgroundImage: 'url("https://maps.googleapis.com/maps/api/staticmap?center=Scottsdale,AZ&zoom=12&size=1000x1000&maptype=roadmap&style=feature:all|element:labels|visibility:off&style=feature:all|element:geometry|color:0x212121&style=feature:road|element:geometry|color:0x424242&key=YOUR_API_KEY_HERE")',
                 backgroundColor: '#0f172a'
             }}>
-                <div style={{
-                    position: 'absolute',
-                    inset: 0,
-                    background: 'radial-gradient(circle at center, transparent, rgba(11, 14, 20, 0.8))',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                }}>
-                    <div style={{ textAlign: 'center', maxWidth: '450px', padding: '40px' }}>
-                        <MapIcon size={80} color="#fbbf24" style={{ marginBottom: '32px', opacity: 0.8 }} />
-                        <h3 style={{
-                            fontSize: '2rem',
-                            fontWeight: 900,
-                            marginBottom: '16px',
-                            fontFamily: 'var(--font-heading)',
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.05em',
-                            color: '#ffffff',
-                            textShadow: '0 4px 20px rgba(0,0,0,0.5)'
-                        }}>Interactive Map View</h3>
-                        <p style={{ color: '#cbd5e1', fontSize: '1.1rem', lineHeight: '1.6' }}>Visualize routes, traffic conditions, and driver locations in real-time. Full Google Maps integration enabled.</p>
-                        <div style={{ marginTop: '32px', display: 'flex', gap: '12px', justifyContent: 'center' }}>
-                            <div style={{
-                                padding: '8px 16px',
-                                background: 'rgba(16, 185, 129, 0.1)',
-                                border: '1px solid rgba(16, 185, 129, 0.3)',
-                                borderRadius: '20px',
-                                fontSize: '0.85rem',
-                                color: '#34d399',
-                                fontWeight: 600,
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '8px'
-                            }}>
-                                <Truck size={16} /> Live Drivers
-                            </div>
-                            <div style={{
-                                padding: '8px 16px',
-                                background: 'rgba(59, 130, 246, 0.1)',
-                                border: '1px solid rgba(59, 130, 246, 0.3)',
-                                borderRadius: '20px',
-                                fontSize: '0.85rem',
-                                color: '#60a5fa',
-                                fontWeight: 600,
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '8px'
-                            }}>
-                                <Navigation size={16} /> Real-time Traffic
-                            </div>
+                <DeliveryMap markers={markers} />
+
+                {/* Overlay if no addresses yet */}
+                {markers.length === 0 && (
+                    <div style={{
+                        position: 'absolute',
+                        inset: 0,
+                        background: 'radial-gradient(circle at center, transparent, rgba(11, 14, 20, 0.8))',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        pointerEvents: 'none'
+                    }}>
+                        <div style={{ textAlign: 'center', maxWidth: '450px', padding: '40px' }}>
+                            <MapIcon size={80} color="#fbbf24" style={{ marginBottom: '32px', opacity: 0.8 }} />
+                            <h3 style={{
+                                fontSize: '2rem',
+                                fontWeight: 900,
+                                marginBottom: '16px',
+                                fontFamily: 'var(--font-heading)',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em',
+                                color: '#ffffff',
+                                textShadow: '0 4px 20px rgba(0,0,0,0.5)'
+                            }}>Interactive Map View</h3>
+                            <p style={{ color: '#cbd5e1', fontSize: '1.1rem', lineHeight: '1.6' }}>Visualize routes, traffic conditions, and driver locations in real-time. Full Google Maps integration enabled.</p>
                         </div>
                     </div>
-                </div>
+                )}
 
                 {/* Bottom Overlay Info */}
                 <div style={{

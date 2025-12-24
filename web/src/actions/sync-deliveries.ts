@@ -2,6 +2,7 @@
 
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
+import { geocodeAddress } from "@/lib/google-maps";
 
 export async function createMissingDeliveries() {
     // Find paid orders that don't have a delivery record
@@ -15,14 +16,17 @@ export async function createMissingDeliveries() {
     if (paidOrders.length === 0) return { count: 0 };
 
     const created = await Promise.all(
-        paidOrders.map(order =>
-            db.delivery.create({
+        paidOrders.map(async (order: any) => {
+            const geo = await geocodeAddress(`${order.shippingAddress}, ${order.city}, AZ ${order.zipCode}`);
+            return db.delivery.create({
                 data: {
                     orderId: order.id,
-                    status: "PENDING"
+                    status: "PENDING",
+                    latitude: geo?.lat,
+                    longitude: geo?.lng
                 }
-            })
-        )
+            });
+        })
     );
 
     revalidatePath("/admin/deliveries");

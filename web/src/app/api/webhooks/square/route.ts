@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { sendOrderConfirmationEmail } from "@/lib/email";
 import { syncData } from "@/lib/quickbooks-sync";
 import { logError, logInfo } from "@/lib/logger";
+import { geocodeAddress } from "@/lib/google-maps";
 
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
@@ -67,6 +68,21 @@ export async function POST(req: Request) {
                     status: "PAID",
                 }
             });
+
+            // Geocode and create delivery record
+            try {
+                const geo = await geocodeAddress(`${order.shippingAddress}, ${order.city}, AZ ${order.zipCode}`);
+                await db.delivery.create({
+                    data: {
+                        orderId: order.id,
+                        status: "PENDING",
+                        latitude: geo?.lat,
+                        longitude: geo?.lng
+                    }
+                });
+            } catch (error) {
+                logError("Failed to create delivery in Square webhook", "SquareWebhook", error);
+            }
 
             logInfo(`Payment details for Order #${order.orderNumber}: ID=${paymentId}, Brand=${brand}, Last4=${last4}`, "SquareWebhook");
 
