@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import { useCart } from "@/context/CartContext";
 import { Loader2, CheckCircle2, Calendar, Phone, MapPin, CreditCard } from "lucide-react";
 import { useState, useEffect, Suspense, useRef } from "react";
+import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { createCheckoutSession } from "@/actions/orders";
@@ -11,6 +12,7 @@ import { isDeliveryAddressValid } from "@/lib/delivery-zips";
 import ReCAPTCHA from "react-google-recaptcha";
 
 function CheckoutContent() {
+    const { data: session } = useSession();
     const { items, cartTotal, clearCart } = useCart();
     const TAX_RATE = 0.0805;
     const taxAmount = cartTotal * TAX_RATE;
@@ -392,17 +394,37 @@ function CheckoutContent() {
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                                         <div>
                                             <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', fontWeight: 600 }}>First Name *</label>
-                                            <input name="firstName" required className="input-field" style={{ width: '100%', padding: '12px', border: '2px solid #e5e7eb', borderRadius: '8px', fontSize: '1rem' }} />
+                                            <input
+                                                name="firstName"
+                                                required
+                                                defaultValue={session?.user?.name?.split(' ')[0] || ""}
+                                                className="input-field"
+                                                style={{ width: '100%', padding: '12px', border: '2px solid #e5e7eb', borderRadius: '8px', fontSize: '1rem' }}
+                                            />
                                         </div>
                                         <div>
                                             <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', fontWeight: 600 }}>Last Name *</label>
-                                            <input name="lastName" required className="input-field" style={{ width: '100%', padding: '12px', border: '2px solid #e5e7eb', borderRadius: '8px', fontSize: '1rem' }} />
+                                            <input
+                                                name="lastName"
+                                                required
+                                                defaultValue={session?.user?.name?.split(' ').slice(1).join(' ') || ""}
+                                                className="input-field"
+                                                style={{ width: '100%', padding: '12px', border: '2px solid #e5e7eb', borderRadius: '8px', fontSize: '1rem' }}
+                                            />
                                         </div>
                                     </div>
 
                                     <div>
                                         <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', fontWeight: 600 }}>Email Address *</label>
-                                        <input name="email" required type="email" className="input-field" style={{ width: '100%', padding: '12px', border: '2px solid #e5e7eb', borderRadius: '8px', fontSize: '1rem' }} placeholder="you@example.com" />
+                                        <input
+                                            name="email"
+                                            required
+                                            type="email"
+                                            defaultValue={session?.user?.email || ""}
+                                            className="input-field"
+                                            style={{ width: '100%', padding: '12px', border: '2px solid #e5e7eb', borderRadius: '8px', fontSize: '1rem' }}
+                                            placeholder="you@example.com"
+                                        />
                                     </div>
 
                                     <div>
@@ -410,7 +432,15 @@ function CheckoutContent() {
                                             <Phone size={14} style={{ display: 'inline', marginRight: '4px' }} />
                                             Phone Number
                                         </label>
-                                        <input name="phone" type="tel" className="input-field" style={{ width: '100%', padding: '12px', border: '2px solid #e5e7eb', borderRadius: '8px', fontSize: '1rem' }} placeholder="602-891-4619" />
+                                        <input
+                                            name="phone"
+                                            type="tel"
+                                            // @ts-ignore
+                                            defaultValue={session?.user?.phone || ""}
+                                            className="input-field"
+                                            style={{ width: '100%', padding: '12px', border: '2px solid #e5e7eb', borderRadius: '8px', fontSize: '1rem' }}
+                                            placeholder="602-891-4619"
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -427,17 +457,40 @@ function CheckoutContent() {
                                             <MapPin size={14} style={{ display: 'inline', marginRight: '4px' }} />
                                             Street Address *
                                         </label>
-                                        <input name="address" required className="input-field" style={{ width: '100%', padding: '12px', border: '2px solid #e5e7eb', borderRadius: '8px', fontSize: '1rem' }} placeholder="123 Main Street" />
+                                        <input
+                                            name="address"
+                                            required
+                                            // @ts-ignore
+                                            defaultValue={session?.user?.deliveryAddress || ""}
+                                            className="input-field"
+                                            style={{ width: '100%', padding: '12px', border: '2px solid #e5e7eb', borderRadius: '8px', fontSize: '1rem' }}
+                                            placeholder="123 Main Street"
+                                        />
                                     </div>
 
                                     <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '16px' }}>
                                         <div>
                                             <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', fontWeight: 600 }}>City *</label>
-                                            <input name="city" required defaultValue="Scottsdale" className="input-field" style={{ width: '100%', padding: '12px', border: '2px solid #e5e7eb', borderRadius: '8px', fontSize: '1rem' }} />
+                                            <input
+                                                name="city"
+                                                required
+                                                // @ts-ignore
+                                                defaultValue={session?.user?.deliveryCity || "Scottsdale"}
+                                                className="input-field"
+                                                style={{ width: '100%', padding: '12px', border: '2px solid #e5e7eb', borderRadius: '8px', fontSize: '1rem' }}
+                                            />
                                         </div>
                                         <div>
                                             <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', fontWeight: 600 }}>Zip Code *</label>
-                                            <input name="zipCode" required className="input-field" style={{ width: '100%', padding: '12px', border: '2px solid #e5e7eb', borderRadius: '8px', fontSize: '1rem' }} placeholder="85251" />
+                                            <input
+                                                name="zipCode"
+                                                required
+                                                // @ts-ignore
+                                                defaultValue={session?.user?.deliveryZip || ""}
+                                                className="input-field"
+                                                style={{ width: '100%', padding: '12px', border: '2px solid #e5e7eb', borderRadius: '8px', fontSize: '1rem' }}
+                                                placeholder="85251"
+                                            />
                                         </div>
                                     </div>
 

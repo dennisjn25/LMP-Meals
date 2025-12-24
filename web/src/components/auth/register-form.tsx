@@ -12,7 +12,14 @@ import { signIn } from "next-auth/react";
 const RegisterSchema = z.object({
     name: z.string().min(1, "Name is required"),
     email: z.string().email(),
-    password: z.string().min(6, "Minimum 6 characters")
+    password: z.string().min(6, "Minimum 6 characters"),
+    phone: z.string().optional(),
+    deliveryAddress: z.string().optional(),
+    deliveryCity: z.string().optional(),
+    deliveryZip: z.string().optional(),
+    billingAddress: z.string().optional(),
+    billingCity: z.string().optional(),
+    billingZip: z.string().optional(),
 });
 
 export default function RegisterForm() {
@@ -26,6 +33,13 @@ export default function RegisterForm() {
             name: "",
             email: "",
             password: "",
+            phone: "",
+            deliveryAddress: "",
+            deliveryCity: "",
+            deliveryZip: "",
+            billingAddress: "",
+            billingCity: "",
+            billingZip: "",
         },
     });
 
@@ -50,7 +64,7 @@ export default function RegisterForm() {
     };
 
     return (
-        <div className="glass-panel" style={{ padding: '40px', maxWidth: '400px', margin: '0 auto' }}>
+        <div className="glass-panel" style={{ padding: '40px', maxWidth: '500px', margin: '0 auto' }}>
             <h2 style={{ textAlign: 'center', marginBottom: '20px', fontSize: '1.5rem' }}>CREATE ACCOUNT</h2>
 
             <form onSubmit={form.handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -79,6 +93,64 @@ export default function RegisterForm() {
                         disabled={isPending}
                         style={{ width: '100%', padding: '12px', background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '4px' }}
                     />
+                </div>
+
+                <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: '20px', marginTop: '10px' }}>
+                    <h3 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '15px' }}>Delivery Address (Optional)</h3>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                        <input
+                            {...form.register("phone")}
+                            placeholder="Phone Number"
+                            disabled={isPending}
+                            style={{ width: '100%', padding: '12px', background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '4px' }}
+                        />
+                        <input
+                            {...form.register("deliveryAddress")}
+                            placeholder="Street Address"
+                            disabled={isPending}
+                            style={{ width: '100%', padding: '12px', background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '4px' }}
+                        />
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                            <input
+                                {...form.register("deliveryCity")}
+                                placeholder="City"
+                                disabled={isPending}
+                                style={{ width: '100%', padding: '12px', background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '4px' }}
+                            />
+                            <input
+                                {...form.register("deliveryZip")}
+                                placeholder="Zip Code"
+                                disabled={isPending}
+                                style={{ width: '100%', padding: '12px', background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '4px' }}
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: '20px' }}>
+                    <h3 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '15px' }}>Billing Address (Optional)</h3>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                        <input
+                            {...form.register("billingAddress")}
+                            placeholder="Street Address"
+                            disabled={isPending}
+                            style={{ width: '100%', padding: '12px', background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '4px' }}
+                        />
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                            <input
+                                {...form.register("billingCity")}
+                                placeholder="City"
+                                disabled={isPending}
+                                style={{ width: '100%', padding: '12px', background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '4px' }}
+                            />
+                            <input
+                                {...form.register("billingZip")}
+                                placeholder="Zip Code"
+                                disabled={isPending}
+                                style={{ width: '100%', padding: '12px', background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '4px' }}
+                            />
+                        </div>
+                    </div>
                 </div>
 
                 {error && <div style={{ color: 'red', fontSize: '0.9rem', textAlign: 'center' }}>{error}</div>}

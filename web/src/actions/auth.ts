@@ -16,7 +16,14 @@ const RegisterSchema = z.object({
     }),
     name: z.string().min(1, {
         message: "Name is required"
-    })
+    }),
+    phone: z.string().optional(),
+    deliveryAddress: z.string().optional(),
+    deliveryCity: z.string().optional(),
+    deliveryZip: z.string().optional(),
+    billingAddress: z.string().optional(),
+    billingCity: z.string().optional(),
+    billingZip: z.string().optional(),
 });
 
 const LoginSchema = z.object({
@@ -80,7 +87,19 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
         return { error: "Invalid fields!" };
     }
 
-    const { email, password, name } = validatedFields.data;
+    const {
+        email,
+        password,
+        name,
+        phone,
+        deliveryAddress,
+        deliveryCity,
+        deliveryZip,
+        billingAddress,
+        billingCity,
+        billingZip
+    } = validatedFields.data;
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const existingUser = await db.user.findUnique({
@@ -98,6 +117,13 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
             name,
             email,
             password: hashedPassword,
+            phone,
+            deliveryAddress,
+            deliveryCity,
+            deliveryZip,
+            billingAddress,
+            billingCity,
+            billingZip
         },
     });
 

@@ -53,6 +53,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 session.user.role = token.role;
             }
 
+            if (session.user) {
+                // @ts-ignore
+                session.user.phone = token.phone;
+                // @ts-ignore
+                session.user.deliveryAddress = token.deliveryAddress;
+                // @ts-ignore
+                session.user.deliveryCity = token.deliveryCity;
+                // @ts-ignore
+                session.user.deliveryZip = token.deliveryZip;
+            }
+
             return session;
         },
         async jwt({ token }) {
@@ -65,6 +76,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             if (!existingUser) return token;
 
             token.role = existingUser.role;
+            token.phone = existingUser.phone;
+            token.deliveryAddress = existingUser.deliveryAddress;
+            token.deliveryCity = existingUser.deliveryCity;
+            token.deliveryZip = existingUser.deliveryZip;
 
             return token;
         }

@@ -33,10 +33,41 @@ export async function getUserSettings() {
 
     const user = await db.user.findUnique({
         where: { id: session.user.id },
-        select: { sendReceiptEmail: true }
+        select: {
+            sendReceiptEmail: true,
+            phone: true,
+            deliveryAddress: true,
+            deliveryCity: true,
+            deliveryState: true,
+            deliveryZip: true,
+            billingAddress: true,
+            billingCity: true,
+            billingState: true,
+            billingZip: true,
+        }
     });
 
     return user;
+}
+
+export async function updateUserAddress(data: {
+    phone?: string;
+    deliveryAddress?: string;
+    deliveryCity?: string;
+    deliveryZip?: string;
+    billingAddress?: string;
+    billingCity?: string;
+    billingZip?: string;
+}) {
+    const session = await auth();
+    if (!session?.user?.id) throw new Error("Unauthorized");
+
+    await db.user.update({
+        where: { id: session.user.id },
+        data
+    });
+
+    return { success: true };
 }
 
 export async function updateEmailPreference(sendReceiptEmail: boolean) {

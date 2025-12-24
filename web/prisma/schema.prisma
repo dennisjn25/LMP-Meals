@@ -26,6 +26,21 @@ model User {
   routes        Route[]    @relation("DriverRoutes")
   employee      Employee?
   sendReceiptEmail Boolean @default(true)
+  
+  // Profile Info
+  phone         String?
+  
+  // Delivery Address
+  deliveryAddress String?
+  deliveryCity    String?
+  deliveryState   String?   @default("AZ")
+  deliveryZip     String?
+  
+  // Billing Address
+  billingAddress  String?
+  billingCity     String?
+  billingState    String?   @default("AZ")
+  billingZip      String?
 }
 
 model Account {

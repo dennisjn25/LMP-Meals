@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import Navbar from "@/components/Navbar";
 import { getUserOrders, getUserSettings } from "@/actions/user";
 import EmailPreferenceToggle from "@/components/EmailPreferenceToggle";
+import AddressSettings from "@/components/AddressSettings";
 import { redirect } from "next/navigation";
 import Image from "next/image";
 
@@ -25,6 +26,9 @@ export default async function DashboardPage() {
 
                 <h2 style={{ fontSize: '1.5rem', marginBottom: '24px' }}>Account Settings</h2>
                 <EmailPreferenceToggle initialValue={userSettings?.sendReceiptEmail ?? true} />
+
+                <h3 style={{ fontSize: '1.2rem', marginBottom: '20px', marginTop: '40px' }}>Saved Addresses</h3>
+                <AddressSettings initialData={userSettings || {}} />
 
                 <h2 style={{ fontSize: '1.5rem', marginBottom: '24px' }}>Order History</h2>
 
