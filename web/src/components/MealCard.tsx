@@ -139,24 +139,34 @@ export default function MealCard({ meal }: { meal: MealProps }) {
 
                 {/* Tags */}
                 <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', flexWrap: 'wrap' }}>
-                    {meal.tags.slice(0, 2).map(tag => (
-                        <span key={tag} style={{
-                            fontSize: '0.7rem',
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.1em',
-                            fontWeight: 700,
-                            background: categoryColor.bg,
-                            border: `1px solid ${categoryColor.border}`,
-                            color: categoryColor.text,
-                            padding: '6px 12px',
-                            borderRadius: '100px',
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '6px'
-                        }}>
-                            {tag}
-                        </span>
-                    ))}
+                    {meal.tags.slice(0, 2).map(tag => {
+                        // Determine tag-specific colors
+                        let tagColor = categoryColor;
+                        if (tag === 'GF') {
+                            tagColor = { bg: 'rgba(59, 130, 246, 0.1)', border: '#3b82f6', text: '#3b82f6' }; // Blue
+                        } else if (tag === 'High Protein') {
+                            tagColor = { bg: 'rgba(239, 68, 68, 0.1)', border: '#ef4444', text: '#ef4444' }; // Red
+                        }
+
+                        return (
+                            <span key={tag} style={{
+                                fontSize: '0.7rem',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.1em',
+                                fontWeight: 700,
+                                background: tagColor.bg,
+                                border: `1px solid ${tagColor.border}`,
+                                color: tagColor.text,
+                                padding: '6px 12px',
+                                borderRadius: '100px',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '6px'
+                            }}>
+                                {tag}
+                            </span>
+                        );
+                    })}
                 </div>
 
                 {/* Title */}

@@ -154,54 +154,6 @@ export default function MenuClient({ meals }: { meals: Meal[] }) {
                     border: '1px solid rgba(255,255,255,0.05)'
                 }}>
                     <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', alignItems: 'center' }}>
-                        {/* Search Bar */}
-                        <div style={{ flex: '1 1 300px', position: 'relative' }}>
-                            <Search size={20} style={{
-                                position: 'absolute',
-                                left: '16px',
-                                top: '50%',
-                                transform: 'translateY(-50%)',
-                                color: '#94a3b8'
-                            }} />
-                            <input
-                                type="text"
-                                placeholder="Search meals (e.g., 'Chicken', 'Keto')..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                style={{
-                                    width: '100%',
-                                    padding: '16px 16px 16px 48px',
-                                    border: '1px solid rgba(255,255,255,0.1)',
-                                    borderRadius: '16px',
-                                    fontSize: '1rem',
-                                    fontFamily: 'var(--font-body)',
-                                    transition: 'all 0.3s ease',
-                                    background: 'rgba(0,0,0,0.2)',
-                                    color: 'white',
-                                    outline: 'none'
-                                }}
-                                className="input-field"
-                            />
-                            {searchQuery && (
-                                <button
-                                    onClick={() => setSearchQuery("")}
-                                    style={{
-                                        position: 'absolute',
-                                        right: '16px',
-                                        top: '50%',
-                                        transform: 'translateY(-50%)',
-                                        background: 'none',
-                                        border: 'none',
-                                        cursor: 'pointer',
-                                        color: '#94a3b8',
-                                        padding: '4px'
-                                    }}
-                                >
-                                    <X size={20} />
-                                </button>
-                            )}
-                        </div>
-
                         {/* Sort Dropdown */}
                         <div style={{ position: 'relative' }}>
                             <select
