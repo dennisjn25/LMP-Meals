@@ -145,7 +145,8 @@ export const getDrivers = async () => {
             where: {
                 OR: [
                     { role: "DRIVER" },
-                    { role: "ADMIN" } // Admins can also drive for testing
+                    { role: "ADMIN" },
+                    { role: "EMPLOYEE" }
                 ]
             }
         });
