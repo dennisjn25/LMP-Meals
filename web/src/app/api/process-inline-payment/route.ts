@@ -20,7 +20,7 @@ export async function POST(req: Request) {
         const userId = session?.user?.id;
 
         const data = await req.json();
-        const { sourceId, amount, customerName, customerEmail, customerPhone, shippingAddress, city, zipCode, deliveryDate, captchaToken, items } = data;
+        const { sourceId, amount, customerName, customerEmail, customerPhone, shippingAddress, city, deliveryState, zipCode, deliveryDate, captchaToken, items } = data;
 
         // Validate delivery radius
         if (!isDeliveryAddressValid(zipCode)) {
@@ -69,6 +69,7 @@ export async function POST(req: Request) {
                 customerPhone,
                 shippingAddress,
                 city,
+                deliveryState: deliveryState || "Arizona",
                 zipCode,
                 deliveryDate: deliveryDate ? new Date(deliveryDate) : null,
                 total,
@@ -115,7 +116,8 @@ export async function POST(req: Request) {
         }
 
         // Geocode shipping address for real-time map visualization
-        const geo = await geocodeAddress(`${shippingAddress}, ${city}, AZ ${zipCode}`);
+        const state = deliveryState || "AZ";
+        const geo = await geocodeAddress(`${shippingAddress}, ${city}, ${state} ${zipCode}`);
 
         // Update order to PAID
         await db.order.update({
@@ -174,7 +176,7 @@ export async function POST(req: Request) {
             <div style="margin-top: 20px; padding-top: 20px; border-top: 2px solid #e5e7eb;">
                 <p><strong>Delivery Address:</strong><br>
                 ${shippingAddress}<br>
-                ${city}, AZ ${zipCode}</p>
+                ${city}, ${deliveryState || 'AZ'} ${zipCode}</p>
                 ${customerPhone ? `<p><strong>Phone:</strong> ${customerPhone}</p>` : ''}
                 ${deliveryDate ? `<p><strong>Delivery Date:</strong> ${new Date(deliveryDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>` : ''}
             </div>

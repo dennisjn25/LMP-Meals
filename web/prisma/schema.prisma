@@ -123,6 +123,7 @@ model Order {
   customerPhone   String?     // Optional phone number
   shippingAddress String
   city            String
+  deliveryState   String?     // The state for delivery (e.g., Arizona)
   zipCode         String
   deliveryDate    DateTime?   // Optional delivery date selection
 

@@ -22,7 +22,20 @@ export default async function AdminCustomersPage() {
         where: {
             role: 'USER'
         },
-        include: {
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true,
+            createdAt: true,
+            deliveryAddress: true,
+            deliveryCity: true,
+            deliveryState: true,
+            deliveryZip: true,
+            billingAddress: true,
+            billingCity: true,
+            billingState: true,
+            billingZip: true,
             orders: {
                 include: {
                     items: true

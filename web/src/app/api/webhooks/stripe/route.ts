@@ -71,7 +71,7 @@ export async function POST(req: Request) {
             <div style="margin-top: 20px; padding-top: 20px; border-top: 2px solid #e5e7eb;">
                 <p><strong>Delivery Address:</strong><br>
                 ${order.shippingAddress}<br>
-                ${order.city}, AZ ${order.zipCode}</p>
+                ${order.city}, ${order.deliveryState || 'AZ'} ${order.zipCode}</p>
                 ${order.customerPhone ? `<p><strong>Phone:</strong> ${order.customerPhone}</p>` : ''}
                 ${order.deliveryDate ? `<p><strong>Delivery Date:</strong> ${new Date(order.deliveryDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>` : ''}
             </div>

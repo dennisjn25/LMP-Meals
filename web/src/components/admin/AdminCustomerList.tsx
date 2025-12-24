@@ -1,15 +1,26 @@
 "use client";
 
 import { useState } from "react";
-import { Users, ShoppingBag, DollarSign, ChevronDown, ChevronUp } from "lucide-react";
+import { Users, ShoppingBag, DollarSign, ChevronDown, ChevronUp, Plus, Pencil, Trash2, X, Loader2 } from "lucide-react";
+import { createCustomer, updateCustomer, deleteCustomer } from "@/actions/customers";
 
 interface Customer {
     id: string;
     name: string | null;
     email: string | null;
+    phone?: string | null;
     createdAt: Date;
+    deliveryAddress?: string | null;
+    deliveryCity?: string | null;
+    deliveryState?: string | null;
+    deliveryZip?: string | null;
+    billingAddress?: string | null;
+    billingCity?: string | null;
+    billingState?: string | null;
+    billingZip?: string | null;
     orders: {
         id: string;
+        orderNumber?: string;
         total: number;
         status: string;
         createdAt: Date;
@@ -30,20 +41,24 @@ interface GuestOrder {
 export default function AdminCustomerList({ customers, guestOrders }: { customers: Customer[], guestOrders: GuestOrder[] }) {
     const [expandedCustomer, setExpandedCustomer] = useState<string | null>(null);
     const [filter, setFilter] = useState<'all' | 'registered' | 'guest'>('all');
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     // Calculate metrics
     const totalCustomers = customers.length;
-    const totalOrders = customers.reduce((sum, c) => sum + c.orders.length, 0) + guestOrders.length;
+    const totalOrders = customers.reduce((sum, c) => sum + (c.orders?.length || 0), 0) + guestOrders.length;
     const totalRevenue = customers.reduce((sum, c) =>
-        sum + c.orders.reduce((orderSum, o) => orderSum + o.total, 0), 0
+        sum + (c.orders?.reduce((orderSum, o) => orderSum + o.total, 0) || 0), 0
     ) + guestOrders.reduce((sum, o) => sum + o.total, 0);
 
     // Combine registered and guest customers
     const registeredCustomers = customers.map(c => ({
         ...c,
         type: 'registered' as const,
-        totalSpent: c.orders.reduce((sum, o) => sum + o.total, 0),
-        orderCount: c.orders.length
+        totalSpent: c.orders?.reduce((sum, o) => sum + o.total, 0) || 0,
+        orderCount: c.orders?.length || 0
     }));
 
     const guestCustomers = Object.values(
@@ -77,8 +92,70 @@ export default function AdminCustomerList({ customers, guestOrders }: { customer
         return c.type === filter;
     });
 
+    const handleEdit = (customer: Customer) => {
+        setEditingCustomer(customer);
+        setIsModalOpen(true);
+    };
+
+    const handleDelete = async (id: string, e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (!confirm("Are you sure you want to delete this customer?")) return;
+        setLoading(true);
+        const res = await deleteCustomer(id);
+        if (res.error) alert(res.error);
+        setLoading(false);
+    };
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setLoading(true);
+        setError(null);
+        const formData = new FormData(e.currentTarget);
+        const values: any = Object.fromEntries(formData.entries());
+
+        let res;
+        if (editingCustomer) {
+            res = await updateCustomer(editingCustomer.id, values);
+        } else {
+            res = await createCustomer(values);
+        }
+
+        if (res.error) {
+            setError(res.error);
+        } else {
+            setIsModalOpen(false);
+            setEditingCustomer(null);
+        }
+        setLoading(false);
+    };
+
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+            {/* Header Actions */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'white' }}>Profile Management</h2>
+                <button
+                    onClick={() => { setEditingCustomer(null); setIsModalOpen(true); }}
+                    style={{
+                        padding: '12px 24px',
+                        background: 'linear-gradient(135deg, #fbbf24, #d97706)',
+                        color: 'black',
+                        border: 'none',
+                        borderRadius: '12px',
+                        fontWeight: 800,
+                        fontSize: '0.9rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        cursor: 'pointer',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.05em'
+                    }}
+                >
+                    <Plus size={18} /> New Customer
+                </button>
+            </div>
+
             {/* Stats Cards */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
                 <StatCard
@@ -129,6 +206,8 @@ export default function AdminCustomerList({ customers, guestOrders }: { customer
                         customer={customer}
                         expanded={expandedCustomer === customer.id}
                         onToggle={() => setExpandedCustomer(expandedCustomer === customer.id ? null : customer.id)}
+                        onEdit={() => handleEdit(customer)}
+                        onDelete={(e: any) => handleDelete(customer.id, e)}
                     />
                 ))}
                 {filteredCustomers.length === 0 && (
@@ -145,11 +224,112 @@ export default function AdminCustomerList({ customers, guestOrders }: { customer
                     </div>
                 )}
             </div>
+
+            {/* Customer Modal */}
+            {isModalOpen && (
+                <div style={{
+                    position: 'fixed',
+                    inset: 0,
+                    background: 'rgba(0,0,0,0.8)',
+                    backdropFilter: 'blur(10px)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    zIndex: 100,
+                    padding: '20px'
+                }}>
+                    <div style={{
+                        background: '#0f172a',
+                        width: '100%',
+                        maxWidth: '800px',
+                        borderRadius: '32px',
+                        border: '1px solid rgba(255,255,255,0.1)',
+                        maxHeight: '90vh',
+                        overflowY: 'auto',
+                        position: 'relative'
+                    }}>
+                        <button
+                            onClick={() => setIsModalOpen(false)}
+                            style={{ position: 'absolute', top: '24px', right: '24px', background: 'transparent', border: 'none', color: '#94a3b8', cursor: 'pointer' }}
+                        >
+                            <X size={24} />
+                        </button>
+
+                        <div style={{ padding: '48px' }}>
+                            <h2 style={{ fontSize: '2.5rem', fontWeight: 900, color: 'white', marginBottom: '8px', fontFamily: 'var(--font-heading)', textTransform: 'uppercase' }}>
+                                {editingCustomer ? 'Edit' : 'New'} <span style={{ color: '#fbbf24' }}>Profile</span>
+                            </h2>
+                            <p style={{ color: '#94a3b8', marginBottom: '32px' }}>Fill in the details for the customer account.</p>
+
+                            <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+                                <div style={{ gridColumn: 'span 2' }}>
+                                    <label style={{ display: 'block', color: '#94a3b8', fontSize: '0.85rem', marginBottom: '8px', fontWeight: 700, textTransform: 'uppercase' }}>Full Name</label>
+                                    <input name="name" required defaultValue={editingCustomer?.name || ""} style={inputStyle} placeholder="John Doe" />
+                                </div>
+                                <div>
+                                    <label style={{ display: 'block', color: '#94a3b8', fontSize: '0.85rem', marginBottom: '8px', fontWeight: 700, textTransform: 'uppercase' }}>Email Address</label>
+                                    <input name="email" type="email" required defaultValue={editingCustomer?.email || ""} style={inputStyle} placeholder="john@example.com" />
+                                </div>
+                                <div>
+                                    <label style={{ display: 'block', color: '#94a3b8', fontSize: '0.85rem', marginBottom: '8px', fontWeight: 700, textTransform: 'uppercase' }}>Phone Number</label>
+                                    <input name="phone" defaultValue={editingCustomer?.phone || ""} style={inputStyle} placeholder="123-456-7890" />
+                                </div>
+                                <div style={{ gridColumn: 'span 2' }}>
+                                    <label style={{ display: 'block', color: '#94a3b8', fontSize: '0.85rem', marginBottom: '8px', fontWeight: 700, textTransform: 'uppercase' }}>Password {editingCustomer && '(Leave blank to keep current)'}</label>
+                                    <input name="password" type="password" required={!editingCustomer} style={inputStyle} placeholder="••••••••" />
+                                </div>
+
+                                <div style={{ gridColumn: 'span 2', height: '1px', background: 'rgba(255,255,255,0.05)', margin: '12px 0' }} />
+
+                                <div style={{ gridColumn: 'span 2' }}>
+                                    <h4 style={{ color: '#fbbf24', fontSize: '1rem', fontWeight: 800, marginBottom: '16px', fontFamily: 'var(--font-heading)' }}>Delivery Address</h4>
+                                </div>
+                                <div style={{ gridColumn: 'span 2' }}>
+                                    <label style={{ display: 'block', color: '#94a3b8', fontSize: '0.85rem', marginBottom: '8px', fontWeight: 700, textTransform: 'uppercase' }}>Street Address</label>
+                                    <input name="deliveryAddress" defaultValue={editingCustomer?.deliveryAddress || ""} style={inputStyle} />
+                                </div>
+                                <div>
+                                    <label style={{ display: 'block', color: '#94a3b8', fontSize: '0.85rem', marginBottom: '8px', fontWeight: 700, textTransform: 'uppercase' }}>City</label>
+                                    <input name="deliveryCity" defaultValue={editingCustomer?.deliveryCity || ""} style={inputStyle} />
+                                </div>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                                    <div>
+                                        <label style={{ display: 'block', color: '#94a3b8', fontSize: '0.85rem', marginBottom: '8px', fontWeight: 700, textTransform: 'uppercase' }}>State</label>
+                                        <input name="deliveryState" defaultValue={editingCustomer?.deliveryState || "AZ"} style={inputStyle} />
+                                    </div>
+                                    <div>
+                                        <label style={{ display: 'block', color: '#94a3b8', fontSize: '0.85rem', marginBottom: '8px', fontWeight: 700, textTransform: 'uppercase' }}>Zip</label>
+                                        <input name="deliveryZip" defaultValue={editingCustomer?.deliveryZip || ""} style={inputStyle} />
+                                    </div>
+                                </div>
+
+                                {error && <div style={{ gridColumn: 'span 2', color: '#ef4444', fontSize: '0.9rem', textAlign: 'center' }}>{error}</div>}
+
+                                <div style={{ gridColumn: 'span 2', display: 'flex', gap: '16px', marginTop: '12px' }}>
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsModalOpen(false)}
+                                        style={{ flex: 1, padding: '16px', background: 'rgba(255,255,255,0.05)', color: 'white', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', fontWeight: 700, cursor: 'pointer' }}
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        disabled={loading}
+                                        style={{ flex: 2, padding: '16px', background: '#fbbf24', color: 'black', border: 'none', borderRadius: '16px', fontWeight: 900, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}
+                                    >
+                                        {loading ? <Loader2 className="animate-spin" size={20} /> : (editingCustomer ? 'Update Profile' : 'Create Profile')}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
 
-function CustomerRow({ customer, expanded, onToggle }: any) {
+function CustomerRow({ customer, expanded, onToggle, onEdit, onDelete }: any) {
     return (
         <div style={{
             background: 'rgba(255,255,255,0.03)',
@@ -209,8 +389,48 @@ function CustomerRow({ customer, expanded, onToggle }: any) {
                     <div style={{ color: 'white' }}>{new Date(customer.createdAt).toLocaleDateString()}</div>
                 </div>
 
-                <div style={{ color: '#94a3b8' }}>
-                    {expanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                <div style={{ display: 'flex', gap: '8px' }}>
+                    {customer.type !== 'guest' && (
+                        <>
+                            <button
+                                onClick={(e) => { e.stopPropagation(); onEdit(); }}
+                                style={{
+                                    width: '36px',
+                                    height: '36px',
+                                    borderRadius: '10px',
+                                    background: 'rgba(59, 130, 246, 0.1)',
+                                    color: '#3b82f6',
+                                    border: '1px solid rgba(59, 130, 246, 0.2)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                <Pencil size={18} />
+                            </button>
+                            <button
+                                onClick={onDelete}
+                                style={{
+                                    width: '36px',
+                                    height: '36px',
+                                    borderRadius: '10px',
+                                    background: 'rgba(239, 68, 68, 0.1)',
+                                    color: '#ef4444',
+                                    border: '1px solid rgba(239, 68, 68, 0.2)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                <Trash2 size={18} />
+                            </button>
+                        </>
+                    )}
+                    <div style={{ color: '#94a3b8', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        {expanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                    </div>
                 </div>
             </div>
 
@@ -327,6 +547,17 @@ function FilterButton({ children, active, onClick }: { children: React.ReactNode
     );
 }
 
+const inputStyle = {
+    width: '100%',
+    padding: '14px 20px',
+    background: 'rgba(255,255,255,0.03)',
+    border: '1px solid rgba(255,255,255,0.1)',
+    borderRadius: '12px',
+    color: 'white',
+    outline: 'none',
+    fontSize: '1rem'
+};
+
 function getStatusColor(status: string) {
     const colors: any = {
         'PENDING': '#fbbf24',
@@ -337,4 +568,3 @@ function getStatusColor(status: string) {
     };
     return colors[status] || '#6b7280';
 }
-

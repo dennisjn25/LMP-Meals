@@ -27,6 +27,7 @@ export async function createCheckoutSession(data: {
     customerPhone?: string;
     shippingAddress: string;
     city: string;
+    deliveryState?: string;
     zipCode: string;
     deliveryDate?: string;
     items: {
@@ -86,6 +87,7 @@ export async function createCheckoutSession(data: {
                 customerPhone: data.customerPhone,
                 shippingAddress: data.shippingAddress,
                 city: data.city,
+                deliveryState: data.deliveryState || "Arizona",
                 zipCode: data.zipCode,
                 deliveryDate: data.deliveryDate ? new Date(data.deliveryDate) : null,
                 total: data.total,
@@ -203,6 +205,7 @@ export async function createOrder(data: {
     customerPhone?: string;
     shippingAddress: string;
     city: string;
+    deliveryState?: string;
     zipCode: string;
     deliveryDate?: string;
     items: {
@@ -264,6 +267,7 @@ export async function createOrder(data: {
                 customerPhone: data.customerPhone,
                 shippingAddress: data.shippingAddress,
                 city: data.city,
+                deliveryState: data.deliveryState || "Arizona",
                 zipCode: data.zipCode,
                 deliveryDate: data.deliveryDate ? new Date(data.deliveryDate) : null,
                 total: data.total,
@@ -308,7 +312,7 @@ export async function createOrder(data: {
             <div style="margin-top: 20px; padding-top: 20px; border-top: 2px solid #e5e7eb;">
                 <p><strong>Delivery Address:</strong><br>
                 ${data.shippingAddress}<br>
-                ${data.city}, AZ ${data.zipCode}</p>
+                ${data.city}, ${data.deliveryState || 'AZ'} ${data.zipCode}</p>
                 ${data.customerPhone ? `<p><strong>Phone:</strong> ${data.customerPhone}</p>` : ''}
                 ${data.deliveryDate ? `<p><strong>Delivery Date:</strong> ${new Date(data.deliveryDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>` : ''}
             </div>
@@ -400,6 +404,7 @@ export async function createAdminOrder(data: {
     customerPhone?: string;
     shippingAddress: string;
     city: string;
+    deliveryState?: string;
     zipCode: string;
     deliveryDate?: string;
     status: string;

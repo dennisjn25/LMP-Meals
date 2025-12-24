@@ -160,6 +160,7 @@ function CheckoutContent() {
                     customerPhone: formData.get('phone') as string,
                     shippingAddress: formData.get('address') as string,
                     city: formData.get('city') as string,
+                    deliveryState: formData.get('state') as string,
                     zipCode: formData.get('zipCode') as string,
                     deliveryDate: formData.get('deliveryDate') as string,
                     captchaToken: captchaToken || undefined,

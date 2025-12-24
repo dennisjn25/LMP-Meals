@@ -17,7 +17,8 @@ export async function createMissingDeliveries() {
 
     const created = await Promise.all(
         paidOrders.map(async (order: any) => {
-            const geo = await geocodeAddress(`${order.shippingAddress}, ${order.city}, AZ ${order.zipCode}`);
+            const state = order.deliveryState || "AZ";
+            const geo = await geocodeAddress(`${order.shippingAddress}, ${order.city}, ${state} ${order.zipCode}`);
             return db.delivery.create({
                 data: {
                     orderId: order.id,

@@ -30,7 +30,8 @@ export default function OptimizationClient({ pendingDeliveries, drivers }: { pen
             const updated = await Promise.all(pendingDeliveries.map(async (d) => {
                 if (d.latitude && d.longitude) return d;
 
-                const fullAddress = `${d.order.shippingAddress}, ${d.order.city}, AZ ${d.order.zipCode}`;
+                const state = d.order.deliveryState || "AZ";
+                const fullAddress = `${d.order.shippingAddress}, ${d.order.city}, ${state} ${d.order.zipCode}`;
                 const coords = await geocodeAddress(fullAddress);
 
                 if (coords) {
