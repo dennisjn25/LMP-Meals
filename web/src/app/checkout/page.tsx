@@ -21,19 +21,23 @@ function CheckoutContent() {
     const [orderResult, setOrderResult] = useState<{ success: boolean; orderNumber?: string; error?: string } | null>(null);
     const [captchaToken, setCaptchaToken] = useState<string | null>(null);
     const recaptchaRef = useRef<ReCAPTCHA>(null);
-    const [card, setCard] = useState<any>(null);
+    const cardRef = useRef<any>(null);
     const [squareLoaded, setSquareLoaded] = useState(false);
 
     // Initialize Square Web Payments SDK
     useEffect(() => {
+        let isInstanceMounted = true;
+
         const initSquare = async () => {
             try {
-                // Wait for Square SDK to load
+                // Wait for Square SDK to load if not already present
                 if (!(window as any).Square) {
                     const script = document.createElement('script');
                     script.src = 'https://web.squarecdn.com/v1/square.js';
                     script.async = true;
-                    script.onload = () => initSquare();
+                    script.onload = () => {
+                        if (isInstanceMounted) initSquare();
+                    };
                     document.head.appendChild(script);
                     return;
                 }
@@ -42,23 +46,40 @@ function CheckoutContent() {
                 const appId = process.env.NEXT_PUBLIC_SQUARE_APPLICATION_ID || 'sandbox-sq0idb-_JT8e8xGxmGNJLmBXMkqJA';
                 const locationId = process.env.NEXT_PUBLIC_SQUARE_LOCATION_ID || 'LKZ7A9JGG7V0M';
 
+                // Check if card-container exists in DOM
+                const container = document.getElementById('card-container');
+                if (!container) {
+                    // If not ready, wait a bit and retry
+                    setTimeout(initSquare, 100);
+                    return;
+                }
+
+                // Prevent double initialization
+                if (cardRef.current) return;
+
                 const payments = Square.payments(appId, locationId);
                 const cardInstance = await payments.card();
-                await cardInstance.attach('#card-container');
 
-                setCard(cardInstance);
-                setSquareLoaded(true);
+                if (isInstanceMounted) {
+                    await cardInstance.attach('#card-container');
+                    cardRef.current = cardInstance;
+                    setSquareLoaded(true);
+                }
             } catch (error) {
                 console.error('Failed to initialize Square:', error);
-                setOrderResult({ success: false, error: 'Failed to load payment form. Please refresh the page.' });
+                if (isInstanceMounted) {
+                    setOrderResult({ success: false, error: 'Failed to load payment form. Please refresh the page.' });
+                }
             }
         };
 
         initSquare();
 
         return () => {
-            if (card) {
-                card.destroy();
+            isInstanceMounted = false;
+            if (cardRef.current) {
+                cardRef.current.destroy();
+                cardRef.current = null;
             }
         };
     }, []);
@@ -82,7 +103,7 @@ function CheckoutContent() {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if (!card || !squareLoaded) {
+        if (!cardRef.current || !squareLoaded) {
             setOrderResult({ success: false, error: "Payment form is still loading. Please wait a moment and try again." });
             return;
         }
@@ -111,7 +132,7 @@ function CheckoutContent() {
 
         try {
             // Step 1: Tokenize the card
-            const tokenResult = await card.tokenize();
+            const tokenResult = await cardRef.current.tokenize();
 
             if (tokenResult.status !== 'OK') {
                 let errorMessage = 'Please check your card details and try again.';
@@ -443,6 +464,7 @@ function CheckoutContent() {
                             <div>
                                 <h3 style={{ fontSize: '1.1rem', marginBottom: '20px', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px' }}>
                                     <div style={{ width: '32px', height: '32px', background: '#000', color: '#fff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.9rem', fontWeight: 700 }}>3</div>
+                                    <CreditCard size={18} />
                                     Payment Information
                                 </h3>
 
@@ -463,12 +485,6 @@ function CheckoutContent() {
                                     🔒 Secure payment powered by Square • We accept Visa, Mastercard, Amex, Discover
                                 </div>
                             </div>
-
-                            {/* Load Square SDK */}
-                            <script
-                                src="https://web.squarecdn.com/v1/square.js"
-                                type="text/javascript"
-                            />
 
                             {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && (
                                 <div style={{ display: 'flex', justifyContent: 'center', margin: '20px 0' }}>
