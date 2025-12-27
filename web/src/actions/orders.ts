@@ -582,6 +582,57 @@ export async function updateAdminOrder(id: string, data: {
     }
 }
 
+export async function getKitchenStats() {
+    const session = await auth();
+    const skipAuth = process.env.SKIP_AUTH === 'true';
+
+    // @ts-ignore
+    if (!skipAuth && session?.user?.role !== "ADMIN") return { error: "Unauthorized" };
+
+    try {
+        // Get all active orders (Paid but not Delivered/Cancelled)
+        const activeOrders = await db.order.findMany({
+            where: {
+                status: {
+                    in: ['PAID', 'PENDING'] // Include Pending? Maybe just Paid. Let's include both for now but separate them in UI if needed.
+                }
+            },
+            include: {
+                items: {
+                    include: {
+                        meal: true
+                    }
+                }
+            }
+        });
+
+        // Aggregate Data
+        const mealCounts: Record<string, { title: string; count: number; image: string; tags: string }> = {};
+
+        activeOrders.forEach(order => {
+            order.items.forEach(item => {
+                const mealId = item.mealId;
+                if (!mealCounts[mealId]) {
+                    mealCounts[mealId] = {
+                        title: item.meal.title,
+                        count: 0,
+                        image: item.meal.image,
+                        tags: item.meal.tags
+                    };
+                }
+                mealCounts[mealId].count += item.quantity;
+            });
+        });
+
+        // Convert to array and sort by count (desc)
+        const sortedMeals = Object.values(mealCounts).sort((a, b) => b.count - a.count);
+
+        return { success: true, data: sortedMeals, totalOrders: activeOrders.length };
+    } catch (e: any) {
+        return { error: e.message || "Failed to fetch kitchen stats" };
+    }
+}
+
 export async function deleteOrder(orderId: string, password: string) {
     const session = await auth();
     const skipAuth = process.env.SKIP_AUTH === 'true';

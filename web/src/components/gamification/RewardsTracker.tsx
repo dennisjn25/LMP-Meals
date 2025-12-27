@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Trophy, Star, Flame, Target, Gift, TrendingUp } from 'lucide-react';
+import { Trophy, Star, Flame, Target, Gift, TrendingUp, X } from 'lucide-react';
+import { tokens } from "@/lib/design-tokens";
 
 interface UserProgress {
     points: number;
@@ -56,26 +57,26 @@ export default function RewardsTracker() {
                     width: '60px',
                     height: '60px',
                     borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)',
-                    border: '3px solid #fff',
-                    boxShadow: '0 4px 20px rgba(251, 191, 36, 0.4), 0 0 40px rgba(251, 191, 36, 0.2)',
+                    background: `linear-gradient(135deg, ${tokens.colors.accent.light} 0%, ${tokens.colors.accent.DEFAULT} 100%)`,
+                    border: '3px solid white',
+                    boxShadow: tokens.shadows.glow,
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     zIndex: 999,
-                    transition: 'all 0.3s ease',
+                    transition: tokens.transitions.normal,
                     animation: 'pulse-glow 2s ease-in-out infinite'
                 }}
             >
-                <Trophy size={28} color="#fff" />
+                <Trophy size={28} color="white" />
                 {progress.points > 0 && (
                     <div style={{
                         position: 'absolute',
                         top: '-5px',
                         right: '-5px',
-                        background: '#ef4444',
-                        color: '#fff',
+                        background: tokens.colors.text.error,
+                        color: 'white',
                         borderRadius: '50%',
                         width: '24px',
                         height: '24px',
@@ -84,7 +85,7 @@ export default function RewardsTracker() {
                         justifyContent: 'center',
                         fontSize: '0.7rem',
                         fontWeight: 'bold',
-                        border: '2px solid #fff'
+                        border: '2px solid white'
                     }}>
                         {progress.level}
                     </div>
@@ -99,8 +100,8 @@ export default function RewardsTracker() {
                     right: '24px',
                     width: '360px',
                     maxHeight: '600px',
-                    background: 'linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%)',
-                    borderRadius: '16px',
+                    background: `linear-gradient(135deg, ${tokens.colors.surface.dark} 0%, #0a0a0a 100%)`,
+                    borderRadius: tokens.radius.xl,
                     boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1)',
                     zIndex: 998,
                     overflow: 'hidden',
@@ -108,12 +109,12 @@ export default function RewardsTracker() {
                 }}>
                     {/* Header */}
                     <div style={{
-                        background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)',
-                        padding: '20px',
-                        color: '#fff'
+                        background: `linear-gradient(135deg, ${tokens.colors.accent.light} 0%, ${tokens.colors.accent.DEFAULT} 100%)`,
+                        padding: tokens.spacing.lg,
+                        color: 'white'
                     }}>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-                            <h3 style={{ margin: 0, fontSize: '1.3rem', fontFamily: 'var(--font-heading)' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: tokens.spacing.sm }}>
+                            <h3 style={{ margin: 0, fontSize: '1.3rem', fontFamily: 'var(--font-heading)', fontWeight: 700 }}>
                                 REWARDS
                             </h3>
                             <button
@@ -121,7 +122,7 @@ export default function RewardsTracker() {
                                 style={{
                                     background: 'rgba(0,0,0,0.2)',
                                     border: 'none',
-                                    color: '#fff',
+                                    color: 'white',
                                     width: '28px',
                                     height: '28px',
                                     borderRadius: '50%',
@@ -132,7 +133,7 @@ export default function RewardsTracker() {
                                     justifyContent: 'center'
                                 }}
                             >
-                                ×
+                                <X size={16} />
                             </button>
                         </div>
                         <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>
@@ -141,8 +142,8 @@ export default function RewardsTracker() {
                     </div>
 
                     {/* Progress Bar */}
-                    <div style={{ padding: '20px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', color: '#e5e7eb', fontSize: '0.85rem' }}>
+                    <div style={{ padding: tokens.spacing.lg, borderBottom: `1px solid ${tokens.colors.border.dark}` }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', color: tokens.colors.text.inverseSecondary, fontSize: '0.85rem' }}>
                             <span>Progress to Level {progress.level + 1}</span>
                             <span>{Math.round(progressPercent)}%</span>
                         </div>
@@ -156,9 +157,9 @@ export default function RewardsTracker() {
                             <div style={{
                                 width: `${progressPercent}%`,
                                 height: '100%',
-                                background: 'linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%)',
+                                background: `linear-gradient(90deg, ${tokens.colors.accent.light} 0%, ${tokens.colors.accent.DEFAULT} 100%)`,
                                 transition: 'width 0.5s ease',
-                                boxShadow: '0 0 10px rgba(251, 191, 36, 0.5)'
+                                boxShadow: `0 0 10px ${tokens.colors.accent.light}`
                             }} />
                         </div>
                     </div>
@@ -167,48 +168,48 @@ export default function RewardsTracker() {
                     <div style={{
                         display: 'grid',
                         gridTemplateColumns: '1fr 1fr',
-                        gap: '12px',
-                        padding: '20px',
-                        borderBottom: '1px solid rgba(255,255,255,0.1)'
+                        gap: tokens.spacing.md,
+                        padding: tokens.spacing.lg,
+                        borderBottom: `1px solid ${tokens.colors.border.dark}`
                     }}>
-                        <StatCard icon={<Flame size={20} />} label="Streak" value={`${progress.currentStreak} weeks`} color="#ef4444" />
+                        <StatCard icon={<Flame size={20} />} label="Streak" value={`${progress.currentStreak} weeks`} color={tokens.colors.text.error} />
                         <StatCard icon={<Target size={20} />} label="This Week" value={`${progress.ordersThisWeek} orders`} color="#3b82f6" />
-                        <StatCard icon={<TrendingUp size={20} />} label="Total Orders" value={progress.totalOrders.toString()} color="#10b981" />
+                        <StatCard icon={<TrendingUp size={20} />} label="Total Orders" value={progress.totalOrders.toString()} color={tokens.colors.text.success} />
                         <StatCard icon={<Gift size={20} />} label="Rewards" value={`${achievements.filter(a => a.unlocked).length}/${achievements.length}`} color="#8b5cf6" />
                     </div>
 
                     {/* Achievements */}
-                    <div style={{ padding: '20px', maxHeight: '250px', overflowY: 'auto' }}>
-                        <h4 style={{ color: '#fff', fontSize: '0.9rem', marginBottom: '12px', fontFamily: 'var(--font-heading)' }}>
+                    <div style={{ padding: tokens.spacing.lg, maxHeight: '250px', overflowY: 'auto' }}>
+                        <h4 style={{ color: 'white', fontSize: '0.9rem', marginBottom: tokens.spacing.md, fontFamily: 'var(--font-heading)', fontWeight: 700 }}>
                             ACHIEVEMENTS
                         </h4>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: tokens.spacing.sm }}>
                             {achievements.map(achievement => (
                                 <div
                                     key={achievement.id}
                                     style={{
                                         display: 'flex',
                                         alignItems: 'center',
-                                        gap: '12px',
-                                        padding: '12px',
-                                        background: achievement.unlocked ? 'rgba(251, 191, 36, 0.1)' : 'rgba(255,255,255,0.05)',
-                                        borderRadius: '8px',
-                                        border: achievement.unlocked ? '1px solid rgba(251, 191, 36, 0.3)' : '1px solid rgba(255,255,255,0.1)',
+                                        gap: tokens.spacing.md,
+                                        padding: tokens.spacing.md,
+                                        background: achievement.unlocked ? `rgba(251, 191, 36, 0.1)` : 'rgba(255,255,255,0.05)',
+                                        borderRadius: tokens.radius.md,
+                                        border: achievement.unlocked ? `1px solid rgba(251, 191, 36, 0.3)` : `1px solid ${tokens.colors.border.dark}`,
                                         opacity: achievement.unlocked ? 1 : 0.5,
-                                        transition: 'all 0.3s ease'
+                                        transition: tokens.transitions.normal
                                     }}
                                 >
                                     <div style={{ fontSize: '1.5rem' }}>{achievement.icon}</div>
                                     <div style={{ flex: 1 }}>
-                                        <div style={{ color: '#fff', fontSize: '0.85rem', fontWeight: 600 }}>
+                                        <div style={{ color: 'white', fontSize: '0.85rem', fontWeight: 600 }}>
                                             {achievement.name}
                                         </div>
-                                        <div style={{ color: '#9ca3af', fontSize: '0.75rem' }}>
+                                        <div style={{ color: tokens.colors.text.inverseSecondary, fontSize: '0.75rem' }}>
                                             {achievement.description}
                                         </div>
                                     </div>
                                     {achievement.unlocked && (
-                                        <Star size={16} fill="#fbbf24" color="#fbbf24" />
+                                        <Star size={16} fill={tokens.colors.accent.DEFAULT} color={tokens.colors.accent.DEFAULT} />
                                     )}
                                 </div>
                             ))}
@@ -243,16 +244,16 @@ function StatCard({ icon, label, value, color }: { icon: React.ReactNode, label:
         <div style={{
             background: 'rgba(255,255,255,0.05)',
             padding: '12px',
-            borderRadius: '8px',
-            border: '1px solid rgba(255,255,255,0.1)'
+            borderRadius: tokens.radius.md,
+            border: `1px solid ${tokens.colors.border.dark}`
         }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
                 <div style={{ color }}>{icon}</div>
-                <div style={{ color: '#9ca3af', fontSize: '0.75rem', textTransform: 'uppercase' }}>
+                <div style={{ color: tokens.colors.text.inverseSecondary, fontSize: '0.75rem', textTransform: 'uppercase' }}>
                     {label}
                 </div>
             </div>
-            <div style={{ color: '#fff', fontSize: '1.1rem', fontWeight: 700 }}>
+            <div style={{ color: 'white', fontSize: '1.1rem', fontWeight: 700 }}>
                 {value}
             </div>
         </div>

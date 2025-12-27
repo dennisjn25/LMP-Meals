@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { Menu, X, LayoutDashboard, ShoppingBag, Truck, Users, Tag, DollarSign, UtensilsCrossed, Package, Home } from "lucide-react";
+import { Menu, X, LayoutDashboard, ShoppingBag, Truck, Users, Tag, DollarSign, UtensilsCrossed, Package, Home, Settings, ChefHat } from "lucide-react";
 import { tokens } from "@/lib/design-tokens";
 
 export default function AdminLayout({
@@ -109,6 +109,7 @@ export default function AdminLayout({
                     <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                         <NavItem href="/admin" active={pathname === '/admin'} icon={<LayoutDashboard size={20} />}>Dashboard</NavItem>
                         <NavItem href="/admin/orders" active={pathname?.startsWith('/admin/orders')} icon={<ShoppingBag size={20} />}>Orders</NavItem>
+                        <NavItem href="/admin/kitchen" active={pathname === '/admin/kitchen'} icon={<ChefHat size={20} />}>Kitchen</NavItem>
                         <NavItem href="/admin/deliveries" active={pathname?.startsWith('/admin/deliveries')} icon={<Truck size={20} />}>Deliveries</NavItem>
                         <NavItem href="/admin/meals" active={pathname?.startsWith('/admin/meals')} icon={<UtensilsCrossed size={20} />}>Meals</NavItem>
                         <NavItem href="/admin/inventory" active={pathname === '/admin/inventory'} icon={<Package size={20} />}>Inventory</NavItem>
@@ -116,6 +117,8 @@ export default function AdminLayout({
                         <NavItem href="/admin/customers" active={pathname === '/admin/customers'} icon={<Users size={20} />}>Customers</NavItem>
                         <NavItem href="/admin/promo-codes" active={pathname === '/admin/promo-codes'} icon={<Tag size={20} />}>Promo Codes</NavItem>
                         <NavItem href="/admin/finances" active={pathname === '/admin/finances'} icon={<DollarSign size={20} />}>Finances</NavItem>
+                        <div style={{ height: '1px', background: tokens.colors.border.light, margin: '12px 0' }}></div>
+                        <NavItem href="/admin/settings" active={pathname === '/admin/settings'} icon={<Settings size={20} />}>Settings</NavItem>
                     </nav>
 
                     <div style={{ flex: 1 }}></div>

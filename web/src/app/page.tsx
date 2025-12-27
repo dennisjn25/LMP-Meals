@@ -9,10 +9,12 @@ import AnimatedLogoBackground from "@/components/AnimatedLogoBackground";
 import ParticleBackground from "@/components/effects/ParticleBackground";
 import RewardsTracker from "@/components/gamification/RewardsTracker";
 import FeaturedMealsCarousel from "@/components/FeaturedMealsCarousel";
+import { tokens } from "@/lib/design-tokens";
+import { Button } from "@/components/ui/Button";
 
 export default function Home() {
   return (
-    <main>
+    <main style={{ background: tokens.colors.background }}>
       <Navbar />
       <RewardsTracker />
 
@@ -36,7 +38,7 @@ export default function Home() {
         <div className="container" style={{ position: 'relative', zIndex: 2, textAlign: 'center', color: 'white' }}>
 
           {/* Logo with Shimmer Effect */}
-          <div className="logo-shimmer-wrapper" style={{ marginBottom: '32px', display: 'inline-block', position: 'relative' }}>
+          <div className="logo-shimmer-wrapper" style={{ marginBottom: tokens.spacing.xl, display: 'inline-block', position: 'relative' }}>
             <Image
               src="https://ijcowpujufsrdikhegxu.supabase.co/storage/v1/object/public/assets/logo.png"
               alt="Liberty Meal Prep Logo"
@@ -51,11 +53,11 @@ export default function Home() {
           <div className="veteran-badge" style={{
             display: 'inline-flex',
             alignItems: 'center',
-            gap: '12px',
+            gap: tokens.spacing.sm,
             background: 'linear-gradient(135deg, rgba(220, 38, 38, 0.95) 0%, rgba(29, 78, 216, 0.95) 100%)',
             padding: '14px 28px',
-            borderRadius: '50px',
-            marginBottom: '24px',
+            borderRadius: tokens.radius.full,
+            marginBottom: tokens.spacing.lg,
             fontSize: '0.95rem',
             fontWeight: 800,
             letterSpacing: '0.12em',
@@ -70,8 +72,8 @@ export default function Home() {
           </div>
           <div style={{
             fontSize: '0.9rem',
-            color: '#e5e7eb',
-            marginBottom: '20px',
+            color: tokens.colors.text.inverseSecondary,
+            marginBottom: tokens.spacing.lg,
             fontWeight: 600,
             letterSpacing: '0.05em'
           }}>
@@ -81,9 +83,9 @@ export default function Home() {
           <h1 style={{
             fontSize: 'clamp(3rem, 6vw, 5rem)',
             lineHeight: 1.1,
-            marginBottom: '24px',
+            marginBottom: tokens.spacing.lg,
             textShadow: '0 4px 20px rgba(0,0,0,0.5)',
-            color: '#fff',
+            color: 'white',
             animation: 'fadeInUp 0.8s ease-out'
           }}>
             FRESH, HEALTHY MEALS<br />
@@ -93,8 +95,8 @@ export default function Home() {
           <p style={{
             fontSize: '1.25rem',
             maxWidth: '700px',
-            margin: '0 auto 40px auto',
-            color: '#e5e7eb',
+            margin: `0 auto ${tokens.spacing.xxl} auto`,
+            color: tokens.colors.text.inverseSecondary,
             textShadow: '0 2px 10px rgba(0,0,0,0.5)',
             animation: 'fadeInUp 0.8s ease-out 0.2s backwards'
           }}>
@@ -107,21 +109,21 @@ export default function Home() {
             style={{
               display: 'inline-block',
               background: 'rgba(251, 191, 36, 0.15)',
-              border: '2px solid rgba(251, 191, 36, 0.4)',
-              borderRadius: '12px',
+              border: `2px solid ${tokens.colors.accent.light}`,
+              borderRadius: tokens.radius.lg,
               padding: '12px 24px',
-              marginBottom: '16px',
+              marginBottom: tokens.spacing.md,
               animation: 'fadeInUp 0.8s ease-out 0.3s backwards, cool-fade 3s ease-in-out infinite'
             }}
           >
             <span style={{
-              color: '#fbbf24',
+              color: tokens.colors.accent.DEFAULT,
               fontSize: '0.95rem',
               fontWeight: 700,
               letterSpacing: '0.05em',
               display: 'flex',
               alignItems: 'center',
-              gap: '8px'
+              gap: tokens.spacing.sm
             }}>
               <TrendingUp size={18} />
               Menu Updates Every Thursday at 1AM
@@ -137,65 +139,65 @@ export default function Home() {
               display: 'inline-block',
               background: 'rgba(16, 185, 129, 0.15)',
               border: '2px solid rgba(16, 185, 129, 0.4)',
-              borderRadius: '12px',
+              borderRadius: tokens.radius.lg,
               padding: '12px 24px',
-              marginBottom: '32px',
+              marginBottom: tokens.spacing.xl,
               animation: 'fadeInUp 0.8s ease-out 0.4s backwards'
             }}
           >
             <span style={{
-              color: '#10b981',
+              color: tokens.colors.text.success,
               fontSize: '0.95rem',
               fontWeight: 700,
               letterSpacing: '0.05em',
               display: 'flex',
               alignItems: 'center',
-              gap: '8px'
+              gap: tokens.spacing.sm
             }}>
               <MapPin size={18} />
               Delivery Pick-Up Locations Available Soon
             </span>
           </div>
 
-
-
-          <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap', animation: 'fadeInUp 0.8s ease-out 0.4s backwards' }}>
-            <Link href="/menu" className="btn-black" style={{ fontSize: '1rem', padding: '16px 40px' }}>
-              Browse Our Menu →
+          <div style={{ display: 'flex', gap: tokens.spacing.md, justifyContent: 'center', flexWrap: 'wrap', animation: 'fadeInUp 0.8s ease-out 0.4s backwards' }}>
+            <Link href="/menu">
+              <Button size="lg" variant="primary">
+                Browse Our Menu →
+              </Button>
             </Link>
-            <Link href="/story" className="btn-outline" style={{ fontSize: '1rem', padding: '16px 40px' }}>
-              Our Story
+            <Link href="/story">
+              <Button size="lg" variant="outline" style={{ color: 'white', borderColor: 'rgba(255,255,255,0.2)' }}>
+                Our Story
+              </Button>
             </Link>
           </div>
-
-
         </div>
       </section>
 
       {/* FEATURES SECTION */}
-      <section style={{ padding: '100px 0', background: '#fff', position: 'relative' }}>
+      <section style={{ padding: '100px 0', background: 'white', position: 'relative' }}>
         <div className="container">
-          <h2 className="section-title" style={{ animation: 'fadeInUp 0.6s ease-out' }}>WHY CHOOSE LIBERTY MEAL PREP?</h2>
-          <p className="section-subtitle" style={{ animation: 'fadeInUp 0.6s ease-out 0.1s backwards' }}>Experience the difference quality makes</p>
+          <h2 className="section-title" style={{ animation: 'fadeInUp 0.6s ease-out', color: tokens.colors.text.primary, fontFamily: 'var(--font-heading)', fontSize: '2.5rem', fontWeight: 800, textAlign: 'center', marginBottom: tokens.spacing.sm }}>WHY CHOOSE LIBERTY MEAL PREP?</h2>
+          <p className="section-subtitle" style={{ animation: 'fadeInUp 0.6s ease-out 0.1s backwards', color: tokens.colors.text.secondary, textAlign: 'center', marginBottom: tokens.spacing.xxl }}>Experience the difference quality makes</p>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '40px' }}>
 
             <FeatureCard
-              icon={<Clock size={32} color="#fff" />}
+              icon={<Clock size={32} color="white" />}
               title="FRESH DAILY"
               text="All meals are prepared fresh daily with premium, locally-sourced ingredients. No preservatives, no compromises."
               delay={0.2}
             />
 
             <FeatureCard
-              icon={<Heart size={32} color="#fff" />}
+              icon={<Heart size={32} color="white" />}
               title="NUTRITIONAL BALANCE"
               text="Every meal is carefully crafted with optimal nutrition in mind. Perfect macros, vitamins, and minerals for your wellness journey."
               delay={0.3}
             />
 
             <FeatureCard
-              icon={<Truck size={32} color="#fff" />}
+              icon={<Truck size={32} color="white" />}
               title="CONVENIENT DELIVERY"
               text="Fast, reliable Sunday delivery within 25 miles of Scottsdale. Your meals arrive fresh and ready to enjoy."
               delay={0.4}
@@ -205,18 +207,16 @@ export default function Home() {
         </div>
       </section>
 
-
-
       {/* MEAL SHOWCASE SECTION */}
       <section style={{
         padding: '100px 0',
-        background: 'linear-gradient(135deg, #f8f9fa 0%, #e5e7eb 100%)',
+        background: `linear-gradient(135deg, ${tokens.colors.background} 0%, #e5e7eb 100%)`,
         position: 'relative',
         overflow: 'hidden'
       }}>
         <div className="container">
-          <h2 className="section-title">CRAFTED WITH CARE</h2>
-          <p className="section-subtitle">Every meal is a masterpiece of flavor and nutrition</p>
+          <h2 className="section-title" style={{ color: tokens.colors.text.primary, textAlign: 'center', fontFamily: 'var(--font-heading)', fontSize: '2.5rem', fontWeight: 800 }}>CRAFTED WITH CARE</h2>
+          <p className="section-subtitle" style={{ color: tokens.colors.text.secondary, textAlign: 'center', marginBottom: tokens.spacing.xxl }}>Every meal is a masterpiece of flavor and nutrition</p>
 
           <div style={{
             minHeight: '400px', // Prevent layout shift while loading
@@ -226,8 +226,10 @@ export default function Home() {
           </div>
 
           <div style={{ textAlign: 'center', marginTop: '50px' }}>
-            <Link href="/menu" className="btn-black" style={{ fontSize: '1.1rem', padding: '18px 48px' }}>
-              View Full Menu
+            <Link href="/menu">
+              <Button size="lg" variant="primary">
+                View Full Menu
+              </Button>
             </Link>
           </div>
         </div>
@@ -237,14 +239,14 @@ export default function Home() {
       <section style={{
         padding: '100px 0',
         background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%)',
-        color: '#fff',
+        color: 'white',
         position: 'relative',
         overflow: 'hidden'
       }}>
         <ParticleBackground density={25} colors={['rgba(251,191,36,0.2)', 'rgba(255,255,255,0.1)']} />
         <div className="container" style={{ position: 'relative', zIndex: 2 }}>
-          <h2 className="section-title" style={{ color: '#fff' }}>PREP DAY: BEHIND THE SCENES</h2>
-          <p className="section-subtitle" style={{ color: '#e5e7eb' }}>See the care and precision that goes into every meal</p>
+          <h2 className="section-title" style={{ color: 'white', textAlign: 'center', fontFamily: 'var(--font-heading)', fontSize: '2.5rem', fontWeight: 800 }}>PREP DAY: BEHIND THE SCENES</h2>
+          <p className="section-subtitle" style={{ color: tokens.colors.text.inverseSecondary, textAlign: 'center', marginBottom: tokens.spacing.xxl }}>See the care and precision that goes into every meal</p>
 
           <div style={{
             display: 'grid',
@@ -272,15 +274,15 @@ export default function Home() {
           <div style={{
             marginTop: '60px',
             padding: '40px',
-            background: 'rgba(251, 191, 36, 0.1)',
-            borderRadius: '16px',
-            border: '2px solid rgba(251, 191, 36, 0.3)',
+            background: tokens.colors.accent.light,
+            borderRadius: tokens.radius.xl,
+            border: `2px solid ${tokens.colors.accent.light}`,
             textAlign: 'center'
           }}>
-            <h3 className="text-outline-glow" style={{ fontSize: '1.8rem', marginBottom: '16px', fontFamily: 'var(--font-heading)' }}>
+            <h3 className="text-outline-glow" style={{ fontSize: '1.8rem', marginBottom: tokens.spacing.md, fontFamily: 'var(--font-heading)', color: 'white' }}>
               Veteran-Owned Excellence
             </h3>
-            <p style={{ fontSize: '1.1rem', color: '#e5e7eb', maxWidth: '800px', margin: '0 auto', lineHeight: '1.7' }}>
+            <p style={{ fontSize: '1.1rem', color: tokens.colors.text.inverseSecondary, maxWidth: '800px', margin: '0 auto', lineHeight: '1.7' }}>
               As a veteran-owned business, we bring unwavering precision and dedication to every meal we prepare.
               Our commitment to quality, discipline, and service excellence ensures you receive the best meal prep experience possible.
             </p>
@@ -289,11 +291,11 @@ export default function Home() {
       </section>
 
       {/* SOCIAL MEDIA SECTION */}
-      <section style={{ padding: '100px 0', background: '#fff' }}>
+      <section style={{ padding: '100px 0', background: 'white' }}>
         <div className="container">
           <div style={{ textAlign: 'center', marginBottom: '50px' }}>
-            <h2 className="section-title text-outline-glow">FOLLOW OUR JOURNEY</h2>
-            <p className="section-subtitle">Join our community on social media for daily meal inspiration, behind-the-scenes content, and exclusive offers</p>
+            <h2 className="section-title text-outline-glow" style={{ color: tokens.colors.text.primary, fontFamily: 'var(--font-heading)', fontSize: '2.5rem', fontWeight: 800 }}>FOLLOW OUR JOURNEY</h2>
+            <p className="section-subtitle" style={{ color: tokens.colors.text.secondary }}>Join our community on social media for daily meal inspiration, behind-the-scenes content, and exclusive offers</p>
           </div>
 
           <div style={{
@@ -327,7 +329,7 @@ export default function Home() {
           {/* Social Media Follow Buttons */}
           <div style={{
             display: 'flex',
-            gap: '20px',
+            gap: tokens.spacing.lg,
             justifyContent: 'center',
             flexWrap: 'wrap',
             marginTop: '40px'
@@ -343,8 +345,8 @@ export default function Home() {
                 fontSize: '1rem',
                 padding: '18px 40px',
                 background: 'linear-gradient(135deg, #E4405F 0%, #C13584 100%)',
-                color: '#fff',
-                borderRadius: '50px',
+                color: 'white',
+                borderRadius: tokens.radius.full,
                 fontWeight: 700,
                 textDecoration: 'none',
                 transition: 'all 0.3s ease',
@@ -368,8 +370,8 @@ export default function Home() {
                 fontSize: '1rem',
                 padding: '18px 40px',
                 background: 'linear-gradient(135deg, #000 0%, #333 100%)',
-                color: '#fff',
-                borderRadius: '50px',
+                color: 'white',
+                borderRadius: tokens.radius.full,
                 fontWeight: 700,
                 textDecoration: 'none',
                 transition: 'all 0.3s ease',
@@ -387,10 +389,10 @@ export default function Home() {
       </section>
 
       {/* TESTIMONIALS SECTION */}
-      <section style={{ padding: '100px 0', background: '#f9fafb' }}>
+      <section style={{ padding: '100px 0', background: tokens.colors.background }}>
         <div className="container">
-          <h2 className="section-title">WHAT OUR CUSTOMERS SAY</h2>
-          <p className="section-subtitle">Join thousands of satisfied customers</p>
+          <h2 className="section-title" style={{ color: tokens.colors.text.primary, textAlign: 'center', fontFamily: 'var(--font-heading)', fontSize: '2.5rem', fontWeight: 800 }}>WHAT OUR CUSTOMERS SAY</h2>
+          <p className="section-subtitle" style={{ color: tokens.colors.text.secondary, textAlign: 'center', marginBottom: tokens.spacing.xxl }}>Join thousands of satisfied customers</p>
 
           <div style={{
             display: 'grid',
@@ -420,10 +422,8 @@ export default function Home() {
         </div>
       </section>
 
-
-
       {/* BOTTOM STRIP */}
-      <section style={{ padding: '60px 0', borderTop: '1px solid #e5e7eb', background: '#f9fafb' }}>
+      <section style={{ padding: '60px 0', borderTop: `1px solid ${tokens.colors.border.light}`, background: tokens.colors.background }}>
         <div className="container">
           <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '60px' }}>
             <SmallFeature icon={<Award />} title="VETERAN OWNED" sub="Since 2023" />
@@ -485,12 +485,28 @@ export default function Home() {
 
 function FeatureCard({ icon, title, text, delay }: { icon: any, title: string, text: string, delay: number }) {
   return (
-    <div className="feature-card" style={{ animation: `fadeInUp 0.6s ease-out ${delay}s backwards` }}>
-      <div className="icon-box">
+    <div className="feature-card" style={{
+      animation: `fadeInUp 0.6s ease-out ${delay}s backwards`,
+      background: 'white',
+      padding: '32px',
+      borderRadius: tokens.radius.xl,
+      boxShadow: tokens.shadows.md,
+      textAlign: 'center'
+    }}>
+      <div className="icon-box" style={{
+        background: 'black',
+        width: '64px',
+        height: '64px',
+        borderRadius: '50%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        margin: '0 auto 24px auto'
+      }}>
         {icon}
       </div>
-      <h3 style={{ fontSize: '1.25rem', marginBottom: '16px' }}>{title}</h3>
-      <p style={{ color: '#6b7280', fontSize: '0.95rem' }}>{text}</p>
+      <h3 style={{ fontSize: '1.25rem', marginBottom: '16px', fontFamily: 'var(--font-heading)', fontWeight: 700 }}>{title}</h3>
+      <p style={{ color: tokens.colors.text.secondary, fontSize: '0.95rem', lineHeight: '1.6' }}>{text}</p>
     </div>
   )
 }
@@ -500,80 +516,47 @@ function SmallFeature({ icon, title, sub }: { icon: any, title: string, sub: str
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
       <div style={{
         marginBottom: '12px',
-        background: '#000',
-        color: '#fff',
+        background: 'black',
+        color: 'white',
         width: '40px',
         height: '40px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: '4px'
+        borderRadius: tokens.radius.sm
       }}>
         {icon}
       </div>
       <div style={{ fontWeight: 800, fontSize: '0.9rem', textTransform: 'uppercase', marginBottom: '4px' }}>{title}</div>
-      <div style={{ color: '#6b7280', fontSize: '0.8rem' }}>{sub}</div>
+      <div style={{ color: tokens.colors.text.secondary, fontSize: '0.8rem' }}>{sub}</div>
     </div>
   )
 }
 
-function FloatingStat({ number, label }: { number: string, label: string }) {
-  return (
-    <div style={{
-      background: 'rgba(255,255,255,0.1)',
-      backdropFilter: 'blur(10px)',
-      padding: '20px 30px',
-      borderRadius: '12px',
-      border: '1px solid rgba(255,255,255,0.2)',
-      boxShadow: '0 8px 32px rgba(0,0,0,0.3)'
-    }}>
-      <div style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '4px', color: '#fbbf24' }}>{number}</div>
-      <div style={{ fontSize: '0.85rem', color: '#e5e7eb', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</div>
-    </div>
-  );
-}
-
-
-
 function TestimonialCard({ name, role, text, rating }: { name: string, role: string, text: string, rating: number }) {
   return (
     <div style={{
-      background: '#fff',
+      background: 'white',
       padding: '30px',
-      borderRadius: '12px',
-      boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-      border: '1px solid #e5e7eb',
-      transition: 'all 0.3s ease'
+      borderRadius: tokens.radius.lg,
+      boxShadow: tokens.shadows.md,
+      border: `1px solid ${tokens.colors.border.light}`,
+      transition: tokens.transitions.normal,
+      textAlign: 'center'
     }}
       className="testimonial-card"
     >
-      <div style={{ display: 'flex', gap: '4px', marginBottom: '16px' }}>
+      <div style={{ display: 'flex', gap: '4px', marginBottom: '16px', justifyContent: 'center' }}>
         {[...Array(rating)].map((_, i) => (
-          <Star key={i} size={18} fill="#fbbf24" color="#fbbf24" />
+          <Star key={i} size={18} fill={tokens.colors.accent.DEFAULT} color={tokens.colors.accent.DEFAULT} />
         ))}
       </div>
-      <p style={{ color: '#374151', fontSize: '0.95rem', lineHeight: '1.6', marginBottom: '20px', fontStyle: 'italic' }}>
+      <p style={{ color: tokens.colors.text.secondary, fontSize: '0.95rem', lineHeight: '1.6', marginBottom: '20px', fontStyle: 'italic' }}>
         "{text}"
       </p>
       <div>
-        <div style={{ fontWeight: 700, fontSize: '0.95rem', color: '#000' }}>{name}</div>
-        <div style={{ color: '#6b7280', fontSize: '0.85rem' }}>{role}</div>
-      </div>
-    </div>
-  );
-}
-
-function StatCounter({ icon, number, label }: { icon: React.ReactNode, number: string, label: string }) {
-  return (
-    <div style={{ animation: 'fadeInUp 0.8s ease-out' }}>
-      <div style={{ color: '#fbbf24', marginBottom: '12px', display: 'flex', justifyContent: 'center' }}>
-        {icon}
-      </div>
-      <div style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '8px', fontFamily: 'var(--font-heading)' }}>
-        {number}
-      </div>
-      <div style={{ color: '#9ca3af', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-        {label}
+        <div style={{ fontWeight: 700, fontSize: '0.95rem', color: tokens.colors.text.primary }}>{name}</div>
+        <div style={{ color: tokens.colors.text.secondary, fontSize: '0.85rem' }}>{role}</div>
       </div>
     </div>
   );
@@ -582,16 +565,16 @@ function StatCounter({ icon, number, label }: { icon: React.ReactNode, number: s
 function PrepDayCard({ image, title, description }: { image: string, title: string, description: string }) {
   return (
     <div style={{
-      background: 'rgba(255,255,255,0.05)',
-      borderRadius: '16px',
+      background: tokens.colors.surface.medium,
+      borderRadius: tokens.radius.xl,
       overflow: 'hidden',
-      border: '1px solid rgba(255,255,255,0.1)',
-      transition: 'all 0.3s ease',
+      border: `1px solid ${tokens.colors.border.dark}`,
+      transition: tokens.transitions.normal,
       cursor: 'pointer'
     }}
       className="prep-day-card"
     >
-      <div style={{ position: 'relative', height: '250px', background: '#1a1a1a' }}>
+      <div style={{ position: 'relative', height: '250px', background: tokens.colors.surface.dark }}>
         <Image
           src={image}
           alt={title}
@@ -600,10 +583,10 @@ function PrepDayCard({ image, title, description }: { image: string, title: stri
         />
       </div>
       <div style={{ padding: '24px' }}>
-        <h3 style={{ fontSize: '1.3rem', marginBottom: '12px', fontFamily: 'var(--font-heading)', color: '#fbbf24' }}>
+        <h3 style={{ fontSize: '1.3rem', marginBottom: '12px', fontFamily: 'var(--font-heading)', color: tokens.colors.accent.DEFAULT }}>
           {title}
         </h3>
-        <p style={{ color: '#d1d5db', fontSize: '0.95rem', lineHeight: '1.6' }}>
+        <p style={{ color: tokens.colors.text.inverseSecondary, fontSize: '0.95rem', lineHeight: '1.6' }}>
           {description}
         </p>
       </div>
@@ -615,15 +598,15 @@ function InstagramPost({ image, likes, caption }: { image: string, likes: string
   return (
     <div style={{
       position: 'relative',
-      borderRadius: '12px',
+      borderRadius: tokens.radius.lg,
       overflow: 'hidden',
       cursor: 'pointer',
-      transition: 'all 0.3s ease',
-      boxShadow: '0 4px 15px rgba(0,0,0,0.1)'
+      transition: tokens.transitions.normal,
+      boxShadow: tokens.shadows.sm
     }}
       className="instagram-post"
     >
-      <div style={{ position: 'relative', paddingBottom: '100%', background: '#f3f4f6' }}>
+      <div style={{ position: 'relative', paddingBottom: '100%', background: tokens.colors.background }}>
         <Image
           src={image}
           alt={caption}
@@ -637,7 +620,7 @@ function InstagramPost({ image, likes, caption }: { image: string, likes: string
           right: 0,
           background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%)',
           padding: '40px 16px 16px 16px',
-          color: '#fff',
+          color: 'white',
           opacity: 0,
           transition: 'opacity 0.3s ease'
         }}
