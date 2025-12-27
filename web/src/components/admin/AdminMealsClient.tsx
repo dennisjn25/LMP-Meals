@@ -340,8 +340,18 @@ export default function AdminMealsClient({ initialMeals }: { initialMeals: Meal[
                                 e.currentTarget.style.boxShadow = 'none';
                             }}
                         >
-                            <div style={{ height: '220px', position: 'relative' }}>
-                                <Image src={meal.image} alt={meal.title} fill style={{ objectFit: 'cover' }} />
+                            <div style={{ height: '220px', position: 'relative', background: 'rgba(255,255,255,0.05)' }}>
+                                <Image
+                                    src={meal.image}
+                                    alt={meal.title}
+                                    fill
+                                    style={{ objectFit: 'cover' }}
+                                    onError={(e) => {
+                                        // Fallback to placeholder if image fails to load
+                                        const target = e.target as HTMLImageElement;
+                                        target.src = '/meals/meal-1.jpg';
+                                    }}
+                                />
                                 <div style={{
                                     position: 'absolute',
                                     top: 16,
