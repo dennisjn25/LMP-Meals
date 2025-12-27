@@ -5,23 +5,54 @@
   --surface: #ffffff;
   /* Pure White */
 
+  /* Core Colors */
+  --primary: #000000;
+  --primary-inverse: #ffffff;
+  --accent: #fbbf24;
+  --accent-hover: #f59e0b;
+  --accent-light: rgba(251, 191, 36, 0.1);
+
+  /* Text Colors */
   --foreground: #000000;
   /* Pure Black for strong contrast */
   --text-body: #374151;
   /* Dark Gray for readability */
-  --text-muted: #6b7280;
-  /* Medium Gray */
+  --text-muted: #64748b;
+  /* Better contrast secondary text */
+  --text-inverse: #ffffff;
+  --text-inverse-muted: #94a3b8;
 
-  --primary: #000000;
-  --primary-inverse: #ffffff;
+  /* Status Colors */
+  --error: #ef4444;
+  --success: #10b981;
+  --warning: #f59e0b;
 
+  /* Borders */
   --border-light: #e5e7eb;
   --border-medium: #d1d5db;
+  --border-dark: rgba(255, 255, 255, 0.1);
 
+  /* Typography */
   --font-heading: 'Oswald', sans-serif;
   --font-body: 'Inter', sans-serif;
 
+  /* Layout */
   --container-width: 1280px;
+  --header-height: 80px;
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+
+  /* Radii */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
 }
 
 * {

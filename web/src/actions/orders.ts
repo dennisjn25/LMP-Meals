@@ -2,12 +2,13 @@
 
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
-import { sendOrderConfirmationEmail, sendAdminOrderNotification } from "@/lib/email";
+import { sendOrderConfirmationEmail, sendAdminOrderNotification, sendOrderStatusUpdateEmail } from "@/lib/email";
 import { auth } from "@/auth";
 import { syncData } from "@/lib/quickbooks-sync";
-import { square } from "@/lib/square";
+import { square } from "@/lib/square"; // Keep this if used
 import { randomUUID } from "crypto";
 import bcrypt from "bcryptjs";
+
 
 
 // Generate unique order number
@@ -407,10 +408,28 @@ export async function updateOrderStatus(id: string, status: string) {
         throw new Error("Unauthorized");
     }
 
+    // Fetch order first to get details for email
+    const order = await db.order.findUnique({ where: { id } });
+    if (!order) throw new Error("Order not found");
+
     await db.order.update({
         where: { id },
         data: { status }
     });
+
+    // Send Status Update Email
+    try {
+        if (order.customerEmail) {
+            await sendOrderStatusUpdateEmail({
+                customerEmail: order.customerEmail,
+                customerName: order.customerName,
+                orderNumber: order.orderNumber,
+                newStatus: status
+            });
+        }
+    } catch (emailError) {
+        console.error("Failed to send status update email:", emailError);
+    }
 
     // Real-time QuickBooks Sync
     try {
@@ -420,6 +439,35 @@ export async function updateOrderStatus(id: string, status: string) {
     }
 
     revalidatePath("/admin/orders");
+}
+
+export async function bulkUpdateOrderStatus(ids: string[], status: string) {
+    const session = await auth();
+    const skipAuth = process.env.SKIP_AUTH === 'true';
+
+    // @ts-ignore
+    if (!skipAuth && session?.user?.role !== "ADMIN") {
+        return { error: "Unauthorized" };
+    }
+
+    try {
+        // We update one by one to ensure emails triggers and QB sync happen for each
+        // In a high-volume system, we might optimize this, but for now safety & correctness > speed
+        const results = await Promise.allSettled(
+            ids.map(id => updateOrderStatus(id, status))
+        );
+
+        const failures = results.filter(r => r.status === 'rejected');
+        if (failures.length > 0) {
+            console.error("Some bulk updates failed:", failures);
+            return { success: true, warning: `${failures.length} updates failed` };
+        }
+
+        revalidatePath("/admin/orders");
+        return { success: true };
+    } catch (e: any) {
+        return { error: e.message || "Failed to bulk update orders" };
+    }
 }
 
 export async function createAdminOrder(data: {
@@ -519,6 +567,13 @@ export async function updateAdminOrder(id: string, data: {
                 });
             }
         });
+
+        // Trigger QB Sync
+        try {
+            await syncData();
+        } catch (e) {
+            console.error("QB Sync failed after updateAdminOrder", e);
+        }
 
         revalidatePath("/admin/orders");
         return { success: true };

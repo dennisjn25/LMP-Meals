@@ -1,13 +1,16 @@
 "use client";
 
-import { useTransition } from "react";
+import { useTransition, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { login } from "@/actions/auth"; // We will create this
-import { useState } from "react";
+import { login } from "@/actions/auth";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
+import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
+import { tokens } from "@/lib/design-tokens";
 
 const LoginSchema = z.object({
     email: z.string().email(),
@@ -43,69 +46,84 @@ export default function LoginForm() {
     };
 
     return (
-        <div className="glass-panel" style={{ padding: '40px', maxWidth: '400px', margin: '0 auto' }}>
-            <h2 style={{ textAlign: 'center', marginBottom: '20px', fontSize: '1.5rem' }}>WELCOME BACK</h2>
+        <Card glass style={{ maxWidth: '450px', width: '100%', margin: '0 auto', border: `1px solid ${tokens.colors.border.light}` }}>
+            <CardHeader style={{ textAlign: 'center', marginBottom: '24px' }}>
+                <CardTitle style={{ fontSize: '1.75rem' }}>WELCOME BACK</CardTitle>
+                <div style={{ color: tokens.colors.text.secondary, fontSize: '0.9rem' }}>Sign in to manage your meal prep</div>
+            </CardHeader>
 
-            <form onSubmit={form.handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', color: '#6b7280' }}>Email</label>
-                    <input
-                        {...form.register("email")}
+            <CardContent>
+                <form onSubmit={form.handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <Input
+                        label="Email"
                         type="email"
                         disabled={isPending}
-                        style={{ width: '100%', padding: '12px', background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '4px' }}
+                        error={form.formState.errors.email?.message}
+                        placeholder="you@example.com"
+                        {...form.register("email")}
                     />
-                </div>
-                <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', color: '#6b7280' }}>Password</label>
-                    <input
-                        {...form.register("password")}
-                        type="password"
-                        disabled={isPending}
-                        style={{ width: '100%', padding: '12px', background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '4px' }}
-                    />
-                    <div style={{ textAlign: 'right', marginTop: '8px' }}>
-                        <Link href="/auth/reset" style={{ fontSize: '0.8rem', color: '#000', textDecoration: 'underline' }}>
-                            Forgot Password?
-                        </Link>
+
+                    <div>
+                        <Input
+                            label="Password"
+                            type="password"
+                            disabled={isPending}
+                            error={form.formState.errors.password?.message}
+                            placeholder="••••••••"
+                            {...form.register("password")}
+                        />
+                        <div style={{ textAlign: 'right', marginTop: '-8px', marginBottom: '16px' }}>
+                            <Link href="/auth/reset" style={{ fontSize: '0.8rem', color: tokens.colors.text.primary, textDecoration: 'underline' }}>
+                                Forgot Password?
+                            </Link>
+                        </div>
                     </div>
+
+                    {error && (
+                        <div style={{
+                            padding: '12px',
+                            background: 'rgba(239, 68, 68, 0.1)',
+                            color: '#dc2626',
+                            fontSize: '0.9rem',
+                            borderRadius: '8px',
+                            textAlign: 'center',
+                            fontWeight: 500
+                        }}>
+                            {error}
+                        </div>
+                    )}
+
+                    <Button
+                        type="submit"
+                        disabled={isPending}
+                        isLoading={isPending}
+                        fullWidth
+                        size="lg"
+                    >
+                        LOGIN
+                    </Button>
+                </form>
+
+                <div style={{ margin: '24px 0', textAlign: 'center', position: 'relative' }}>
+                    <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, height: '1px', background: tokens.colors.border.light }}></div>
+                    <span style={{ position: 'relative', background: 'white', padding: '0 12px', color: tokens.colors.text.secondary, fontSize: '0.85rem' }}>Or continue with</span>
                 </div>
 
-                {error && <div style={{ color: 'red', fontSize: '0.9rem', textAlign: 'center' }}>{error}</div>}
-
-                <button
-                    type="submit"
-                    disabled={isPending}
-                    className="btn-black"
-                    style={{ width: '100%', textAlign: 'center', justifyContent: 'center' }}
+                <Button
+                    variant="outline"
+                    fullWidth
+                    onClick={() => signIn("google")}
+                    type="button"
+                    style={{ background: 'white', borderColor: tokens.colors.border.light }}
                 >
-                    {isPending ? "Logging in..." : "LOGIN"}
-                </button>
-            </form>
+                    <span style={{ fontSize: '1.2rem', marginRight: '8px' }}>G</span> Google
+                </Button>
 
-            <div style={{ margin: '20px 0', textAlign: 'center', color: '#9ca3af', fontSize: '0.9rem' }}>Or continue with</div>
-
-            <button
-                type="button"
-                onClick={() => signIn("google")}
-                style={{
-                    width: '100%',
-                    padding: '12px',
-                    border: '1px solid #e5e7eb',
-                    background: '#fff',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '10px',
-                    cursor: 'pointer'
-                }}
-            >
-                <span style={{ fontSize: '1.2rem' }}>G</span> Google
-            </button>
-
-            <div style={{ marginTop: '20px', textAlign: 'center', fontSize: '0.9rem' }}>
-                Don't have an account? <Link href="/auth/register" style={{ fontWeight: 700 }}>Sign Up</Link>
-            </div>
-        </div>
+                <div style={{ marginTop: '24px', textAlign: 'center', fontSize: '0.9rem', color: tokens.colors.text.secondary }}>
+                    Don't have an account? <Link href="/auth/register" style={{ fontWeight: 700, color: tokens.colors.text.primary }}>Sign Up</Link>
+                </div>
+            </CardContent>
+        </Card>
     );
 }
+

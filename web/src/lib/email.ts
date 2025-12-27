@@ -455,3 +455,96 @@ export async function sendAdminOrderNotification({
         return { success: false, error };
     }
 }
+
+// Send order status update email
+export async function sendOrderStatusUpdateEmail({
+    customerEmail,
+    customerName,
+    orderNumber,
+    newStatus,
+}: {
+    customerEmail: string;
+    customerName: string;
+    orderNumber: string;
+    newStatus: string;
+}) {
+    const statusMessages: Record<string, { subject: string; message: string }> = {
+        'COMPLETED': {
+            subject: `Order #${orderNumber} is Ready! 👨‍🍳`,
+            message: `Great news! Your order #${orderNumber} has been prepared and is ready for delivery.`
+        },
+        'DELIVERED': {
+            subject: `Order #${orderNumber} has been Delivered! 📦`,
+            message: `Your meals have been delivered successfully! Please check your doorstep.`
+        },
+        'CANCELLED': {
+            subject: `Order #${orderNumber} Cancelled 🛑`,
+            message: `Your order #${orderNumber} has been cancelled. If you have any questions, please reply to this email.`
+        }
+    };
+
+    const statusInfo = statusMessages[newStatus];
+    if (!statusInfo) return; // Don't send emails for other statuses like PENDING/PAID (covered by other flows)
+
+    const mailOptions = {
+        from: `"Liberty Meal Prep" <${process.env.GMAIL_USER}>`,
+        to: customerEmail,
+        subject: `${statusInfo.subject} - Liberty Meal Prep`,
+        html: `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <style>
+                    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                    .header { background: #000; color: #fff; padding: 20px; text-align: center; }
+                    .content { background: #f9f9f9; padding: 30px; border: 1px solid #ddd; }
+                    .button { display: inline-block; padding: 12px 24px; background: #000; color: #fff; text-decoration: none; border-radius: 4px; margin-top: 20px; font-weight: bold; }
+                    .footer { text-align: center; margin-top: 20px; color: #888; font-size: 12px; }
+                    .status-badge { display: inline-block; padding: 6px 12px; background: #fbbf24; color: #000; font-weight: bold; border-radius: 4px; text-transform: uppercase; }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1>🍽️ Liberty Meal Prep</h1>
+                        <p>Order Update</p>
+                    </div>
+                    <div class="content">
+                        <h2>Hi ${customerName},</h2>
+                        <p>${statusInfo.message}</p>
+                        
+                        <div style="margin: 20px 0; padding: 15px; background: #fff; border-left: 4px solid #fbbf24;">
+                            <strong>Order #:</strong> ${orderNumber}<br>
+                            <strong>New Status:</strong> <span class="status-badge">${newStatus}</span>
+                        </div>
+
+                        ${newStatus === 'DELIVERED' ? `
+                        <p><strong>Did you love your meals?</strong><br>
+                        We'd love to hear your feedback! Reply to this email and let us know.</p>
+                        ` : ''}
+
+                        <p>Thank you for choosing Liberty Meal Prep!</p>
+                        <div style="text-align: center;">
+                             <a href="https://libertymealprep.com" class="button">Visit Store</a>
+                        </div>
+                    </div>
+                    <div class="footer">
+                        <p>Liberty Meal Prep - Veteran Owned 🇺🇸</p>
+                        <p>Scottsdale, Arizona</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+        `,
+    };
+
+    try {
+        const info = await transporter.sendMail(mailOptions);
+        console.log(`✅ Status update email (${newStatus}) sent:`, info.messageId);
+        return { success: true, messageId: info.messageId };
+    } catch (error) {
+        console.error('❌ Error sending status update email:', error);
+        return { success: false, error };
+    }
+}

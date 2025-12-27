@@ -1,6 +1,6 @@
 "use client";
 
-import { updateOrderStatus, createAdminOrder, updateAdminOrder, deleteOrder } from "@/actions/orders";
+import { updateOrderStatus, createAdminOrder, updateAdminOrder, deleteOrder, bulkUpdateOrderStatus } from "@/actions/orders";
 import { utils, writeFile } from 'xlsx';
 import { useState, useMemo } from "react";
 import { ChevronDown, ChevronUp, Package, Plus, X, Trash2, Edit2, Loader2, Search, Filter, ArrowUpDown, ChevronLeft, ChevronRight, Download } from "lucide-react";
@@ -43,6 +43,7 @@ export default function AdminOrderList({ initialOrders, meals }: { initialOrders
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [orderToDelete, setOrderToDelete] = useState<Order | null>(null);
     const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
 
     // Filter & Search State
     const [searchQuery, setSearchQuery] = useState("");
@@ -50,6 +51,9 @@ export default function AdminOrderList({ initialOrders, meals }: { initialOrders
     const [sortConfig, setSortConfig] = useState<{ key: keyof Order; direction: 'asc' | 'desc' } | null>({ key: 'createdAt', direction: 'desc' });
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
+
+    // Bulk Selection State
+    const [selectedOrders, setSelectedOrders] = useState<Set<string>>(new Set());
 
     // Derived State
     const filteredOrders = useMemo(() => {
@@ -97,6 +101,41 @@ export default function AdminOrderList({ initialOrders, meals }: { initialOrders
 
     const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
 
+    // Bulk Handlers
+    const toggleOrderSelection = (id: string) => {
+        const newSelected = new Set(selectedOrders);
+        if (newSelected.has(id)) {
+            newSelected.delete(id);
+        } else {
+            newSelected.add(id);
+        }
+        setSelectedOrders(newSelected);
+    };
+
+    const toggleAllSelection = () => {
+        if (selectedOrders.size === paginatedOrders.length) {
+            setSelectedOrders(new Set());
+        } else {
+            const newSelected = new Set(paginatedOrders.map(o => o.id));
+            setSelectedOrders(newSelected);
+        }
+    };
+
+    const handleBulkStatusChange = async (status: string) => {
+        if (selectedOrders.size === 0) return;
+        setLoading(true);
+        const res = await bulkUpdateOrderStatus(Array.from(selectedOrders), status);
+        setLoading(false);
+        if (res.success) {
+            toast.success(`Updated ${selectedOrders.size} orders to ${status}`);
+            setSelectedOrders(new Set());
+            if (res.warning) toast.warning(res.warning);
+            window.location.reload(); // Reload to reflect changes
+        } else {
+            toast.error(res.error || "Failed to update orders");
+        }
+    };
+
     const handleSort = (key: keyof Order) => {
         let direction: 'asc' | 'desc' = 'asc';
         if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
@@ -117,7 +156,7 @@ export default function AdminOrderList({ initialOrders, meals }: { initialOrders
         status: "PENDING",
         items: [] as { mealId: string; quantity: number; price: number }[]
     });
-    const [loading, setLoading] = useState(false);
+
 
     const handleStatusChange = async (id: string, newStatus: string) => {
         toast.promise(updateOrderStatus(id, newStatus), {
@@ -270,6 +309,28 @@ export default function AdminOrderList({ initialOrders, meals }: { initialOrders
     };
 
     return <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+        {/* Bulk Actions Bar */}
+        {selectedOrders.size > 0 && (
+            <div style={{
+                position: 'fixed', bottom: '32px', left: '50%', transform: 'translateX(-50%)',
+                background: '#0B0E14', border: '1px solid #fbbf24', borderRadius: '16px',
+                padding: '12px 24px', display: 'flex', alignItems: 'center', gap: '20px', zIndex: 100,
+                boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
+            }}>
+                <div style={{ color: 'white', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div style={{ background: '#fbbf24', color: 'black', width: '24px', height: '24px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem', fontWeight: 800 }}>
+                        {selectedOrders.size}
+                    </div>
+                </div>
+                <div style={{ width: '1px', height: '20px', background: 'rgba(255,255,255,0.1)' }} />
+                <div style={{ display: 'flex', gap: '8px' }}>
+                    <button onClick={() => handleBulkStatusChange('PAID')} disabled={loading} style={{ padding: '6px 12px', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: 'none', color: '#fbbf24', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600 }}>Mark Paid</button>
+                    <button onClick={() => handleBulkStatusChange('COMPLETED')} disabled={loading} style={{ padding: '6px 12px', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: 'none', color: '#fbbf24', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600 }}>Ready</button>
+                    <button onClick={() => handleBulkStatusChange('DELIVERED')} disabled={loading} style={{ padding: '6px 12px', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: 'none', color: '#fbbf24', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600 }}>Delivered</button>
+                    <button onClick={() => setSelectedOrders(new Set())} style={{ padding: '6px 12px', borderRadius: '8px', background: 'transparent', border: '1px solid rgba(255,255,255,0.2)', color: '#94a3b8', cursor: 'pointer', fontSize: '0.85rem' }}>Cancel</button>
+                </div>
+            </div>
+        )}
         {/* Toolbar */}
         <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
 
@@ -304,6 +365,12 @@ export default function AdminOrderList({ initialOrders, meals }: { initialOrders
 
             {/* Actions */}
             <div style={{ display: 'flex', gap: '12px' }}>
+                <button
+                    onClick={toggleAllSelection}
+                    style={{ padding: '8px 12px', background: selectedOrders.size > 0 ? 'rgba(251, 191, 36, 0.1)' : 'rgba(255,255,255,0.05)', border: selectedOrders.size > 0 ? '1px solid #fbbf24' : '1px solid var(--glass-border)', color: selectedOrders.size > 0 ? '#fbbf24' : 'white', borderRadius: '12px', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem' }}
+                >
+                    {selectedOrders.size > 0 ? 'Select None' : 'Select All'}
+                </button>
                 {/* Sort Controls (Visual only for now, can be expanded) */}
                 <div style={{ display: 'flex', background: 'rgba(255,255,255,0.05)', borderRadius: '12px', padding: '4px', border: '1px solid var(--glass-border)' }}>
                     <button
@@ -363,7 +430,15 @@ export default function AdminOrderList({ initialOrders, meals }: { initialOrders
             <>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     {paginatedOrders.map(order => (
-                        <OrderRow key={order.id} order={order} onStatusChange={handleStatusChange} onEdit={openEdit} onDelete={openDeleteModal} />
+                        <OrderRow
+                            key={order.id}
+                            order={order}
+                            onStatusChange={handleStatusChange}
+                            onEdit={openEdit}
+                            onDelete={openDeleteModal}
+                            selected={selectedOrders.has(order.id)}
+                            onSelect={() => toggleOrderSelection(order.id)}
+                        />
                     ))}
                 </div>
 
@@ -602,7 +677,7 @@ export default function AdminOrderList({ initialOrders, meals }: { initialOrders
 }
 
 
-function OrderRow({ order, onStatusChange, onEdit, onDelete }: { order: Order, onStatusChange: (id: string, s: string) => void, onEdit: (o: Order) => void, onDelete: (o: Order) => void }) {
+function OrderRow({ order, onStatusChange, onEdit, onDelete, selected, onSelect }: { order: Order, onStatusChange: (id: string, s: string) => void, onEdit: (o: Order) => void, onDelete: (o: Order) => void, selected: boolean, onSelect: () => void }) {
     const [expanded, setExpanded] = useState(false);
 
     const statusColors: any = {
@@ -617,9 +692,10 @@ function OrderRow({ order, onStatusChange, onEdit, onDelete }: { order: Order, o
         <div style={{
             background: 'rgba(255,255,255,0.03)',
             borderRadius: '20px',
-            border: '1px solid rgba(255,255,255,0.08)',
+            border: selected ? '1px solid #fbbf24' : '1px solid rgba(255,255,255,0.08)',
+            marginBottom: '16px',
             overflow: 'hidden',
-            transition: 'all 0.3s ease'
+            transition: 'all 0.2s'
         }}>
             {/* Header Row */}
             <div
@@ -634,6 +710,11 @@ function OrderRow({ order, onStatusChange, onEdit, onDelete }: { order: Order, o
                     flexWrap: 'wrap'
                 }}
             >
+                {/* Checkbox */}
+                <div onClick={(e) => { e.stopPropagation(); onSelect(); }} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: '24px', width: '24px', height: '24px', borderRadius: '6px', border: selected ? 'none' : '2px solid rgba(255,255,255,0.2)', background: selected ? '#fbbf24' : 'transparent', cursor: 'pointer', transition: 'all 0.2s' }}>
+                    {selected && <div style={{ width: '10px', height: '10px', background: 'black', borderRadius: '2px' }} />}
+                </div>
+
                 <div style={{ width: '120px' }}>
                     <div style={{ fontSize: '0.75rem', color: '#64748b', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 700 }}>Order #</div>
                     <div style={{ color: 'white', fontFamily: 'monospace' }}>{order.id.slice(-6)}</div>

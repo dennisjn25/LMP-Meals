@@ -5,9 +5,11 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { ShoppingCart, Menu, X } from 'lucide-react';
+import { ShoppingCart, Menu, X, Home, FileText, BookOpen } from 'lucide-react';
 import { useSession, signOut } from "next-auth/react";
 import { useCart } from "@/context/CartContext";
+import { Button } from "@/components/ui/Button";
+import { tokens } from "@/lib/design-tokens";
 
 export default function Navbar() {
     const pathname = usePathname();
@@ -18,9 +20,9 @@ export default function Navbar() {
     return (
         <>
             <nav style={{
-                background: 'rgba(11, 14, 20, 0.95)',
+                background: tokens.colors.surface.dark, // Keep dark for nav
                 backdropFilter: 'blur(10px)',
-                borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+                borderBottom: `1px solid ${tokens.colors.border.dark}`,
                 height: '80px',
                 position: 'fixed',
                 top: 0,
@@ -31,7 +33,7 @@ export default function Navbar() {
                 alignItems: 'center',
                 paddingTop: 'env(safe-area-inset-top)'
             }}>
-                <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', maxWidth: '1280px', margin: '0 auto', padding: '0 24px' }}>
 
                     {/* Left: Logo */}
                     <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '12px', zIndex: 1001 }}>
@@ -42,7 +44,7 @@ export default function Navbar() {
                             <span className="logo-text" style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '1.2rem', letterSpacing: '-0.02em', color: '#fff' }}>
                                 Liberty Meal Prep
                             </span>
-                            <span className="logo-sub" style={{ fontSize: '0.65rem', color: '#fbbf24', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                            <span className="logo-sub" style={{ fontSize: '0.65rem', color: tokens.colors.accent.DEFAULT, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                                 Veteran Owned
                             </span>
                         </div>
@@ -50,21 +52,16 @@ export default function Navbar() {
 
                     {/* Center: Desktop Navigation */}
                     <div className="desktop-nav" style={{ display: 'flex', gap: '8px' }}>
-                        <Link href="/" className={`nav-btn ${pathname === '/' ? 'active' : ''}`}>
-                            <span>🏠</span> HOME
-                        </Link>
-                        <Link href="/menu" className={`nav-btn ${pathname === '/menu' ? 'active' : ''}`}>
-                            <span>📄</span> MENU
-                        </Link>
-                        <Link href="/story" className={`nav-btn ${pathname === '/story' ? 'active' : ''}`}>
-                            <span>📖</span> OUR STORY
-                        </Link>
+                        <NavLink href="/" active={pathname === '/'} icon={<Home size={16} />}>HOME</NavLink>
+                        <NavLink href="/menu" active={pathname === '/menu'} icon={<FileText size={16} />}>MENU</NavLink>
+                        <NavLink href="/story" active={pathname === '/story'} icon={<BookOpen size={16} />}>OUR STORY</NavLink>
                     </div>
 
                     {/* Right: Actions */}
                     <div className="desktop-actions" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                         <button
                             onClick={toggleCart}
+                            aria-label="Open cart"
                             style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '8px', position: 'relative' }}
                         >
                             <ShoppingCart size={24} color="#fff" />
@@ -73,7 +70,7 @@ export default function Navbar() {
                                     position: 'absolute',
                                     top: '-2px',
                                     right: '-2px',
-                                    background: '#fbbf24',
+                                    background: tokens.colors.accent.DEFAULT,
                                     color: '#000',
                                     fontSize: '0.7rem',
                                     fontWeight: 700,
@@ -91,27 +88,30 @@ export default function Navbar() {
 
                         {session?.user ? (
                             <>
-                                <Link href={session.user.role === "ADMIN" ? "/admin" : "/dashboard"} className="nav-btn" style={{ background: 'rgba(255,255,255,0.1)', color: '#fff' }}>
-                                    {(session.user.role === "ADMIN" ? "ADMIN" : "DASHBOARD")}
+                                <Link href={session.user.role === "ADMIN" ? "/admin" : "/dashboard"}>
+                                    <Button variant="ghost" size="sm" style={{ color: 'white', border: `1px solid ${tokens.colors.border.dark}` }}>
+                                        {(session.user.role === "ADMIN" ? "ADMIN" : "DASHBOARD")}
+                                    </Button>
                                 </Link>
-                                <button
+                                <Button
                                     onClick={() => signOut()}
-                                    className="btn-black"
-                                    style={{ padding: '8px 24px', fontSize: '0.85rem', background: '#fbbf24', color: '#000', border: 'none' }}
+                                    variant="secondary"
+                                    size="sm"
                                 >
                                     LOGOUT
-                                </button>
+                                </Button>
                             </>
                         ) : (
                             <>
-                                <Link href="/auth/register" className="nav-btn" style={{ background: 'rgba(255,255,255,0.1)', color: '#fff' }}>
-                                    SIGN UP
+                                <Link href="/auth/register">
+                                    <Button variant="ghost" size="sm" style={{ color: 'white', border: `1px solid ${tokens.colors.border.dark}` }}>
+                                        SIGN UP
+                                    </Button>
                                 </Link>
-                                <Link href="/auth/login" className="btn-black" style={{ padding: '8px 24px', fontSize: '0.85rem', background: '#fbbf24', color: '#000', border: 'none' }}
-                                    onMouseOver={(e) => { e.currentTarget.style.boxShadow = '0 0 15px rgba(251, 191, 36, 0.4)' }}
-                                    onMouseOut={(e) => { e.currentTarget.style.boxShadow = 'none' }}
-                                >
-                                    LOGIN
+                                <Link href="/auth/login">
+                                    <Button variant="secondary" size="sm">
+                                        LOGIN
+                                    </Button>
                                 </Link>
                             </>
                         )}
@@ -121,6 +121,7 @@ export default function Navbar() {
                     <div className="mobile-controls" style={{ gap: '16px' }}>
                         <button
                             onClick={toggleCart}
+                            aria-label="Open cart"
                             style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '8px', position: 'relative' }}
                         >
                             <ShoppingCart size={24} color="#fff" />
@@ -129,7 +130,7 @@ export default function Navbar() {
                                     position: 'absolute',
                                     top: '-2px',
                                     right: '-2px',
-                                    background: '#fbbf24',
+                                    background: tokens.colors.accent.DEFAULT,
                                     color: '#000',
                                     fontSize: '0.7rem',
                                     fontWeight: 700,
@@ -147,6 +148,7 @@ export default function Navbar() {
 
                         <button
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
+                            aria-label="Toggle menu"
                             style={{ background: 'none', border: 'none', cursor: 'pointer', zIndex: 1002 }}
                         >
                             {isMenuOpen ? <X size={28} color="#fff" /> : <Menu size={28} color="#fff" />}
@@ -160,28 +162,23 @@ export default function Navbar() {
             {isMenuOpen && (
                 <div style={{
                     position: 'fixed',
-                    top: 'calc(80px + env(safe-area-inset-top))',
+                    top: '80px', // Header height
                     left: 0,
                     right: 0,
                     bottom: 0,
-                    background: '#0b0e14',
+                    background: tokens.colors.surface.dark,
                     zIndex: 999,
                     padding: '24px',
                     display: 'flex',
                     flexDirection: 'column',
                     gap: '20px',
-                    overflowY: 'auto'
+                    overflowY: 'auto',
+                    borderTop: `1px solid ${tokens.colors.border.dark}`
                 }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                        <Link href="/" className={`mobile-link ${pathname === '/' ? 'active' : ''}`} onClick={() => setIsMenuOpen(false)}>
-                            HOME
-                        </Link>
-                        <Link href="/menu" className={`mobile-link ${pathname === '/menu' ? 'active' : ''}`} onClick={() => setIsMenuOpen(false)}>
-                            MENU
-                        </Link>
-                        <Link href="/story" className={`mobile-link ${pathname === '/story' ? 'active' : ''}`} onClick={() => setIsMenuOpen(false)}>
-                            OUR STORY
-                        </Link>
+                        <MobileLink href="/" active={pathname === '/'} onClick={() => setIsMenuOpen(false)}>HOME</MobileLink>
+                        <MobileLink href="/menu" active={pathname === '/menu'} onClick={() => setIsMenuOpen(false)}>MENU</MobileLink>
+                        <MobileLink href="/story" active={pathname === '/story'} onClick={() => setIsMenuOpen(false)}>OUR STORY</MobileLink>
                     </div>
 
                     <div style={{ height: '1px', background: 'rgba(255,255,255,0.1)', margin: '10px 0' }}></div>
@@ -189,24 +186,30 @@ export default function Navbar() {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                         {session?.user ? (
                             <>
-                                <Link href={session.user.role === "ADMIN" ? "/admin" : "/dashboard"} className="mobile-link" onClick={() => setIsMenuOpen(false)}>
-                                    {(session.user.role === "ADMIN" ? "ADMIN DASHBOARD" : "DASHBOARD")}
+                                <Link href={session.user.role === "ADMIN" ? "/admin" : "/dashboard"} onClick={() => setIsMenuOpen(false)}>
+                                    <Button variant="outline" fullWidth style={{ color: 'white', borderColor: 'rgba(255,255,255,0.2)' }}>
+                                        {(session.user.role === "ADMIN" ? "ADMIN DASHBOARD" : "DASHBOARD")}
+                                    </Button>
                                 </Link>
-                                <button
+                                <Button
                                     onClick={() => { signOut(); setIsMenuOpen(false); }}
-                                    className="btn-black"
-                                    style={{ width: '100%', textAlign: 'center', background: '#fbbf24', color: '#000' }}
+                                    variant="secondary"
+                                    fullWidth
                                 >
                                     LOGOUT
-                                </button>
+                                </Button>
                             </>
                         ) : (
                             <>
-                                <Link href="/auth/register" className="mobile-link" onClick={() => setIsMenuOpen(false)}>
-                                    SIGN UP
+                                <Link href="/auth/register" onClick={() => setIsMenuOpen(false)}>
+                                    <Button variant="outline" fullWidth style={{ color: 'white', borderColor: 'rgba(255,255,255,0.2)' }}>
+                                        SIGN UP
+                                    </Button>
                                 </Link>
-                                <Link href="/auth/login" className="btn-black" style={{ width: '100%', textAlign: 'center', background: '#fbbf24', color: '#000' }} onClick={() => setIsMenuOpen(false)}>
-                                    LOGIN
+                                <Link href="/auth/login" onClick={() => setIsMenuOpen(false)}>
+                                    <Button variant="secondary" fullWidth>
+                                        LOGIN
+                                    </Button>
                                 </Link>
                             </>
                         )}
@@ -237,25 +240,51 @@ export default function Navbar() {
                         font-size: 0.55rem !important;
                     }
                 }
-
-                .mobile-link {
-                    display: block;
-                    padding: 16px;
-                    background: rgba(255,255,255,0.03);
-                    border: 1px solid rgba(255,255,255,0.05);
-                    border-radius: 8px;
-                    color: #fff;
-                    font-family: var(--font-heading);
-                    font-size: 1.1rem;
-                    text-transform: uppercase;
-                    transition: all 0.2s;
-                }
-                .mobile-link.active {
-                    background: rgba(251, 191, 36, 0.1);
-                    border-color: rgba(251, 191, 36, 0.3);
-                    color: #fbbf24;
-                }
             `}</style>
         </>
     );
+}
+
+function NavLink({ href, active, children, icon }: { href: string, active: boolean, children: React.ReactNode, icon?: React.ReactNode }) {
+    return (
+        <Link href={href} style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '8px 16px',
+            border: `1px solid ${active ? tokens.colors.accent.DEFAULT : 'rgba(255,255,255,0.1)'}`,
+            background: active ? '#000' : 'rgba(0,0,0,0.5)',
+            color: active ? tokens.colors.accent.DEFAULT : '#fff',
+            fontFamily: 'var(--font-heading)',
+            fontWeight: 600,
+            fontSize: '0.85rem',
+            textTransform: 'uppercase',
+            transition: 'all 0.2s',
+            borderRadius: tokens.radius.sm,
+            textDecoration: 'none'
+        }}>
+            {icon && <span style={{ opacity: active ? 1 : 0.7 }}>{icon}</span>}
+            {children}
+        </Link>
+    )
+}
+
+function MobileLink({ href, active, children, onClick }: { href: string, active: boolean, children: React.ReactNode, onClick: () => void }) {
+    return (
+        <Link href={href} onClick={onClick} style={{
+            display: 'block',
+            padding: '16px',
+            background: active ? tokens.colors.accent.light : 'rgba(255,255,255,0.03)',
+            border: `1px solid ${active ? tokens.colors.accent.DEFAULT : 'rgba(255,255,255,0.05)'}`,
+            borderRadius: tokens.radius.md,
+            color: active ? tokens.colors.accent.DEFAULT : '#fff',
+            fontFamily: 'var(--font-heading)',
+            fontSize: '1.1rem',
+            textTransform: 'uppercase',
+            transition: 'all 0.2s',
+            textDecoration: 'none'
+        }}>
+            {children}
+        </Link>
+    )
 }
