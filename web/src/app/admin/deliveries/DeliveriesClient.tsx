@@ -230,11 +230,43 @@ export default function DeliveriesClient({
                     </div>
 
                     <div style={{ display: 'flex', gap: tokens.spacing.sm, flexWrap: 'wrap' }}>
-                        <Button variant="outline" size="sm" onClick={handleSync} isLoading={loading} style={{ color: tokens.colors.accent.DEFAULT, borderColor: tokens.colors.accent.DEFAULT }}>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={handleSync}
+                            isLoading={loading}
+                            style={{ color: tokens.colors.accent.DEFAULT, borderColor: tokens.colors.accent.DEFAULT }}
+                            onMouseOver={(e) => {
+                                e.currentTarget.style.borderColor = tokens.colors.accent.DEFAULT;
+                                e.currentTarget.style.background = `${tokens.colors.accent.DEFAULT}15`;
+                                e.currentTarget.style.color = tokens.colors.accent.DEFAULT;
+                            }}
+                            onMouseOut={(e) => {
+                                e.currentTarget.style.borderColor = tokens.colors.accent.DEFAULT;
+                                e.currentTarget.style.background = 'transparent';
+                                e.currentTarget.style.color = tokens.colors.accent.DEFAULT;
+                            }}
+                        >
                             <RefreshCw size={16} style={{ marginRight: tokens.spacing.xs }} />
                             Sync
                         </Button>
-                        <Button variant="primary" size="sm" onClick={handleCreateRoute} isLoading={loading} style={{ background: tokens.colors.accent.DEFAULT, borderColor: tokens.colors.accent.DEFAULT, color: '#000000' }}>
+                        <Button
+                            variant="primary"
+                            size="sm"
+                            onClick={handleCreateRoute}
+                            isLoading={loading}
+                            style={{ background: tokens.colors.accent.DEFAULT, borderColor: tokens.colors.accent.DEFAULT, color: '#000000' }}
+                            onMouseOver={(e) => {
+                                e.currentTarget.style.background = tokens.colors.accent.hover;
+                                e.currentTarget.style.transform = 'translateY(-2px)';
+                                e.currentTarget.style.boxShadow = '0 6px 12px rgba(251, 191, 36, 0.3)';
+                            }}
+                            onMouseOut={(e) => {
+                                e.currentTarget.style.background = tokens.colors.accent.DEFAULT;
+                                e.currentTarget.style.transform = 'translateY(0)';
+                                e.currentTarget.style.boxShadow = 'none';
+                            }}
+                        >
                             <Plus size={16} style={{ marginRight: tokens.spacing.xs }} />
                             New Route
                         </Button>
