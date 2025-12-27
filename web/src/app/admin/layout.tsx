@@ -42,7 +42,7 @@ export default function AdminLayout({
                 zIndex: 50
             }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <div className="logo-shimmer-wrapper" style={{ position: 'relative', width: '32px', height: '32px' }}>
+                    <div className="logo-shimmer-wrapper" style={{ position: 'relative', width: '45px', height: '45px' }}>
                         <Image
                             src="https://ijcowpujufsrdikhegxu.supabase.co/storage/v1/object/public/assets/logo.png"
                             fill
@@ -91,7 +91,7 @@ export default function AdminLayout({
                             gap: '12px',
                             fontFamily: 'var(--font-heading)'
                         }}>
-                            <div className="logo-shimmer-wrapper" style={{ position: 'relative', width: '50px', height: '50px', flexShrink: 0, overflow: 'visible' }}>
+                            <div className="logo-shimmer-wrapper" style={{ position: 'relative', width: '45px', height: '45px', flexShrink: 0, overflow: 'visible' }}>
                                 <Image
                                     src="https://ijcowpujufsrdikhegxu.supabase.co/storage/v1/object/public/assets/logo.png"
                                     fill

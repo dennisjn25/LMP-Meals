@@ -11,7 +11,7 @@ export default function Footer() {
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: tokens.spacing.xxl }}>
                     <div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: tokens.spacing.sm, marginBottom: tokens.spacing.lg }}>
-                            <div className="logo-shimmer-wrapper" style={{ width: '40px', height: '40px', position: 'relative' }}>
+                            <div className="logo-shimmer-wrapper" style={{ width: '45px', height: '45px', position: 'relative' }}>
                                 <Image
                                     src="https://ijcowpujufsrdikhegxu.supabase.co/storage/v1/object/public/assets/logo.png"
                                     fill
