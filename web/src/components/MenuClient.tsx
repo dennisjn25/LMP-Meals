@@ -40,6 +40,7 @@ export default function MenuClient({ meals }: { meals: Meal[] }) {
     const [searchQuery, setSearchQuery] = useState("");
     const [sortBy, setSortBy] = useState<"price" | "calories" | "protein">("price");
     const [showFilters, setShowFilters] = useState(true); // Default valid for users to find things
+    const [isSearchExpanded, setIsSearchExpanded] = useState(false);
 
     // Filter and sort meals
     let filteredMeals = activeCategory === "All"
@@ -154,16 +155,95 @@ export default function MenuClient({ meals }: { meals: Meal[] }) {
                     borderColor: tokens.colors.border.dark
                 }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: tokens.spacing.lg }}>
-                        {/* Search Bar */}
-                        <div style={{ position: 'relative', width: '100%', maxWidth: '600px', margin: '0 auto' }}>
-                            <Search size={20} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: tokens.colors.text.secondary, zIndex: 1 }} />
-                            <Input
-                                placeholder="Search by name, ingredients, or diet..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                style={{ paddingLeft: '48px', height: '56px', fontSize: '1.1rem', background: tokens.colors.surface.medium, borderColor: tokens.colors.border.dark }}
-                                fullWidth
-                            />
+                        {/* Collapsible Search Bar */}
+                        <div style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            gap: tokens.spacing.md
+                        }}>
+                            {!isSearchExpanded ? (
+                                <button
+                                    onClick={() => setIsSearchExpanded(true)}
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '8px',
+                                        padding: '12px 24px',
+                                        background: tokens.colors.surface.medium,
+                                        border: `1px solid ${tokens.colors.border.dark}`,
+                                        borderRadius: tokens.radius.md,
+                                        color: tokens.colors.text.secondary,
+                                        cursor: 'pointer',
+                                        transition: 'all 0.3s ease',
+                                        fontSize: '1rem',
+                                        fontWeight: 600,
+                                        fontFamily: 'var(--font-body)'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.background = tokens.colors.surface.light;
+                                        e.currentTarget.style.borderColor = tokens.colors.accent.DEFAULT;
+                                        e.currentTarget.style.color = tokens.colors.accent.DEFAULT;
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.background = tokens.colors.surface.medium;
+                                        e.currentTarget.style.borderColor = tokens.colors.border.dark;
+                                        e.currentTarget.style.color = tokens.colors.text.secondary;
+                                    }}
+                                >
+                                    <Search size={20} />
+                                    <span>Search Meals</span>
+                                </button>
+                            ) : (
+                                <div style={{
+                                    position: 'relative',
+                                    width: '100%',
+                                    maxWidth: '600px',
+                                    animation: 'expandSearch 0.3s ease-out'
+                                }}>
+                                    <Search size={20} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: tokens.colors.text.secondary, zIndex: 1 }} />
+                                    <Input
+                                        placeholder="Search by name, ingredients, or diet..."
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        onBlur={() => {
+                                            if (!searchQuery) {
+                                                setIsSearchExpanded(false);
+                                            }
+                                        }}
+                                        autoFocus
+                                        style={{ paddingLeft: '48px', paddingRight: '48px', height: '56px', fontSize: '1.1rem', background: tokens.colors.surface.medium, borderColor: tokens.colors.border.dark }}
+                                        fullWidth
+                                    />
+                                    {searchQuery && (
+                                        <button
+                                            onClick={() => {
+                                                setSearchQuery("");
+                                                setIsSearchExpanded(false);
+                                            }}
+                                            style={{
+                                                position: 'absolute',
+                                                right: '16px',
+                                                top: '50%',
+                                                transform: 'translateY(-50%)',
+                                                background: 'none',
+                                                border: 'none',
+                                                color: tokens.colors.text.secondary,
+                                                cursor: 'pointer',
+                                                padding: '4px',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                transition: 'color 0.2s'
+                                            }}
+                                            onMouseEnter={(e) => e.currentTarget.style.color = tokens.colors.accent.DEFAULT}
+                                            onMouseLeave={(e) => e.currentTarget.style.color = tokens.colors.text.secondary}
+                                        >
+                                            ✕
+                                        </button>
+                                    )}
+                                </div>
+                            )}
                         </div>
 
                         {/* Categories */}

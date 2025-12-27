@@ -968,3 +968,15 @@ a[href*="tiktok"].social-btn:hover {
     display: none !important;
   }
 }
+
+/* Expand Search Animation */
+@keyframes expandSearch {
+  from {
+    opacity: 0;
+    transform: scaleX(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
