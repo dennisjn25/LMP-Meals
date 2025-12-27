@@ -332,15 +332,15 @@ function CheckoutContent() {
 
             <div className="container" style={{ paddingTop: '120px', maxWidth: '1200px' }}>
                 <div style={{ marginBottom: '40px' }}>
-                    <h1 style={{ fontSize: '2.5rem', marginBottom: '8px' }}>Checkout</h1>
-                    <p style={{ color: '#64748b' }}>Complete your order for Sunday delivery</p>
+                    <h1 style={{ fontSize: '2.5rem', marginBottom: '8px', color: '#000' }}>Checkout</h1>
+                    <p style={{ color: '#000' }}>Complete your order for Sunday delivery</p>
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '40px', alignItems: 'start' }}>
 
                     {/* Order Summary */}
                     <div className="glass-panel" style={{ padding: '32px', height: 'fit-content', position: 'sticky', top: '100px' }}>
-                        <h2 style={{ fontSize: '1.25rem', marginBottom: '24px', borderBottom: '2px solid #e5e7eb', paddingBottom: '16px', fontWeight: 800 }}>
+                        <h2 style={{ fontSize: '1.25rem', marginBottom: '24px', borderBottom: '2px solid #e5e7eb', paddingBottom: '16px', fontWeight: 800, color: '#000' }}>
                             Order Summary
                         </h2>
 
@@ -351,7 +351,7 @@ function CheckoutContent() {
                                         <Image src={item.image} alt={item.title} fill style={{ objectFit: 'cover' }} />
                                     </div>
                                     <div style={{ flex: 1 }}>
-                                        <div style={{ fontSize: '0.95rem', fontWeight: 700, marginBottom: '4px' }}>{item.title}</div>
+                                        <div style={{ fontSize: '0.95rem', fontWeight: 700, marginBottom: '4px', color: '#000' }}>{item.title}</div>
                                         <div style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '8px' }}>
                                             {item.calories} kcal • Qty: {item.quantity}
                                         </div>
@@ -362,19 +362,19 @@ function CheckoutContent() {
                         </div>
 
                         <div style={{ borderTop: '2px solid #e5e7eb', paddingTop: '20px' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', color: '#64748b' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', color: '#000' }}>
                                 <span>Subtotal</span>
                                 <span>${cartTotal.toFixed(2)}</span>
                             </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', color: '#64748b' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', color: '#000' }}>
                                 <span>Sales Tax (8.05%)</span>
                                 <span>${taxAmount.toFixed(2)}</span>
                             </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', color: '#64748b' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', color: '#000' }}>
                                 <span>Delivery</span>
-                                <span style={{ color: '#64748b', fontWeight: 600 }}>$0.70/mile</span>
+                                <span style={{ color: '#000', fontWeight: 600 }}>$0.70/mile</span>
                             </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.5rem', fontWeight: 800, marginTop: '16px', paddingTop: '16px', borderTop: '2px solid #000' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.5rem', fontWeight: 800, marginTop: '16px', paddingTop: '16px', borderTop: '2px solid #000', color: '#000' }}>
                                 <span>Total</span>
                                 <span>${finalTotal.toFixed(2)}</span>
                             </div>
@@ -387,14 +387,14 @@ function CheckoutContent() {
 
                             {/* Contact Information */}
                             <div>
-                                <h3 style={{ fontSize: '1.1rem', marginBottom: '20px', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <h3 style={{ fontSize: '1.1rem', marginBottom: '20px', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px', color: '#000' }}>
                                     <div style={{ width: '32px', height: '32px', background: '#000', color: '#fff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.9rem', fontWeight: 700 }}>1</div>
                                     Contact Information
                                 </h3>
                                 <div style={{ display: 'grid', gap: '20px' }}>
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                                         <div>
-                                            <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', fontWeight: 600 }}>First Name *</label>
+                                            <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', fontWeight: 600, color: '#000' }}>First Name *</label>
                                             <input
                                                 name="firstName"
                                                 required
@@ -448,7 +448,7 @@ function CheckoutContent() {
 
                             {/* Delivery Information */}
                             <div>
-                                <h3 style={{ fontSize: '1.1rem', marginBottom: '20px', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <h3 style={{ fontSize: '1.1rem', marginBottom: '20px', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px', color: '#000' }}>
                                     <div style={{ width: '32px', height: '32px', background: '#000', color: '#fff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.9rem', fontWeight: 700 }}>2</div>
                                     Delivery Details
                                 </h3>
@@ -527,7 +527,7 @@ function CheckoutContent() {
 
                             {/* Payment - INLINE CARD FORM */}
                             <div>
-                                <h3 style={{ fontSize: '1.1rem', marginBottom: '20px', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <h3 style={{ fontSize: '1.1rem', marginBottom: '20px', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px', color: '#000' }}>
                                     <div style={{ width: '32px', height: '32px', background: '#000', color: '#fff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.9rem', fontWeight: 700 }}>3</div>
                                     <CreditCard size={18} />
                                     Payment Information
