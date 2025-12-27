@@ -6,7 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { login } from "@/actions/auth";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
@@ -104,20 +103,7 @@ export default function LoginForm() {
                     </Button>
                 </form>
 
-                <div style={{ margin: '24px 0', textAlign: 'center', position: 'relative' }}>
-                    <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, height: '1px', background: tokens.colors.border.light }}></div>
-                    <span style={{ position: 'relative', background: 'white', padding: '0 12px', color: tokens.colors.text.secondary, fontSize: '0.85rem' }}>Or continue with</span>
-                </div>
 
-                <Button
-                    variant="outline"
-                    fullWidth
-                    onClick={() => signIn("google")}
-                    type="button"
-                    style={{ background: 'white', borderColor: tokens.colors.border.light }}
-                >
-                    <span style={{ fontSize: '1.2rem', marginRight: '8px' }}>G</span> Google
-                </Button>
 
                 <div style={{ marginTop: '24px', textAlign: 'center', fontSize: '0.9rem', color: tokens.colors.text.secondary }}>
                     Don't have an account? <Link href="/auth/register" style={{ fontWeight: 700, color: tokens.colors.text.primary }}>Sign Up</Link>

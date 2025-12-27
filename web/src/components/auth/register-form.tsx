@@ -7,7 +7,6 @@ import * as z from "zod";
 import { register } from "@/actions/auth";
 import { useState } from "react";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
 
 const RegisterSchema = z.object({
     name: z.string().min(1, "Name is required"),
@@ -184,25 +183,7 @@ export default function RegisterForm() {
                 </button>
             </form>
 
-            <div style={{ margin: '20px 0', textAlign: 'center', color: '#9ca3af', fontSize: '0.9rem' }}>Or continue with</div>
 
-            <button
-                type="button"
-                onClick={() => signIn("google")}
-                style={{
-                    width: '100%',
-                    padding: '12px',
-                    border: '1px solid #e5e7eb',
-                    background: '#fff',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '10px',
-                    cursor: 'pointer'
-                }}
-            >
-                <span style={{ fontSize: '1.2rem' }}>G</span> Google
-            </button>
 
             <div style={{ marginTop: '20px', textAlign: 'center', fontSize: '0.9rem' }}>
                 Already have an account? <Link href="/auth/login" style={{ fontWeight: 700 }}>Log In</Link>
