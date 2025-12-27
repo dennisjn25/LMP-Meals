@@ -172,13 +172,13 @@ export default function MenuClient({ meals }: { meals: Meal[] }) {
                                 fontSize: '0.9rem',
                                 fontWeight: 700,
                                 marginBottom: tokens.spacing.md,
-                                color: tokens.colors.text.secondary,
+                                color: tokens.colors.text.primary,
                                 fontFamily: 'var(--font-heading)',
                                 textTransform: 'uppercase',
                                 letterSpacing: '0.05em',
                                 textAlign: 'center'
                             }}>
-                                Poplar Categories
+                                Popular Categories
                             </h3>
                             <div style={{
                                 display: 'flex',

@@ -95,7 +95,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(({
         <button
             ref={ref}
             disabled={disabled || isLoading}
-            style={{ ...baseStyles, ...variantStyles[variant], ...sizeStyles[size] }}
+            style={{ ...baseStyles, ...variantStyles[variant], ...sizeStyles[size], ...style }}
             {...props}
             onMouseOver={(e) => {
                 if (disabled || isLoading) return;
