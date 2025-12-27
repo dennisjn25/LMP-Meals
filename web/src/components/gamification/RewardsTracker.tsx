@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Trophy, Star, Flame, Target, Gift, TrendingUp, X } from 'lucide-react';
 import { tokens } from "@/lib/design-tokens";
+import { useSession } from "next-auth/react";
 
 interface UserProgress {
     points: number;
@@ -14,6 +15,7 @@ interface UserProgress {
 }
 
 export default function RewardsTracker() {
+    const { data: session } = useSession();
     const [progress, setProgress] = useState<UserProgress>({
         points: 0,
         level: 1,
@@ -31,6 +33,8 @@ export default function RewardsTracker() {
             setProgress(JSON.parse(saved));
         }
     }, []);
+
+    if (!session?.user) return null;
 
     const pointsToNextLevel = progress.level * 100;
     const progressPercent = (progress.points % 100) / pointsToNextLevel * 100;
