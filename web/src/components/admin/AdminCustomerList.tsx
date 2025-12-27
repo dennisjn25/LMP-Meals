@@ -232,13 +232,13 @@ export default function AdminCustomerList({ customers, guestOrders }: { customer
             }}>
                 {/* Type Filters */}
                 <div style={{ display: 'flex', gap: '8px' }}>
-                    <Button variant={filter === 'all' ? 'primary' : 'outline'} size="sm" onClick={() => { setFilter('all'); setCurrentPage(1); }} style={{ color: filter === 'all' ? 'black' : 'white', borderColor: filter === 'all' ? 'transparent' : tokens.colors.border.dark }}>
+                    <Button variant={filter === 'all' ? 'primary' : 'outline'} size="sm" onClick={() => { setFilter('all'); setCurrentPage(1); }} style={{ color: 'white', borderColor: filter === 'all' ? 'transparent' : tokens.colors.border.dark }}>
                         ALL ({allCustomers.length})
                     </Button>
-                    <Button variant={filter === 'registered' ? 'primary' : 'outline'} size="sm" onClick={() => { setFilter('registered'); setCurrentPage(1); }} style={{ color: filter === 'registered' ? 'black' : 'white', borderColor: filter === 'registered' ? 'transparent' : tokens.colors.border.dark }}>
+                    <Button variant={filter === 'registered' ? 'primary' : 'outline'} size="sm" onClick={() => { setFilter('registered'); setCurrentPage(1); }} style={{ color: 'white', borderColor: filter === 'registered' ? 'transparent' : tokens.colors.border.dark }}>
                         REGISTERED ({registeredCustomers.length})
                     </Button>
-                    <Button variant={filter === 'guest' ? 'primary' : 'outline'} size="sm" onClick={() => { setFilter('guest'); setCurrentPage(1); }} style={{ color: filter === 'guest' ? 'black' : 'white', borderColor: filter === 'guest' ? 'transparent' : tokens.colors.border.dark }}>
+                    <Button variant={filter === 'guest' ? 'primary' : 'outline'} size="sm" onClick={() => { setFilter('guest'); setCurrentPage(1); }} style={{ color: 'white', borderColor: filter === 'guest' ? 'transparent' : tokens.colors.border.dark }}>
                         GUEST ({guestCustomers.length})
                     </Button>
                 </div>

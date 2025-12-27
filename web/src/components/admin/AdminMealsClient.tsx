@@ -23,7 +23,7 @@ interface Meal {
     featuredOrder: number | null;
 }
 
-function ImageDropzone({ onUploadComplete }: { onUploadComplete: (url: string) => void }) {
+const ImageDropzone = ({ currentImage, onUploadComplete, onClear }: { currentImage?: string, onUploadComplete: (url: string) => void, onClear?: () => void }) => {
     const [isUploading, setIsUploading] = useState(false);
 
     const onDrop = async (acceptedFiles: File[]) => {
@@ -55,32 +55,92 @@ function ImageDropzone({ onUploadComplete }: { onUploadComplete: (url: string) =
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop,
         accept: { 'image/*': [] },
-        maxFiles: 1
+        maxFiles: 1,
+        noClick: !!currentImage // if image exists, click shouldn't open dialog unless specific area clicked (or maybe allow click everywhere? default is nicer)
+        // Actually, let's allow click everywhere to replace easiest.
     });
+    // Re-enable click for replacement
+    const { ref, ...rootProps } = getRootProps();
 
     return (
         <div
-            {...getRootProps()}
+            {...rootProps}
+            ref={ref}
             style={{
                 border: '2px dashed #9ca3af',
-                borderRadius: '8px',
-                padding: '32px',
+                borderRadius: '16px',
+                padding: currentImage ? '0' : '32px',
                 textAlign: 'center',
                 cursor: 'pointer',
-                background: isDragActive ? '#eff6ff' : 'white',
+                background: isDragActive ? '#eff6ff' : (currentImage ? 'transparent' : 'white'),
                 minHeight: '150px',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: '#6b7280'
+                color: '#6b7280',
+                position: 'relative',
+                overflow: 'hidden',
+                transition: 'all 0.2s'
             }}
         >
             <input {...getInputProps()} />
+
             {isUploading ? (
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '32px' }}>
                     <Loader2 className="animate-spin" size={24} />
                     <p>Uploading...</p>
+                </div>
+            ) : currentImage ? (
+                <div style={{ width: '100%', height: '300px', position: 'relative' }}>
+                    <Image
+                        src={currentImage}
+                        alt="Preview"
+                        fill
+                        style={{ objectFit: 'cover', opacity: isDragActive ? 0.5 : 1 }}
+                    />
+
+                    {/* Remove Button */}
+                    {onClear && (
+                        <button
+                            type="button"
+                            onClick={(e) => {
+                                e.stopPropagation(); // Prevent opening file dialog
+                                onClear();
+                            }}
+                            style={{
+                                position: 'absolute',
+                                top: '16px',
+                                right: '16px',
+                                background: 'rgba(239, 68, 68, 0.9)',
+                                color: 'white',
+                                padding: '8px 12px',
+                                borderRadius: '8px',
+                                border: 'none',
+                                cursor: 'pointer',
+                                zIndex: 10
+                            }}
+                        >
+                            <Trash2 size={16} />
+                        </button>
+                    )}
+
+                    {/* Drag overlay / Hover overlay */}
+                    <div style={{
+                        position: 'absolute',
+                        inset: 0,
+                        background: isDragActive ? 'rgba(59, 130, 246, 0.2)' : 'rgba(0,0,0,0)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        opacity: isDragActive ? 1 : 0,
+                        transition: 'opacity 0.2s'
+                    }}
+                        className="hover-overlay" // Use CSS-in-JS usually, but we can rely on isDragActive for basic feedback. 
+                    // For "Click to replace", maybe we don't need a visible overlay unless hovering?
+                    >
+                        {isDragActive && <p style={{ fontWeight: 800, color: 'white', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>DROP TO REPLACE</p>}
+                    </div>
                 </div>
             ) : (
                 <>
@@ -98,6 +158,39 @@ function ImageDropzone({ onUploadComplete }: { onUploadComplete: (url: string) =
         </div>
     );
 }
+
+// ... (In AdminMealsClient Usage)
+
+// Replace the Image Input Section with:
+/*
+<div className="form-group">
+    <label style={labelStyle}>Meal Image</label>
+    <div style={{
+        border: '2px solid rgba(255,255,255,0.08)',
+        borderRadius: '16px',
+        padding: '24px',
+        background: 'rgba(255,255,255,0.02)'
+    }}>
+        <ImageDropzone 
+            currentImage={formData.image}
+            onUploadComplete={(url) => setFormData({ ...formData, image: url })} 
+            onClear={() => setFormData({ ...formData, image: "" })}
+        />
+
+        <div style={{ marginTop: '16px' }}>
+            <details style={{ cursor: 'pointer' }}>
+                <summary style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Enter Image URL</summary>
+                <input
+                    style={{ ...inputStyle, padding: '8px 12px', marginTop: '12px', fontSize: '0.85rem' }}
+                    value={formData.image}
+                    onChange={e => setFormData({ ...formData, image: e.target.value })}
+                    placeholder="https://external-storage.com/image.jpg"
+                />
+            </details>
+        </div>
+    </div>
+</div>
+*/
 
 export default function AdminMealsClient({ initialMeals }: { initialMeals: Meal[] }) {
     const [meals, setMeals] = useState(initialMeals); // Local state for optimistic updates / immediate feedback, though revalidatePath works too.
@@ -508,41 +601,11 @@ export default function AdminMealsClient({ initialMeals }: { initialMeals: Meal[
                                 padding: '24px',
                                 background: 'rgba(255,255,255,0.02)'
                             }}>
-                                {formData.image && (
-                                    <div style={{ marginBottom: '20px', position: 'relative', width: '100%', height: '300px', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
-                                        <Image
-                                            src={formData.image}
-                                            alt="Preview"
-                                            fill
-                                            style={{ objectFit: 'cover' }}
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => setFormData({ ...formData, image: "" })}
-                                            style={{
-                                                position: 'absolute',
-                                                top: '16px',
-                                                right: '16px',
-                                                background: 'rgba(239, 68, 68, 0.9)',
-                                                color: 'white',
-                                                padding: '8px 16px',
-                                                borderRadius: '8px',
-                                                border: 'none',
-                                                cursor: 'pointer',
-                                                fontSize: '0.75rem',
-                                                fontWeight: 800,
-                                                fontFamily: 'var(--font-heading)',
-                                                textTransform: 'uppercase'
-                                            }}
-                                        >
-                                            Remove Image
-                                        </button>
-                                    </div>
-                                )}
-
-                                {!formData.image && (
-                                    <ImageDropzone onUploadComplete={(url) => setFormData({ ...formData, image: url })} />
-                                )}
+                                <ImageDropzone
+                                    currentImage={formData.image}
+                                    onUploadComplete={(url) => setFormData({ ...formData, image: url })}
+                                    onClear={() => setFormData({ ...formData, image: "" })}
+                                />
 
                                 <div style={{ marginTop: '16px' }}>
                                     <details style={{ cursor: 'pointer' }}>
