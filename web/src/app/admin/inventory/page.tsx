@@ -28,6 +28,13 @@ export default async function AdminInventoryPage() {
         }
     });
 
+    const ingredients = await db.ingredient.findMany({
+        orderBy: { name: 'asc' },
+        include: {
+            meals: true
+        }
+    });
+
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
             <div>
@@ -43,7 +50,7 @@ export default async function AdminInventoryPage() {
                 </p>
             </div>
 
-            <AdminInventoryClient meals={meals as any[]} />
+            <AdminInventoryClient meals={meals as any[]} ingredients={ingredients as any[]} />
         </div>
     );
 }

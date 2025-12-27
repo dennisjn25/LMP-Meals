@@ -104,8 +104,34 @@ model Meal {
   featuredOrder Int?        // Order in which featured meals appear (1-5)
   productId     String?     @unique // 8-digit numerical ID starting with 7
   orderItems    OrderItem[]
+  ingredients   MealIngredient[]
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
+}
+
+model Ingredient {
+  id            String    @id @default(cuid())
+  name          String    @unique
+  unit          String    // e.g., kg, lbs, oz, liters
+  currentStock  Float     @default(0)
+  minStock      Float     @default(0) // Low stock alert threshold
+  costPerUnit   Float     @default(0)
+  
+  meals         MealIngredient[]
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model MealIngredient {
+  id            String     @id @default(cuid())
+  mealId        String
+  meal          Meal       @relation(fields: [mealId], references: [id])
+  ingredientId  String
+  ingredient    Ingredient @relation(fields: [ingredientId], references: [id])
+  quantity      Float      // Amount required for 1 meal
+  
+  @@unique([mealId, ingredientId])
 }
 
 model Order {
