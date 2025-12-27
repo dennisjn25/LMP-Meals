@@ -230,11 +230,11 @@ export default function DeliveriesClient({
                     </div>
 
                     <div style={{ display: 'flex', gap: tokens.spacing.sm, flexWrap: 'wrap' }}>
-                        <Button variant="outline" size="sm" onClick={handleSync} isLoading={loading}>
+                        <Button variant="outline" size="sm" onClick={handleSync} isLoading={loading} style={{ color: tokens.colors.accent.DEFAULT, borderColor: tokens.colors.accent.DEFAULT }}>
                             <RefreshCw size={16} style={{ marginRight: tokens.spacing.xs }} />
                             Sync
                         </Button>
-                        <Button variant="primary" size="sm" onClick={handleCreateRoute} isLoading={loading}>
+                        <Button variant="primary" size="sm" onClick={handleCreateRoute} isLoading={loading} style={{ background: tokens.colors.accent.DEFAULT, borderColor: tokens.colors.accent.DEFAULT, color: '#000000' }}>
                             <Plus size={16} style={{ marginRight: tokens.spacing.xs }} />
                             New Route
                         </Button>
