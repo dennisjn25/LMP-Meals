@@ -10,7 +10,7 @@ This workflow tracks the implementation of the "All Suggestions" request for the
 - [x] **Toast Notifications**: Replace `alert()` with `sonner` for better UX.
 - [x] **Search & Filtering - Orders**: Add search (Name, Email, ID) and status filters to `AdminOrderList`.
 - [x] **Sorting & Pagination**: Add sortable columns and pagination to order lists.
-- [ ] **Search & Filtering - Customers**: Apply similar enhancements to Customer list.
+- [x] **Search & Filtering - Customers**: Apply similar enhancements (Search, Export, Min Spend) to Customer list.
 
 ## Phase 2: Analytics & Insights (Complete)
 - [x] **Dashboard Cards**: Implement Revenue, Top Meals, and detailed metrics.
@@ -21,7 +21,7 @@ This workflow tracks the implementation of the "All Suggestions" request for the
 - [x] **Status Automation**: Auto-update status based on triggers (Bulk Actions & Email Notifications).
 - [x] **Email Triggers**: Visual editor or settings for email notifications (Settings Page).
 
-## Phase 4: Advanced Features (In Progress)
+## Phase 4: Advanced Features (Complete)
 - [x] **Kitchen Management**: Production schedules and prep lists (Kitchen Dashboard).
-- [ ] **Delivery Routing**: Driver assignment and route optimization.
-- [ ] **Inventory**: Ingredient level tracking.
+- [x] **Delivery Routing**: Driver assignment and route optimization.
+- [x] **Inventory**: Ingredient level tracking.

@@ -54,6 +54,7 @@ export default function AdminCustomerList({ customers, guestOrders }: { customer
 
     // Search & Sort State
     const [searchQuery, setSearchQuery] = useState("");
+    const [minSpend, setMinSpend] = useState<string>("");
     const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' }>({ key: 'createdAt', direction: 'desc' });
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
@@ -115,7 +116,15 @@ export default function AdminCustomerList({ customers, guestOrders }: { customer
             );
         }
 
-        // 3. Sort
+        // 3. Min Spend
+        if (minSpend) {
+            const min = parseFloat(minSpend);
+            if (!isNaN(min)) {
+                result = result.filter(c => c.totalSpent >= min);
+            }
+        }
+
+        // 4. Sort
         result.sort((a, b) => {
             const aValue = (a as any)[sortConfig.key];
             const bValue = (b as any)[sortConfig.key];
@@ -187,17 +196,47 @@ export default function AdminCustomerList({ customers, guestOrders }: { customer
         setLoading(false);
     };
 
+    const handleExport = () => {
+        const headers = ["Name", "Email", "Type", "Total Spent", "Orders", "Joined"];
+        const csvRows = [
+            headers.join(","),
+            ...filteredCustomers.map(c => [
+                `"${c.name || 'Anonymous'}"`,
+                `"${c.email || ''}"`,
+                c.type,
+                c.totalSpent.toFixed(2),
+                c.orderCount,
+                new Date(c.createdAt).toLocaleDateString()
+            ].join(","))
+        ];
+
+        const blob = new Blob([csvRows.join("\n")], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.setAttribute('hidden', '');
+        a.setAttribute('href', url);
+        a.setAttribute('download', `customers-export-${new Date().toISOString().split('T')[0]}.csv`);
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    };
+
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: tokens.spacing.xl }}>
             {/* Header Actions */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'white', fontFamily: 'var(--font-heading)' }}>Profile Management</h2>
-                <Button
-                    onClick={() => { setEditingCustomer(null); setIsModalOpen(true); }}
-                    variant="primary"
-                >
-                    <Plus size={18} style={{ marginRight: '8px' }} /> New Customer
-                </Button>
+                <div style={{ display: 'flex', gap: '12px' }}>
+                    <Button onClick={handleExport} variant="outline" style={{ color: 'white', borderColor: tokens.colors.border.dark }}>
+                        Export CSV
+                    </Button>
+                    <Button
+                        onClick={() => { setEditingCustomer(null); setIsModalOpen(true); }}
+                        variant="primary"
+                    >
+                        <Plus size={18} style={{ marginRight: '8px' }} /> New Customer
+                    </Button>
+                </div>
             </div>
 
             {/* Stats Cards */}
@@ -252,6 +291,17 @@ export default function AdminCustomerList({ customers, guestOrders }: { customer
                             onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
                             placeholder="Search name or email..."
                             style={{ paddingLeft: '48px', marginBottom: 0 }}
+                        />
+                    </div>
+
+                    <div style={{ position: 'relative', width: '100%', maxWidth: '150px' }}>
+                        <DollarSign size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: tokens.colors.text.secondary }} />
+                        <Input
+                            type="number"
+                            value={minSpend}
+                            onChange={(e) => { setMinSpend(e.target.value); setCurrentPage(1); }}
+                            placeholder="Min spent..."
+                            style={{ paddingLeft: '36px', marginBottom: 0 }}
                         />
                     </div>
 
