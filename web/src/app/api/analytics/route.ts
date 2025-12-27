@@ -60,11 +60,83 @@ export async function GET(request: Request) {
         const bounceRate = sessionHits.length > 0 ? (bounces / sessionHits.length) * 100 : 0;
 
         // Trends (chunked by time)
+        // Trends (chunked by time)
         const trendPoints = period === "24h" ? 24 : period === "7d" ? 7 : 30;
-        const trend = Array.from({ length: trendPoints }, () => Math.floor(Math.random() * 10)); // Placeholder for actual time-series aggregation
+
+        // Business Analytics: Revenue & Orders
+        const [
+            revenue,
+            ordersCount,
+            prevRevenue,
+            prevOrdersCount,
+            topMealsRaw
+        ] = await Promise.all([
+            // Current Period Revenue (PAID, COMPLETED, DELIVERED)
+            db.order.aggregate({
+                _sum: { total: true },
+                where: {
+                    createdAt: { gte: startDate },
+                    status: { in: ['PAID', 'COMPLETED', 'DELIVERED'] }
+                }
+            }),
+            // Current Period Order Count
+            db.order.count({
+                where: {
+                    createdAt: { gte: startDate },
+                    status: { in: ['PAID', 'COMPLETED', 'DELIVERED'] }
+                }
+            }),
+            // Previous Period Revenue
+            db.order.aggregate({
+                _sum: { total: true },
+                where: {
+                    createdAt: { gte: prevStartDate, lt: startDate },
+                    status: { in: ['PAID', 'COMPLETED', 'DELIVERED'] }
+                }
+            }),
+            // Previous Period Order Count
+            db.order.count({
+                where: {
+                    createdAt: { gte: prevStartDate, lt: startDate },
+                    status: { in: ['PAID', 'COMPLETED', 'DELIVERED'] }
+                }
+            }),
+            // Top Meals
+            db.orderItem.groupBy({
+                by: ['mealId'],
+                where: { order: { createdAt: { gte: startDate }, status: { in: ['PAID', 'COMPLETED', 'DELIVERED'] } } },
+                _sum: { quantity: true },
+                orderBy: { _sum: { quantity: 'desc' } },
+                take: 5
+            })
+        ]);
+
+        // Resolve Meal Names
+        const topMeals = await Promise.all(topMealsRaw.map(async (item) => {
+            const meal = await db.meal.findUnique({ where: { id: item.mealId }, select: { title: true } });
+            return {
+                name: meal?.title || 'Unknown Meal',
+                count: item._sum.quantity || 0
+            };
+        }));
+
+        const currentRevenue = revenue._sum.total || 0;
+        const previousRevenue = prevRevenue._sum.total || 0;
 
         const data = {
             metrics: {
+                revenue: {
+                    current: currentRevenue,
+                    previous: previousRevenue,
+                    trend: Array.from({ length: trendPoints }, () => Math.floor(currentRevenue / trendPoints * (0.8 + Math.random() * 0.4))), // Mock daily distr based on total
+                    unit: "$"
+                },
+                orders: {
+                    current: ordersCount,
+                    previous: prevOrdersCount,
+                    trend: Array.from({ length: trendPoints }, () => Math.floor(ordersCount / trendPoints * (0.8 + Math.random() * 0.4))),
+                    unit: ""
+                },
                 pageViews: {
                     current: pageViewsCount || 0,
                     previous: prevPageViews || 0,
@@ -90,6 +162,7 @@ export async function GET(request: Request) {
                     unit: "s"
                 }
             },
+            topMeals,
             trafficSources: totalReferers
                 .filter(r => r.referer)
                 .map(r => ({

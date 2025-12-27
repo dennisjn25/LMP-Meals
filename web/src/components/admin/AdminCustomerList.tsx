@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Users, ShoppingBag, DollarSign, ChevronDown, ChevronUp, Plus, Pencil, Trash2, X, Loader2 } from "lucide-react";
+import { useState, useMemo } from "react";
+import { Users, ShoppingBag, DollarSign, ChevronDown, ChevronUp, Plus, Pencil, Trash2, X, Loader2, Search, ArrowUpDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { createCustomer, updateCustomer, deleteCustomer } from "@/actions/customers";
 
 interface Customer {
@@ -46,6 +46,12 @@ export default function AdminCustomerList({ customers, guestOrders }: { customer
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    // Search & Sort State
+    const [searchQuery, setSearchQuery] = useState("");
+    const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' }>({ key: 'createdAt', direction: 'desc' });
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
+
     // Calculate metrics
     const totalCustomers = customers.length;
     const totalOrders = customers.reduce((sum, c) => sum + (c.orders?.length || 0), 0) + guestOrders.length;
@@ -54,14 +60,14 @@ export default function AdminCustomerList({ customers, guestOrders }: { customer
     ) + guestOrders.reduce((sum, o) => sum + o.total, 0);
 
     // Combine registered and guest customers
-    const registeredCustomers = customers.map(c => ({
+    const registeredCustomers = useMemo(() => customers.map(c => ({
         ...c,
         type: 'registered' as const,
         totalSpent: c.orders?.reduce((sum, o) => sum + o.total, 0) || 0,
         orderCount: c.orders?.length || 0
-    }));
+    })), [customers]);
 
-    const guestCustomers = Object.values(
+    const guestCustomers = useMemo(() => Object.values(
         guestOrders.reduce((acc, order) => {
             const key = order.customerEmail;
             if (!acc[key]) {
@@ -81,16 +87,62 @@ export default function AdminCustomerList({ customers, guestOrders }: { customer
             acc[key].orderCount += 1;
             return acc;
         }, {} as Record<string, any>)
-    );
+    ), [guestOrders]);
 
-    const allCustomers = [...registeredCustomers, ...guestCustomers].sort((a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
+    const allCustomers = useMemo(() => [...registeredCustomers, ...guestCustomers], [registeredCustomers, guestCustomers]);
 
-    const filteredCustomers = allCustomers.filter(c => {
-        if (filter === 'all') return true;
-        return c.type === filter;
-    });
+    // Derived State: Filtered & Sorted
+    const filteredCustomers = useMemo(() => {
+        let result = allCustomers;
+
+        // 1. Type Filter
+        if (filter !== 'all') {
+            result = result.filter(c => c.type === filter);
+        }
+
+        // 2. Search
+        if (searchQuery) {
+            const lowerQuery = searchQuery.toLowerCase();
+            result = result.filter(c =>
+                (c.name && c.name.toLowerCase().includes(lowerQuery)) ||
+                (c.email && c.email.toLowerCase().includes(lowerQuery))
+            );
+        }
+
+        // 3. Sort
+        result.sort((a, b) => {
+            const aValue = (a as any)[sortConfig.key];
+            const bValue = (b as any)[sortConfig.key];
+
+            if (aValue === bValue) return 0;
+            // Handle dates
+            if (sortConfig.key === 'createdAt') {
+                return sortConfig.direction === 'asc'
+                    ? new Date(aValue).getTime() - new Date(bValue).getTime()
+                    : new Date(bValue).getTime() - new Date(aValue).getTime();
+            }
+
+            if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
+            if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
+            return 0;
+        });
+
+        return result;
+    }, [allCustomers, filter, searchQuery, sortConfig]);
+
+    const paginatedCustomers = useMemo(() => {
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        return filteredCustomers.slice(startIndex, startIndex + itemsPerPage);
+    }, [filteredCustomers, currentPage]);
+
+    const totalPages = Math.ceil(filteredCustomers.length / itemsPerPage);
+
+    const handleSort = (key: string) => {
+        setSortConfig(current => ({
+            key,
+            direction: current.key === key && current.direction === 'asc' ? 'desc' : 'asc'
+        }));
+    };
 
     const handleEdit = (customer: Customer) => {
         setEditingCustomer(customer);
@@ -178,29 +230,62 @@ export default function AdminCustomerList({ customers, guestOrders }: { customer
                 />
             </div>
 
-            {/* Filters */}
+            {/* Toolbar */}
             <div style={{
+                display: 'flex', gap: '16px', flexWrap: 'wrap',
                 background: 'rgba(255,255,255,0.03)',
                 padding: '24px',
                 borderRadius: '24px',
                 border: '1px solid rgba(255,255,255,0.08)',
-                display: 'flex',
-                gap: '12px'
+                justifyContent: 'space-between',
+                alignItems: 'center'
             }}>
-                <FilterButton active={filter === 'all'} onClick={() => setFilter('all')}>
-                    All Profiles
-                </FilterButton>
-                <FilterButton active={filter === 'registered'} onClick={() => setFilter('registered')}>
-                    Registered Owners ({registeredCustomers.length})
-                </FilterButton>
-                <FilterButton active={filter === 'guest'} onClick={() => setFilter('guest')}>
-                    Guest Checkouts ({guestCustomers.length})
-                </FilterButton>
+                {/* Type Filters */}
+                <div style={{ display: 'flex', gap: '8px' }}>
+                    <FilterButton active={filter === 'all'} onClick={() => { setFilter('all'); setCurrentPage(1); }}>
+                        ALL ({allCustomers.length})
+                    </FilterButton>
+                    <FilterButton active={filter === 'registered'} onClick={() => { setFilter('registered'); setCurrentPage(1); }}>
+                        REGISTERED ({registeredCustomers.length})
+                    </FilterButton>
+                    <FilterButton active={filter === 'guest'} onClick={() => { setFilter('guest'); setCurrentPage(1); }}>
+                        GUEST ({guestCustomers.length})
+                    </FilterButton>
+                </div>
+
+                {/* Search & Sort */}
+                <div style={{ display: 'flex', gap: '12px', flex: 1, justifyContent: 'flex-end', minWidth: '300px' }}>
+                    <div style={{ position: 'relative', maxWidth: '300px', width: '100%' }}>
+                        <Search size={18} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: '#64748b' }} />
+                        <input
+                            type="text"
+                            placeholder="Search name or email..."
+                            value={searchQuery}
+                            onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
+                            style={{ ...inputStyle, paddingLeft: '48px', padding: '10px 16px' }}
+                        />
+                    </div>
+
+                    <div style={{ display: 'flex', background: 'rgba(255,255,255,0.05)', borderRadius: '12px', padding: '4px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                        <button
+                            onClick={() => handleSort('createdAt')}
+                            style={{ padding: '8px 12px', background: sortConfig?.key === 'createdAt' ? 'rgba(255,255,255,0.1)' : 'transparent', border: 'none', color: 'white', borderRadius: '8px', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600 }}
+                        >
+                            Joined {sortConfig?.key === 'createdAt' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                        </button>
+                        <button
+                            onClick={() => handleSort('totalSpent')}
+                            style={{ padding: '8px 12px', background: sortConfig?.key === 'totalSpent' ? 'rgba(255,255,255,0.1)' : 'transparent', border: 'none', color: 'white', borderRadius: '8px', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600 }}
+                        >
+                            Spent {sortConfig?.key === 'totalSpent' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                        </button>
+                    </div>
+                </div>
             </div>
 
             {/* Customers List */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                {filteredCustomers.map(customer => (
+                {paginatedCustomers.map(customer => (
                     <CustomerRow
                         key={customer.id}
                         customer={customer}
@@ -210,6 +295,7 @@ export default function AdminCustomerList({ customers, guestOrders }: { customer
                         onDelete={(e: any) => handleDelete(customer.id, e)}
                     />
                 ))}
+
                 {filteredCustomers.length === 0 && (
                     <div style={{
                         padding: '80px 40px',
@@ -221,6 +307,38 @@ export default function AdminCustomerList({ customers, guestOrders }: { customer
                     }}>
                         <Users size={48} style={{ marginBottom: '16px', opacity: 0.2 }} />
                         <div style={{ fontSize: '1.2rem', fontWeight: 600 }}>No profiles found.</div>
+                        {searchQuery && <div style={{ fontSize: '0.9rem', marginTop: '8px' }}>Try adjusting your search criteria.</div>}
+                    </div>
+                )}
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '16px', marginTop: '20px' }}>
+                        <button
+                            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                            disabled={currentPage === 1}
+                            style={{
+                                padding: '8px 16px', background: 'rgba(255,255,255,0.05)',
+                                border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: 'white',
+                                cursor: currentPage === 1 ? 'not-allowed' : 'pointer', opacity: currentPage === 1 ? 0.5 : 1
+                            }}
+                        >
+                            <ChevronLeft size={16} />
+                        </button>
+                        <span style={{ color: '#94a3b8', fontSize: '0.9rem' }}>
+                            Page {currentPage} of {totalPages}
+                        </span>
+                        <button
+                            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                            disabled={currentPage === totalPages}
+                            style={{
+                                padding: '8px 16px', background: 'rgba(255,255,255,0.05)',
+                                border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: 'white',
+                                cursor: currentPage === totalPages ? 'not-allowed' : 'pointer', opacity: currentPage === totalPages ? 0.5 : 1
+                            }}
+                        >
+                            <ChevronRight size={16} />
+                        </button>
                     </div>
                 )}
             </div>

@@ -11,12 +11,16 @@ import {
     Navigation2,
     MoreHorizontal,
     Info,
-    TrendingUp
+    TrendingUp,
+    DollarSign,
+    ShoppingBag
 } from "lucide-react";
 import { generateSparklinePath, formatDuration, formatMetricValue } from "@/lib/analytics-utils";
 
 interface AnalyticsData {
     metrics: {
+        revenue?: MetricData;
+        orders?: MetricData;
         pageViews: MetricData;
         uniqueVisitors: MetricData;
         bounceRate: MetricData;
@@ -24,6 +28,7 @@ interface AnalyticsData {
     };
     trafficSources: { source: string; value: number; color: string }[];
     geoDistribution: { region: string; visitors: number }[];
+    topMeals?: { name: string; count: number }[];
 }
 
 interface MetricData {
@@ -90,9 +95,9 @@ export default function AnalyticsCard() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '20px' }}>
                 <div>
                     <h2 style={{ fontSize: '1.5rem', fontWeight: 900, color: 'white', fontFamily: 'var(--font-heading)', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <TrendingUp size={24} color="#fbbf24" /> Traffic Analytics
+                        <TrendingUp size={24} color="#fbbf24" /> Business Intelligence
                     </h2>
-                    <p style={{ color: '#94a3b8', fontSize: '0.9rem', marginTop: '4px' }}>Real-time web performance metrics</p>
+                    <p style={{ color: '#94a3b8', fontSize: '0.9rem', marginTop: '4px' }}>Real-time sales & performance metrics</p>
                 </div>
 
                 <div
@@ -134,8 +139,24 @@ export default function AnalyticsCard() {
                 </div>
             ) : data && (
                 <>
-                    {/* Main Metrics Grid */}
+                    {/* Business Metrics Grid */}
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px' }}>
+                        {data.metrics.revenue && (
+                            <MetricBox
+                                icon={<DollarSign size={20} />} // Note: DollarSign might need import if not already
+                                label="Total Revenue"
+                                data={data.metrics.revenue}
+                                color="#10b981"
+                            />
+                        )}
+                        {data.metrics.orders && (
+                            <MetricBox
+                                icon={<ShoppingBag size={20} />} // Note: ShoppingBag might need import
+                                label="Total Orders"
+                                data={data.metrics.orders}
+                                color="#3b82f6"
+                            />
+                        )}
                         <MetricBox
                             icon={<Eye size={20} />}
                             label="Page Views"
@@ -144,30 +165,39 @@ export default function AnalyticsCard() {
                         />
                         <MetricBox
                             icon={<Users size={20} />}
-                            label="Unique Visitors"
+                            label="Visitors"
                             data={data.metrics.uniqueVisitors}
-                            color="#3b82f6"
-                        />
-                        <MetricBox
-                            icon={<Navigation2 size={20} />}
-                            label="Bounce Rate"
-                            data={data.metrics.bounceRate}
-                            color="#ef4444"
-                            invertTrend
-                        />
-                        <MetricBox
-                            icon={<Clock size={20} />}
-                            label="Avg. Session"
-                            data={data.metrics.sessionDuration}
-                            color="#10b981"
-                            isTime
+                            color="#8b5cf6"
                         />
                     </div>
 
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '32px' }}>
+                        {/* Top Meals */}
+                        {data.topMeals && data.topMeals.length > 0 && (
+                            <div style={{ background: 'rgba(255,255,255,0.02)', padding: '24px', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                                    <h3 style={{ fontSize: '1rem', color: 'white', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Top Performing Meals</h3>
+                                    <TrendingUp size={18} color="#94a3b8" />
+                                </div>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                                    {data.topMeals.map((meal, i) => (
+                                        <div key={i}>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '0.9rem', alignItems: 'center' }}>
+                                                <span style={{ color: '#e2e8f0', fontWeight: 600 }}>{meal.name}</span>
+                                                <span style={{ color: '#fbbf24', fontWeight: 800 }}>{meal.count} orders</span>
+                                            </div>
+                                            <div style={{ width: '100%', height: '6px', background: 'rgba(255,255,255,0.05)', borderRadius: '99px', overflow: 'hidden' }}>
+                                                <div style={{ width: `${(meal.count / (data.topMeals?.[0]?.count || 1)) * 100}%`, height: '100%', background: '#fbbf24', borderRadius: '99px' }} />
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
                         {/* Traffic Sources */}
                         <div style={{ background: 'rgba(255,255,255,0.02)', padding: '24px', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                            <h3 style={{ fontSize: '1rem', color: 'white', fontWeight: 800, marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Top Traffic Sources</h3>
+                            <h3 style={{ fontSize: '1rem', color: 'white', fontWeight: 800, marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Traffic Sources</h3>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                                 {data.trafficSources.map((source) => (
                                     <div key={source.source}>
@@ -178,22 +208,6 @@ export default function AnalyticsCard() {
                                         <div style={{ width: '100%', height: '6px', background: 'rgba(255,255,255,0.05)', borderRadius: '99px', overflow: 'hidden' }}>
                                             <div style={{ width: `${source.value}%`, height: '100%', background: source.color, borderRadius: '99px' }} />
                                         </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Geographic Distribution */}
-                        <div style={{ background: 'rgba(255,255,255,0.02)', padding: '24px', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                                <h3 style={{ fontSize: '1rem', color: 'white', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Geographic Reach</h3>
-                                <Globe size={18} color="#94a3b8" />
-                            </div>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                {data.geoDistribution.map((geo) => (
-                                    <div key={geo.region} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
-                                        <span style={{ color: '#cbd5e1', fontSize: '0.85rem', fontWeight: 500 }}>{geo.region}</span>
-                                        <span style={{ color: 'white', fontSize: '0.85rem', fontWeight: 700 }}>{geo.visitors.toLocaleString()}</span>
                                     </div>
                                 ))}
                             </div>

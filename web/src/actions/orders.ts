@@ -7,6 +7,7 @@ import { auth } from "@/auth";
 import { syncData } from "@/lib/quickbooks-sync";
 import { square } from "@/lib/square";
 import { randomUUID } from "crypto";
+import bcrypt from "bcryptjs";
 
 
 // Generate unique order number
@@ -525,4 +526,46 @@ export async function updateAdminOrder(id: string, data: {
         return { error: e.message || "Failed to update order" };
     }
 }
+
+export async function deleteOrder(orderId: string, password: string) {
+    const session = await auth();
+    const skipAuth = process.env.SKIP_AUTH === 'true';
+
+    // @ts-ignore
+    if (!skipAuth && session?.user?.role !== "ADMIN") {
+        return { error: "Unauthorized" };
+    }
+
+    if (!session?.user?.email) return { error: "User not found" };
+
+    try {
+        // Verify password
+        const user = await db.user.findUnique({
+            where: { email: session.user.email }
+        });
+
+        if (!user || !user.password) {
+            return { error: "Authentication failed" };
+        }
+
+        const isValid = await bcrypt.compare(password, user.password);
+
+        if (!isValid) {
+            return { error: "Invalid password" };
+        }
+
+        // Delete order
+        await db.order.delete({
+            where: { id: orderId }
+        });
+
+        revalidatePath("/admin/orders");
+        return { success: true };
+
+    } catch (e: any) {
+        console.error("Delete order error:", e);
+        return { error: "Failed to delete order" };
+    }
+}
+
 

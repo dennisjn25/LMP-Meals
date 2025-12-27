@@ -30,6 +30,12 @@ import { Suspense } from "react";
 
 
 
+import { Toaster } from "sonner";
+
+// ... existing imports
+
+
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -38,6 +44,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} ${oswald.variable} antialiased`}>
+        <Toaster position="top-center" richColors theme="dark" />
         <Suspense fallback={null}>
           <AnalyticsTracker />
         </Suspense>
