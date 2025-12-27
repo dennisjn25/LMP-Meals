@@ -181,7 +181,7 @@ function NavItem({ children, active = false, href, icon }: { children: React.Rea
                 padding: '12px 16px',
                 borderRadius: tokens.radius.md,
                 cursor: 'pointer',
-                color: active ? tokens.colors.text.primary : tokens.colors.text.secondary,
+                color: active ? '#000000' : tokens.colors.text.secondary,
                 background: active ? '#f8fafc' : 'transparent',
                 fontWeight: active ? 700 : 500,
                 fontSize: '0.95rem',
