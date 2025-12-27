@@ -176,7 +176,7 @@ export default function MealCard({ meal }: { meal: MealProps }) {
                     marginBottom: tokens.spacing.md,
                     lineHeight: 1.2,
                     minHeight: '3.4rem',
-                    color: 'white',
+                    color: tokens.colors.text.primary,
                     fontFamily: 'var(--font-heading)',
                     textTransform: 'uppercase',
                     letterSpacing: '0.02em',
@@ -286,7 +286,7 @@ function MacroItem({ icon, label, value, color, style }: { icon: React.ReactNode
             <div style={{
                 fontWeight: 700,
                 fontSize: '1rem',
-                color: 'white',
+                color: tokens.colors.text.primary,
                 fontFamily: 'var(--font-heading)'
             }}>
                 {value}

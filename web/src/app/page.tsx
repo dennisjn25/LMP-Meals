@@ -166,7 +166,7 @@ export default function Home() {
               </Button>
             </Link>
             <Link href="/story">
-              <Button size="lg" variant="outline" style={{ color: 'white', borderColor: 'rgba(255,255,255,0.2)' }}>
+              <Button size="lg" variant="ghost" style={{ color: 'white', border: '2px solid rgba(255,255,255,0.2)' }}>
                 Our Story
               </Button>
             </Link>
