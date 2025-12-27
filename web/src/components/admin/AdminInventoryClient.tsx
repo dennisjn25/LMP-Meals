@@ -1,3 +1,4 @@
+"use client";
 import { useState } from "react";
 import { Package, TrendingUp, TrendingDown, AlertCircle, Utensils, Carrot } from "lucide-react";
 import { toggleMealAvailability } from "@/actions/meals";
