@@ -20,9 +20,12 @@ export const authConfig = {
     },
     callbacks: {
         authorized({ auth, request: { nextUrl } }) {
-            // Development bypass - skip auth checks if SKIP_AUTH is true
-            const skipAuth = process.env.SKIP_AUTH === 'true';
+            // CRITICAL SECURITY: Development bypass - ONLY works in development, NEVER in production
+            const isDevelopment = process.env.NODE_ENV !== 'production';
+            const skipAuth = isDevelopment && process.env.SKIP_AUTH === 'true';
+
             if (skipAuth) {
+                console.warn('⚠️  SKIP_AUTH is enabled - this should ONLY be used in development!');
                 return true;
             }
 
@@ -30,9 +33,21 @@ export const authConfig = {
             const isOnAdmin = nextUrl.pathname.startsWith('/admin');
 
             if (isOnAdmin) {
+                // CRITICAL: Admin portal requires BOTH authentication AND admin role
                 const isAdmin = (auth?.user as any)?.role === "ADMIN";
-                if (isLoggedIn && isAdmin) return true;
-                return false; // Redirect unauthenticated or non-admin users to login page
+
+                if (!isLoggedIn) {
+                    // Not logged in - redirect to login
+                    return false;
+                }
+
+                if (!isAdmin) {
+                    // Logged in but not admin - redirect to home
+                    return Response.redirect(new URL('/', nextUrl));
+                }
+
+                // Logged in AND admin - allow access
+                return true;
             } else if (isLoggedIn && (nextUrl.pathname === '/auth/login' || nextUrl.pathname === '/auth/register')) {
                 // Redirect logged in users away from auth pages
                 return Response.redirect(new URL('/', nextUrl));
