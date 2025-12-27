@@ -50,6 +50,11 @@ export default async function AdminFinancesPage() {
         where: { env: process.env.QB_ENV || 'sandbox' }
     });
 
+    // Serialize data for client components (Date -> ISO string)
+    const serializedOrders = JSON.parse(JSON.stringify(orders));
+    const serializedExpenses = JSON.parse(JSON.stringify(expenses));
+    const serializedLastSyncAt = qbConfig?.lastSyncAt ? qbConfig.lastSyncAt.toISOString() : null;
+
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: tokens.spacing.xl, paddingBottom: tokens.spacing.xxl }}>
             <div>
@@ -69,18 +74,19 @@ export default async function AdminFinancesPage() {
             </div>
 
             <AdminFinancesClient
-                orders={orders as any[]}
+                orders={serializedOrders}
                 totalRevenue={totalRevenue}
                 paidRevenue={paidRevenue}
                 pendingRevenue={pendingRevenue}
                 totalExpenses={totalExpenses}
-                expenses={expenses as any[]}
+                expenses={serializedExpenses}
                 qbConnected={!!qbConfig?.accessToken}
-                lastSyncAt={qbConfig?.lastSyncAt || null}
+                lastSyncAt={serializedLastSyncAt as any}
             />
         </div>
     );
 }
+
 
 
 

@@ -13,6 +13,11 @@ export default async function DeliveriesPage() {
     const routes = (routesRes as any).success || [];
     const drivers = (driversRes as any).success || [];
 
+    // Serialize data for client components
+    const serializedDeliveries = JSON.parse(JSON.stringify(deliveries));
+    const serializedRoutes = JSON.parse(JSON.stringify(routes));
+    const serializedDrivers = JSON.parse(JSON.stringify(drivers));
+
     return (
         <div style={{ maxWidth: '1400px', margin: '0 auto', paddingBottom: tokens.spacing.xxl }}>
             <div style={{ marginBottom: tokens.spacing.xxl }}>
@@ -40,11 +45,12 @@ export default async function DeliveriesPage() {
             </div>
 
             <DeliveriesClient
-                initialDeliveries={deliveries}
-                initialRoutes={routes}
-                drivers={drivers}
+                initialDeliveries={serializedDeliveries}
+                initialRoutes={serializedRoutes}
+                drivers={serializedDrivers}
             />
         </div>
     );
 }
+
 

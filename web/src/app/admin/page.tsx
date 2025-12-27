@@ -20,9 +20,22 @@ export default async function AdminDashboard() {
         redirect("/");
     }
 
-    const users = await db.user.findMany({
-        orderBy: { createdAt: 'desc' }
-    });
+    let users: any[] = [];
+    try {
+        users = await db.user.findMany({
+            orderBy: { createdAt: 'desc' }
+        });
+    } catch (error) {
+        console.error("Failed to fetch users:", error);
+    }
+
+    // Serialize users for client components (Date -> ISO string)
+    const serializedUsers = users.map(user => ({
+        ...user,
+        createdAt: user.createdAt instanceof Date ? user.createdAt.toISOString() : user.createdAt,
+        updatedAt: user.updatedAt instanceof Date ? user.updatedAt.toISOString() : user.updatedAt,
+        emailVerified: user.emailVerified instanceof Date ? user.emailVerified.toISOString() : user.emailVerified,
+    }));
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: tokens.spacing.xxl }}>
@@ -97,7 +110,7 @@ export default async function AdminDashboard() {
                             </tr>
                         </thead>
                         <tbody>
-                            {users.map((user) => (
+                            {serializedUsers.map((user) => (
                                 <AdminUserList key={user.id} user={user} />
                             ))}
                         </tbody>
@@ -127,4 +140,5 @@ function DashboardCard({ title, description, href, cta }: { title: string, descr
         </Card>
     )
 }
+
 

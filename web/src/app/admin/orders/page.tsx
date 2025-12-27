@@ -24,6 +24,10 @@ export default async function AdminOrdersPage() {
         select: { id: true, title: true, price: true }
     });
 
+    // Serialize data for client components
+    const serializedOrders = JSON.parse(JSON.stringify(orders));
+    const serializedMeals = JSON.parse(JSON.stringify(meals));
+
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: tokens.spacing.xl, paddingBottom: tokens.spacing.xxl }}>
             <div>
@@ -42,9 +46,10 @@ export default async function AdminOrdersPage() {
                 </p>
             </div>
 
-            <AdminOrderList initialOrders={orders as any[]} meals={meals} />
+            <AdminOrderList initialOrders={serializedOrders} meals={serializedMeals} />
         </div>
     );
 }
+
 
 
