@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { sendOrderConfirmationEmail } from "@/lib/email";
+import { sendOrderConfirmationEmail, sendAdminOrderNotification } from "@/lib/email";
 import { syncData } from "@/lib/quickbooks-sync";
 import { logError, logInfo } from "@/lib/logger";
 import { geocodeAddress } from "@/lib/google-maps";
@@ -151,6 +151,30 @@ export async function POST(req: Request) {
                 } catch (emailError) {
                     logError("Failed to send order confirmation email", "SquareWebhook", emailError);
                 }
+            }
+
+            // Send Admin Notification
+            try {
+                const adminUsers = await db.user.findMany({
+                    where: { role: "ADMIN" },
+                    select: { email: true }
+                });
+
+                const adminEmails = adminUsers.map(u => u.email).filter(Boolean) as string[];
+                const totalQuantity = order.items.reduce((sum, item) => sum + item.quantity, 0);
+
+                if (adminEmails.length > 0) {
+                    await sendAdminOrderNotification({
+                        adminEmails,
+                        customerName: order.customerName,
+                        orderNumber: order.orderNumber,
+                        total: `$${order.total.toFixed(2)}`,
+                        itemsCount: totalQuantity
+                    });
+                    logInfo(`Admin notification sent for Order #${order.orderNumber}`, "SquareWebhook");
+                }
+            } catch (adminError) {
+                logError("Failed to send admin notification", "SquareWebhook", adminError);
             }
 
             // Sync with QuickBooks

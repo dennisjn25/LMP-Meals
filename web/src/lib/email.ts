@@ -387,3 +387,71 @@ Scottsdale, Arizona
     }
 }
 
+
+// Send new order notification to admins
+export async function sendAdminOrderNotification({
+    adminEmails,
+    customerName,
+    orderNumber,
+    total,
+    itemsCount,
+}: {
+    adminEmails: string[];
+    customerName: string;
+    orderNumber: string;
+    total: string;
+    itemsCount: number;
+}) {
+    if (adminEmails.length === 0) return;
+
+    const mailOptions = {
+        from: `"Liberty Meal Prep System" <${process.env.GMAIL_USER}>`,
+        to: adminEmails.join(','), // Send to all admins
+        subject: `🔔 New Order Received! #${orderNumber}`,
+        html: `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <style>
+                    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                    .header { background: #000; color: #fff; padding: 20px; text-align: center; }
+                    .content { background: #f9f9f9; padding: 30px; border: 1px solid #ddd; }
+                    .button { display: inline-block; padding: 12px 24px; background: #10b981; color: #fff; text-decoration: none; border-radius: 4px; font-weight: bold; }
+                    .footer { text-align: center; margin-top: 20px; color: #888; font-size: 12px; }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1>New Order Alert 🚨</h1>
+                    </div>
+                    <div class="content">
+                        <h2>Order #${orderNumber}</h2>
+                        <p><strong>Customer:</strong> ${customerName}</p>
+                        <p><strong>Items:</strong> ${itemsCount} meals</p>
+                        <p><strong>Total:</strong> ${total}</p>
+                        
+                        <div style="margin-top: 30px; text-align: center;">
+                            <a href="${process.env.NEXT_PUBLIC_APP_URL}/admin/orders" class="button">View Order in Admin Panel</a>
+                        </div>
+                    </div>
+                    <div class="footer">
+                        <p>Liberty Meal Prep Admin System</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+        `,
+    };
+
+    try {
+        const info = await transporter.sendMail(mailOptions);
+        console.log('✅ Admin notification emails sent:', info.messageId);
+        return { success: true, messageId: info.messageId };
+    } catch (error) {
+        console.error('❌ Error sending admin notification:', error);
+        // Don't throw, just log
+        return { success: false, error };
+    }
+}

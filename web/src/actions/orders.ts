@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
-import { sendOrderConfirmationEmail } from "@/lib/email";
+import { sendOrderConfirmationEmail, sendAdminOrderNotification } from "@/lib/email";
 import { auth } from "@/auth";
 import { syncData } from "@/lib/quickbooks-sync";
 import { square } from "@/lib/square";
@@ -319,6 +319,7 @@ export async function createOrder(data: {
         `;
 
         // Send confirmation email to customer
+
         try {
             await sendOrderConfirmationEmail({
                 customerEmail: data.customerEmail,
@@ -330,6 +331,28 @@ export async function createOrder(data: {
         } catch (emailError) {
             console.error("Failed to send order confirmation email:", emailError);
             // Don't fail the order if email fails
+        }
+
+        // Send notification to admins
+        try {
+            const adminUsers = await db.user.findMany({
+                where: { role: "ADMIN" },
+                select: { email: true }
+            });
+
+            const adminEmails = adminUsers.map(u => u.email).filter(Boolean) as string[];
+
+            if (adminEmails.length > 0) {
+                await sendAdminOrderNotification({
+                    adminEmails,
+                    customerName: data.customerName,
+                    orderNumber,
+                    total: `$${data.total.toFixed(2)}`,
+                    itemsCount: totalQuantity
+                });
+            }
+        } catch (adminEmailError) {
+            console.error("Failed to send admin notification:", adminEmailError);
         }
 
         if (userId) revalidatePath("/dashboard");
