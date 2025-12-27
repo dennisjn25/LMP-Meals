@@ -12,16 +12,19 @@ import {
     Route as RouteIcon,
     Plus,
     ChevronRight,
-    Filter,
-    MoreVertical,
-    Navigation,
     BarChart3,
     Zap,
-    ChevronDown
+    ChevronDown,
+    RefreshCw
 } from "lucide-react";
-import { updateDeliveryStatus, createRoute, assignDeliveryToRoute } from "@/actions/delivery";
+import { createRoute } from "@/actions/delivery";
 import { createMissingDeliveries } from "@/actions/sync-deliveries";
 import DeliveryMap from "@/components/admin/DeliveryMap";
+import { tokens } from "@/lib/design-tokens";
+import { Card } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
+import { Badge } from "@/components/ui/Badge";
+import { Input } from "@/components/ui/Input";
 
 interface DeliveriesClientProps {
     initialDeliveries: any[];
@@ -35,7 +38,6 @@ export default function DeliveriesClient({
     drivers
 }: DeliveriesClientProps) {
     const [deliveries, setDeliveries] = useState(initialDeliveries);
-    const [routes, setRoutes] = useState(initialRoutes);
     const [searchTerm, setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState("ALL");
     const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
@@ -76,7 +78,7 @@ export default function DeliveriesClient({
         setLoading(true);
         const res = await createMissingDeliveries();
         if (res.count > 0) {
-            window.location.reload(); // Simple refresh for now
+            window.location.reload();
         }
         setLoading(false);
     };
@@ -91,378 +93,229 @@ export default function DeliveriesClient({
     };
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: tokens.spacing.xl }}>
             {/* Stats Overview */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: tokens.spacing.lg }}>
                 <StatCard
-                    icon={<Clock size={28} color="#fbbf24" />}
+                    icon={<Clock size={24} />}
                     label="Pending"
                     value={stats.pending}
-                    color="#fbbf24"
+                    color={tokens.colors.accent.DEFAULT}
                 />
                 <StatCard
-                    icon={<Truck size={28} color="#3b82f6" />}
+                    icon={<Truck size={24} />}
                     label="In Progress"
                     value={stats.inProgress}
                     color="#3b82f6"
                 />
                 <StatCard
-                    icon={<CheckCircle2 size={28} color="#10b981" />}
+                    icon={<CheckCircle2 size={24} />}
                     label="Delivered"
                     value={stats.delivered}
-                    color="#10b981"
+                    color={tokens.colors.text.success}
                 />
                 <StatCard
-                    icon={<AlertCircle size={28} color="#ef4444" />}
+                    icon={<AlertCircle size={24} />}
                     label="Failed"
                     value={stats.failed}
-                    color="#ef4444"
+                    color={tokens.colors.text.error}
                 />
             </div>
 
             {/* Actions Bar */}
-            <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                background: 'var(--card-bg)',
-                padding: '20px',
-                borderRadius: '16px',
-                border: '1px solid var(--glass-border)'
-            }}>
-                <div style={{ display: 'flex', gap: '16px', flex: 1 }}>
-                    <div style={{ position: 'relative', flex: 1, maxWidth: '400px' }}>
-                        <Search style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} size={18} />
-                        <input
-                            type="text"
-                            placeholder="Search orders, customers, or addresses..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            style={{
-                                width: '100%',
-                                padding: '12px 12px 12px 40px',
-                                background: 'rgba(255,255,255,0.05)',
-                                border: '1px solid var(--glass-border)',
-                                borderRadius: '12px',
-                                color: 'white',
-                                outline: 'none'
-                            }}
-                        />
-                    </div>
-                    <div style={{ position: 'relative', minWidth: '200px' }}>
-                        <button
-                            onClick={() => setIsStatusDropdownOpen(!isStatusDropdownOpen)}
-                            style={{
-                                width: '100%',
-                                padding: '12px 16px',
-                                background: 'rgba(255,255,255,0.05)',
-                                border: '1px solid var(--glass-border)',
-                                borderRadius: '12px',
-                                color: 'white',
-                                outline: 'none',
-                                cursor: 'pointer',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'space-between',
-                                fontFamily: 'inherit'
-                            }}
-                        >
-                            <span>
-                                {statusFilter === 'ALL' && 'All Statuses'}
-                                {statusFilter === 'PENDING' && 'Pending'}
-                                {statusFilter === 'IN_PROGRESS' && 'In Progress'}
-                                {statusFilter === 'DELIVERED' && 'Delivered'}
-                                {statusFilter === 'FAILED' && 'Failed'}
-                            </span>
-                            <ChevronDown size={16} style={{ opacity: 0.5 }} />
-                        </button>
+            <Card style={{ padding: tokens.spacing.md }}>
+                <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                    gap: tokens.spacing.md
+                }}>
+                    <div style={{ display: 'flex', gap: tokens.spacing.md, flex: 1, minWidth: '300px' }}>
+                        <div style={{ position: 'relative', flex: 1, maxWidth: '400px' }}>
+                            <Search style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: tokens.colors.text.secondary, zIndex: 1 }} size={18} />
+                            <Input
+                                placeholder="Search orders, customers..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                style={{ paddingLeft: '40px', marginBottom: 0 }}
+                            />
+                        </div>
+                        <div style={{ position: 'relative' }}>
+                            <Button
+                                onClick={() => setIsStatusDropdownOpen(!isStatusDropdownOpen)}
+                                variant="outline"
+                                style={{ color: 'white', borderColor: tokens.colors.border.dark, minWidth: '160px' }}
+                            >
+                                {statusFilter === 'ALL' ? 'All Statuses' : statusFilter.replace('_', ' ')}
+                                <ChevronDown size={16} style={{ marginLeft: tokens.spacing.sm, opacity: 0.5 }} />
+                            </Button>
 
-                        {isStatusDropdownOpen && (
-                            <>
-                                <div
-                                    style={{ position: 'fixed', inset: 0, zIndex: 40 }}
-                                    onClick={() => setIsStatusDropdownOpen(false)}
-                                />
-                                <div style={{
-                                    position: 'absolute',
-                                    top: 'calc(100% + 8px)',
-                                    left: 0,
-                                    width: '100%',
-                                    background: '#0f172a', // Slate-900 or similar dark bg
-                                    border: '1px solid var(--glass-border)',
-                                    borderRadius: '12px',
-                                    padding: '6px',
-                                    zIndex: 50,
-                                    boxShadow: '0 10px 40px -10px rgba(0,0,0,0.5)',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: '2px'
-                                }}>
-                                    {[
-                                        { value: 'ALL', label: 'All Statuses' },
-                                        { value: 'PENDING', label: 'Pending' },
-                                        { value: 'IN_PROGRESS', label: 'In Progress' },
-                                        { value: 'DELIVERED', label: 'Delivered' },
-                                        { value: 'FAILED', label: 'Failed' }
-                                    ].map((option) => (
-                                        <button
-                                            key={option.value}
-                                            onClick={() => {
-                                                setStatusFilter(option.value);
-                                                setIsStatusDropdownOpen(false);
-                                            }}
-                                            style={{
-                                                padding: '10px 12px',
-                                                borderRadius: '8px',
-                                                background: statusFilter === option.value ? 'rgba(255,255,255,0.1)' : 'transparent',
-                                                color: statusFilter === option.value ? 'white' : '#94a3b8',
-                                                textAlign: 'left',
-                                                cursor: 'pointer',
-                                                border: 'none',
-                                                fontSize: '0.9rem',
-                                                fontFamily: 'inherit',
-                                                transition: 'all 0.2s',
-                                                fontWeight: statusFilter === option.value ? 600 : 400
-                                            }}
-                                            onMouseOver={(e) => {
-                                                e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
-                                                e.currentTarget.style.color = 'white';
-                                            }}
-                                            onMouseOut={(e) => {
-                                                e.currentTarget.style.background = statusFilter === option.value ? 'rgba(255,255,255,0.1)' : 'transparent';
-                                                e.currentTarget.style.color = statusFilter === option.value ? 'white' : '#94a3b8';
-                                            }}
-                                        >
-                                            {option.label}
-                                        </button>
-                                    ))}
-                                </div>
-                            </>
-                        )}
+                            {isStatusDropdownOpen && (
+                                <>
+                                    <div
+                                        style={{ position: 'fixed', inset: 0, zIndex: 40 }}
+                                        onClick={() => setIsStatusDropdownOpen(false)}
+                                    />
+                                    <div style={{
+                                        position: 'absolute',
+                                        top: 'calc(100% + 8px)',
+                                        left: 0,
+                                        width: '100%',
+                                        background: tokens.colors.surface.dark,
+                                        border: `1px solid ${tokens.colors.border.dark}`,
+                                        borderRadius: tokens.radius.md,
+                                        padding: '4px',
+                                        zIndex: 50,
+                                        boxShadow: tokens.shadows.lg,
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        gap: '2px'
+                                    }}>
+                                        {[
+                                            { value: 'ALL', label: 'All Statuses' },
+                                            { value: 'PENDING', label: 'Pending' },
+                                            { value: 'IN_PROGRESS', label: 'In Progress' },
+                                            { value: 'DELIVERED', label: 'Delivered' },
+                                            { value: 'FAILED', label: 'Failed' }
+                                        ].map((option) => (
+                                            <button
+                                                key={option.value}
+                                                onClick={() => {
+                                                    setStatusFilter(option.value);
+                                                    setIsStatusDropdownOpen(false);
+                                                }}
+                                                style={{
+                                                    padding: '10px 12px',
+                                                    borderRadius: tokens.radius.sm,
+                                                    background: statusFilter === option.value ? 'rgba(255,255,255,0.1)' : 'transparent',
+                                                    color: statusFilter === option.value ? 'white' : tokens.colors.text.secondary,
+                                                    textAlign: 'left',
+                                                    cursor: 'pointer',
+                                                    border: 'none',
+                                                    fontSize: '0.9rem',
+                                                    fontFamily: 'inherit',
+                                                    transition: tokens.transitions.normal,
+                                                    fontWeight: statusFilter === option.value ? 600 : 400
+                                                }}
+                                            >
+                                                {option.label}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: tokens.spacing.sm }}>
+                        <div style={{ display: 'flex', background: tokens.colors.surface.medium, borderRadius: tokens.radius.md, padding: '4px', border: `1px solid ${tokens.colors.border.dark}` }}>
+                            <Button
+                                onClick={() => setViewMode('LIST')}
+                                variant={viewMode === 'LIST' ? 'primary' : 'ghost'}
+                                size="sm"
+                                style={{ borderRadius: tokens.radius.sm }}
+                            >
+                                LIST
+                            </Button>
+                            <Button
+                                onClick={() => setViewMode('MAP')}
+                                variant={viewMode === 'MAP' ? 'primary' : 'ghost'}
+                                size="sm"
+                                style={{ borderRadius: tokens.radius.sm }}
+                            >
+                                MAP
+                            </Button>
+                        </div>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: tokens.spacing.sm, flexWrap: 'wrap' }}>
+                        <Button variant="outline" size="sm" onClick={handleSync} isLoading={loading}>
+                            <RefreshCw size={16} style={{ marginRight: tokens.spacing.xs }} />
+                            Sync
+                        </Button>
+                        <Button variant="primary" size="sm" onClick={handleCreateRoute} isLoading={loading}>
+                            <Plus size={16} style={{ marginRight: tokens.spacing.xs }} />
+                            New Route
+                        </Button>
                     </div>
                 </div>
-
-                <div style={{ display: 'flex', gap: '8px', marginRight: '8px' }}>
-                    <button
-                        onClick={() => setViewMode('LIST')}
-                        style={{
-                            padding: '12px 16px',
-                            background: viewMode === 'LIST' ? '#fbbf24' : 'rgba(255,255,255,0.05)',
-                            border: '1px solid var(--glass-border)',
-                            borderRadius: '12px',
-                            color: viewMode === 'LIST' ? '#000' : 'white',
-                            fontWeight: 700,
-                            cursor: 'pointer',
-                        }}
-                    >
-                        LIST
-                    </button>
-                    <button
-                        onClick={() => setViewMode('MAP')}
-                        style={{
-                            padding: '12px 16px',
-                            background: viewMode === 'MAP' ? '#fbbf24' : 'rgba(255,255,255,0.05)',
-                            border: '1px solid var(--glass-border)',
-                            borderRadius: '12px',
-                            color: viewMode === 'MAP' ? '#000' : 'white',
-                            fontWeight: 700,
-                            cursor: 'pointer',
-                        }}
-                    >
-                        MAP
-                    </button>
-                </div>
-
-                <div style={{ display: 'flex', gap: '12px' }}>
-                    <button
-                        onClick={() => window.location.href = '/admin/deliveries/reports'}
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            padding: '12px 20px',
-                            background: 'rgba(255,255,255,0.05)',
-                            border: '1px solid var(--glass-border)',
-                            borderRadius: '12px',
-                            color: 'white',
-                            fontWeight: 700,
-                            fontFamily: 'var(--font-heading)',
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.05em',
-                            cursor: 'pointer',
-                            transition: 'all 0.2s'
-                        }}
-                    >
-                        <BarChart3 size={18} />
-                        Reports
-                    </button>
-                    <button
-                        onClick={() => window.location.href = '/admin/deliveries/optimize'}
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            padding: '12px 20px',
-                            background: 'rgba(59, 130, 246, 0.1)',
-                            border: '1px solid rgba(59, 130, 246, 0.3)',
-                            borderRadius: '12px',
-                            color: '#60a5fa',
-                            fontWeight: 700,
-                            fontFamily: 'var(--font-heading)',
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.05em',
-                            cursor: 'pointer',
-                            transition: 'all 0.2s'
-                        }}
-                    >
-                        <Zap size={18} />
-                        Optimize
-                    </button>
-                    <button
-                        onClick={handleSync}
-                        disabled={loading}
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            padding: '12px 20px',
-                            background: 'rgba(255,255,255,0.05)',
-                            border: '1px solid var(--glass-border)',
-                            borderRadius: '12px',
-                            color: 'white',
-                            fontWeight: 700,
-                            fontFamily: 'var(--font-heading)',
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.05em',
-                            cursor: 'pointer',
-                            transition: 'all 0.2s'
-                        }}
-                    >
-                        <Clock size={18} />
-                        Sync Orders
-                    </button>
-                    <button
-                        onClick={handleCreateRoute}
-                        disabled={loading}
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            padding: '12px 24px',
-                            background: 'linear-gradient(135deg, #1a1a1a 0%, #000 100%)',
-                            border: '2px solid #fbbf24',
-                            borderRadius: '12px',
-                            color: '#fbbf24',
-                            fontWeight: 800,
-                            fontFamily: 'var(--font-heading)',
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.08em',
-                            cursor: 'pointer',
-                            transition: 'all 0.3s',
-                            boxShadow: '0 0 15px rgba(251, 191, 36, 0.2)'
-                        }}
-                        onMouseOver={(e) => {
-                            e.currentTarget.style.transform = 'translateY(-2px)';
-                            e.currentTarget.style.boxShadow = '0 0 25px rgba(251, 191, 36, 0.4)';
-                        }}
-                        onMouseOut={(e) => {
-                            e.currentTarget.style.transform = 'translateY(0)';
-                            e.currentTarget.style.boxShadow = '0 0 15px rgba(251, 191, 36, 0.2)';
-                        }}
-                    >
-                        <Plus size={18} />
-                        Create Route
-                    </button>
-                </div>
-            </div>
+            </Card>
 
             {/* Deliveries Content (Table or Map) */}
             {viewMode === 'LIST' ? (
-                <div style={{
-                    background: 'var(--card-bg)',
-                    borderRadius: '24px',
-                    border: '1px solid var(--glass-border)',
-                    overflow: 'hidden'
-                }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-                        <thead>
-                            <tr style={{ borderBottom: '1px solid var(--glass-border)', background: 'rgba(255,255,255,0.03)' }}>
-                                <th style={{ padding: '20px 24px', fontWeight: 700, color: '#f8f9fa', fontFamily: 'var(--font-heading)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Order</th>
-                                <th style={{ padding: '20px 24px', fontWeight: 700, color: '#f8f9fa', fontFamily: 'var(--font-heading)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Customer</th>
-                                <th style={{ padding: '20px 24px', fontWeight: 700, color: '#f8f9fa', fontFamily: 'var(--font-heading)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Address</th>
-                                <th style={{ padding: '20px 24px', fontWeight: 700, color: '#f8f9fa', fontFamily: 'var(--font-heading)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Status</th>
-                                <th style={{ padding: '20px 24px', fontWeight: 700, color: '#f8f9fa', fontFamily: 'var(--font-heading)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Driver / Route</th>
-                                <th style={{ padding: '20px 24px', fontWeight: 700, color: '#f8f9fa', fontFamily: 'var(--font-heading)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredDeliveries.length > 0 ? filteredDeliveries.map((delivery) => (
-                                <tr key={delivery.id} style={{ borderBottom: '1px solid var(--glass-border)', transition: 'background 0.2s' }} onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.01)'} onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}>
-                                    <td style={{ padding: '20px 24px' }}>
-                                        <div style={{ fontWeight: 700, color: '#fbbf24' }}>{delivery.order.orderNumber}</div>
-                                        <div style={{ fontSize: '0.85rem', color: '#cbd5e1' }}>{new Date(delivery.createdAt).toLocaleDateString()}</div>
-                                    </td>
-                                    <td style={{ padding: '20px 24px' }}>
-                                        <div style={{ fontWeight: 600, color: 'white' }}>{delivery.order.customerName}</div>
-                                        <div style={{ fontSize: '0.85rem', color: '#cbd5e1' }}>{delivery.order.customerEmail}</div>
-                                    </td>
-                                    <td style={{ padding: '20px 24px', maxWidth: '300px' }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#cbd5e1' }}>
-                                            <MapPin size={14} style={{ flexShrink: 0 }} />
-                                            <span style={{ fontSize: '0.9rem' }}>{delivery.order.shippingAddress}, {delivery.order.city}</span>
-                                        </div>
-                                    </td>
-                                    <td style={{ padding: '20px 24px' }}>
-                                        <StatusBadge status={delivery.status} />
-                                    </td>
-                                    <td style={{ padding: '20px 24px' }}>
-                                        {delivery.driver ? (
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                                <div style={{ width: '24px', height: '24px', background: 'var(--primary)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 700 }}>{delivery.driver.name?.[0] || 'D'}</div>
-                                                <span style={{ fontSize: '0.9rem' }}>{delivery.driver.name}</span>
-                                            </div>
-                                        ) : (
-                                            <span style={{ color: '#64748b', fontSize: '0.9rem', fontStyle: 'italic' }}>Unassigned</span>
-                                        )}
-                                        {delivery.route && (
-                                            <div style={{ fontSize: '0.75rem', color: 'var(--primary)', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                                <RouteIcon size={12} /> Route #{delivery.route.id.slice(-4)}
-                                            </div>
-                                        )}
-                                    </td>
-                                    <td style={{ padding: '20px 24px' }}>
-                                        <div style={{ display: 'flex', gap: '8px' }}>
-                                            <button
-                                                title="View Details"
-                                                style={{ padding: '8px', borderRadius: '8px', border: '1px solid var(--glass-border)', background: 'transparent', color: '#94a3b8', cursor: 'pointer' }}
-                                            >
-                                                <ChevronRight size={18} />
-                                            </button>
-                                            <button
-                                                title="Assign"
-                                                style={{ padding: '8px', borderRadius: '8px', border: '1px solid var(--glass-border)', background: 'transparent', color: '#94a3b8', cursor: 'pointer' }}
-                                            >
-                                                <User size={18} />
-                                            </button>
-                                        </div>
-                                    </td>
+                <Card style={{ padding: 0, overflow: 'hidden' }}>
+                    <div style={{ overflowX: 'auto' }}>
+                        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                            <thead>
+                                <tr style={{ borderBottom: `1px solid ${tokens.colors.border.dark}`, background: tokens.colors.surface.medium }}>
+                                    <th style={{ padding: '20px 24px', fontWeight: 800, color: 'white', fontFamily: 'var(--font-heading)', textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.8rem' }}>Order</th>
+                                    <th style={{ padding: '20px 24px', fontWeight: 800, color: 'white', fontFamily: 'var(--font-heading)', textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.8rem' }}>Customer</th>
+                                    <th style={{ padding: '20px 24px', fontWeight: 800, color: 'white', fontFamily: 'var(--font-heading)', textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.8rem' }}>Address</th>
+                                    <th style={{ padding: '20px 24px', fontWeight: 800, color: 'white', fontFamily: 'var(--font-heading)', textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.8rem' }}>Status</th>
+                                    <th style={{ padding: '20px 24px', fontWeight: 800, color: 'white', fontFamily: 'var(--font-heading)', textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.8rem' }}>Driver / Route</th>
+                                    <th style={{ padding: '20px 24px', fontWeight: 800, color: 'white', fontFamily: 'var(--font-heading)', textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.8rem', textAlign: 'right' }}>Actions</th>
                                 </tr>
-                            )) : (
-                                <tr>
-                                    <td colSpan={6} style={{ padding: '80px 60px', textAlign: 'center', color: '#cbd5e1' }}>
-                                        <Truck size={64} style={{ marginBottom: '24px', opacity: 0.2, color: '#fbbf24' }} />
-                                        <div style={{ fontSize: '1.2rem', fontWeight: 600 }}>No deliveries found. Sync orders to get started.</div>
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
-                </div>
+                            </thead>
+                            <tbody>
+                                {filteredDeliveries.length > 0 ? filteredDeliveries.map((delivery) => (
+                                    <tr key={delivery.id} style={{ borderBottom: `1px solid ${tokens.colors.border.dark}`, transition: tokens.transitions.normal }}>
+                                        <td style={{ padding: '20px 24px' }}>
+                                            <div style={{ fontWeight: 800, color: tokens.colors.accent.DEFAULT, fontFamily: 'var(--font-heading)' }}>{delivery.order.orderNumber}</div>
+                                            <div style={{ fontSize: '0.8rem', color: tokens.colors.text.inverseSecondary }}>{new Date(delivery.createdAt).toLocaleDateString()}</div>
+                                        </td>
+                                        <td style={{ padding: '20px 24px' }}>
+                                            <div style={{ fontWeight: 700, color: 'white' }}>{delivery.order.customerName}</div>
+                                            <div style={{ fontSize: '0.8rem', color: tokens.colors.text.inverseSecondary }}>{delivery.order.customerEmail}</div>
+                                        </td>
+                                        <td style={{ padding: '20px 24px', maxWidth: '300px' }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: tokens.colors.text.inverseSecondary }}>
+                                                <MapPin size={14} style={{ flexShrink: 0, color: tokens.colors.accent.DEFAULT }} />
+                                                <span style={{ fontSize: '0.9rem', lineHeight: 1.4 }}>{delivery.order.shippingAddress}, {delivery.order.city}</span>
+                                            </div>
+                                        </td>
+                                        <td style={{ padding: '20px 24px' }}>
+                                            <StatusBadge status={delivery.status} />
+                                        </td>
+                                        <td style={{ padding: '20px 24px' }}>
+                                            {delivery.driver ? (
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                    <div style={{ width: '24px', height: '24px', background: tokens.colors.surface.medium, border: `1px solid ${tokens.colors.border.dark}`, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 800, color: tokens.colors.accent.DEFAULT }}>{delivery.driver.name?.[0] || 'D'}</div>
+                                                    <span style={{ fontSize: '0.9rem', color: 'white' }}>{delivery.driver.name}</span>
+                                                </div>
+                                            ) : (
+                                                <span style={{ color: tokens.colors.text.secondary, fontSize: '0.9rem', fontStyle: 'italic' }}>Unassigned</span>
+                                            )}
+                                            {delivery.route && (
+                                                <div style={{ fontSize: '0.75rem', color: tokens.colors.accent.DEFAULT, marginTop: '4px', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
+                                                    <RouteIcon size={12} /> Route #{delivery.route.id.slice(-4)}
+                                                </div>
+                                            )}
+                                        </td>
+                                        <td style={{ padding: '20px 24px', textAlign: 'right' }}>
+                                            <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                                                <Button size="sm" variant="ghost" style={{ padding: '8px' }}>
+                                                    <ChevronRight size={18} />
+                                                </Button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                )) : (
+                                    <tr>
+                                        <td colSpan={6} style={{ padding: '100px 24px', textAlign: 'center', color: tokens.colors.text.secondary }}>
+                                            <Truck size={64} style={{ marginBottom: tokens.spacing.lg, opacity: 0.1, color: tokens.colors.accent.DEFAULT, margin: '0 auto' }} />
+                                            <div style={{ fontSize: '1.25rem', fontWeight: 700, color: 'white', fontFamily: 'var(--font-heading)' }}>NO DELIVERIES FOUND</div>
+                                            <p style={{ marginTop: tokens.spacing.xs }}>Try syncing orders or adjusting your filters.</p>
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                </Card>
             ) : (
-                <div style={{
-                    background: 'var(--card-bg)',
-                    borderRadius: '24px',
-                    border: '1px solid var(--glass-border)',
+                <Card style={{
+                    padding: 0,
                     height: '700px',
                     overflow: 'hidden',
                     position: 'relative'
@@ -482,14 +335,14 @@ export default function DeliveriesClient({
                             padding: '40px',
                             zIndex: 10
                         }}>
-                            <MapPin size={48} color="#fbbf24" style={{ marginBottom: '20px' }} />
-                            <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '10px' }}>No Deliveries Pinpointed</h3>
-                            <p style={{ color: '#94a3b8', maxWidth: '400px' }}>
+                            <MapPin size={48} color={tokens.colors.accent.DEFAULT} style={{ marginBottom: '20px' }} />
+                            <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '10px', fontFamily: 'var(--font-heading)' }}>NO COORDINATES FOUND</h3>
+                            <p style={{ color: tokens.colors.text.inverseSecondary, maxWidth: '400px' }}>
                                 None of the currently filtered deliveries have valid coordinates. Try syncing orders or checking addresses.
                             </p>
                         </div>
                     )}
-                </div>
+                </Card>
             )}
         </div>
     );
@@ -497,21 +350,19 @@ export default function DeliveriesClient({
 
 function StatCard({ icon, label, value, color }: { icon: any, label: string, value: number, color: string }) {
     return (
-        <div style={{
-            background: 'var(--card-bg)',
-            padding: '24px',
-            borderRadius: '24px',
-            border: '1px solid var(--glass-border)',
+        <Card style={{
+            padding: tokens.spacing.lg,
             display: 'flex',
             alignItems: 'center',
-            gap: '20px',
-            boxShadow: '0 10px 30px -10px rgba(0,0,0,0.3)'
+            gap: tokens.spacing.lg,
+            background: tokens.colors.surface.medium
         }}>
             <div style={{
-                width: '56px',
-                height: '56px',
-                borderRadius: '16px',
+                width: '48px',
+                height: '48px',
+                borderRadius: tokens.radius.md,
                 background: `${color}15`,
+                color: color,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center'
@@ -519,34 +370,28 @@ function StatCard({ icon, label, value, color }: { icon: any, label: string, val
                 {icon}
             </div>
             <div>
-                <div style={{ fontSize: '0.95rem', color: '#e2e8f0', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</div>
-                <div style={{ fontSize: '2.5rem', fontWeight: 900, color: 'white', lineHeight: 1, fontFamily: 'var(--font-heading)' }}>{value}</div>
+                <div style={{ fontSize: '0.8rem', color: tokens.colors.text.inverseSecondary, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>{label}</div>
+                <div style={{ fontSize: '2rem', fontWeight: 900, color: 'white', lineHeight: 1, fontFamily: 'var(--font-heading)' }}>{value}</div>
             </div>
-        </div>
+        </Card>
     );
 }
 
 function StatusBadge({ status }: { status: string }) {
-    const colors: any = {
-        PENDING: { bg: 'rgba(59, 130, 246, 0.1)', text: '#3b82f6' },
-        IN_PROGRESS: { bg: 'rgba(245, 158, 11, 0.1)', text: '#f59e0b' },
-        DELIVERED: { bg: 'rgba(16, 185, 129, 0.1)', text: '#10b981' },
-        FAILED: { bg: 'rgba(239, 68, 68, 0.1)', text: '#ef4444' },
+    const variants: Record<string, "outline" | "warning" | "success" | "error" | "default"> = {
+        PENDING: "outline",
+        IN_PROGRESS: "warning",
+        DELIVERED: "success",
+        FAILED: "error",
     };
 
-    const config = colors[status] || colors.PENDING;
+    const variant = variants[status] || "default";
 
     return (
-        <span style={{
-            padding: '6px 12px',
-            borderRadius: '20px',
-            background: config.bg,
-            color: config.text,
-            fontSize: '0.75rem',
-            fontWeight: 700,
-            letterSpacing: '0.05em'
-        }}>
-            {status}
-        </span>
+        <Badge variant={variant as any} style={variant === "outline" ? { borderColor: tokens.colors.border.dark, color: tokens.colors.text.secondary } : {}}>
+            {status.replace('_', ' ')}
+        </Badge>
     );
 }
+
+

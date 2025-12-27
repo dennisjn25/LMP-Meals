@@ -1,12 +1,11 @@
 import { db } from "@/lib/db";
 import { getOrdersAdmin, updateOrderStatus } from "@/actions/orders";
-import Navbar from "@/components/Navbar";
 import AdminOrderList from "@/components/admin/AdminOrderList";
-
-export const dynamic = "force-dynamic";
-
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import { tokens } from "@/lib/design-tokens";
+
+export const dynamic = "force-dynamic";
 
 export default async function AdminOrdersPage() {
     const session = await auth();
@@ -19,7 +18,6 @@ export default async function AdminOrdersPage() {
         redirect("/");
     }
 
-
     const orders = await getOrdersAdmin();
     const meals = await db.meal.findMany({
         where: { available: true },
@@ -27,16 +25,19 @@ export default async function AdminOrdersPage() {
     });
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: tokens.spacing.xl, paddingBottom: tokens.spacing.xxl }}>
             <div>
                 <h1 style={{
                     fontSize: '3.5rem',
                     fontFamily: 'var(--font-heading)',
                     color: 'white',
                     lineHeight: '1',
-                    marginBottom: '12px'
-                }}>ORDERS</h1>
-                <p style={{ color: '#94a3b8', fontSize: '1.1rem' }}>
+                    marginBottom: tokens.spacing.sm,
+                    fontWeight: 900,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em'
+                }}>Orders</h1>
+                <p style={{ color: tokens.colors.text.secondary, fontSize: '1.25rem', fontWeight: 500 }}>
                     Track and manage customer orders, payments, and delivery fulfillment.
                 </p>
             </div>
@@ -45,4 +46,5 @@ export default async function AdminOrdersPage() {
         </div>
     );
 }
+
 

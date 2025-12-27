@@ -1,8 +1,8 @@
 import { db } from "@/lib/db";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import Navbar from "@/components/Navbar";
 import AdminFinancesClient from "@/components/admin/AdminFinancesClient";
+import { tokens } from "@/lib/design-tokens";
 
 export const dynamic = "force-dynamic";
 
@@ -51,16 +51,19 @@ export default async function AdminFinancesPage() {
     });
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: tokens.spacing.xl, paddingBottom: tokens.spacing.xxl }}>
             <div>
                 <h1 style={{
                     fontSize: '3.5rem',
                     fontFamily: 'var(--font-heading)',
                     color: 'white',
                     lineHeight: '1',
-                    marginBottom: '12px'
-                }}>FINANCES</h1>
-                <p style={{ color: '#94a3b8', fontSize: '1.1rem' }}>
+                    marginBottom: tokens.spacing.sm,
+                    fontWeight: 900,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em'
+                }}>Finances</h1>
+                <p style={{ color: tokens.colors.text.secondary, fontSize: '1.25rem', fontWeight: 500 }}>
                     Real-time financial tracking, QuickBooks synchronization, and profit analysis.
                 </p>
             </div>
@@ -78,5 +81,6 @@ export default async function AdminFinancesPage() {
         </div>
     );
 }
+
 
 

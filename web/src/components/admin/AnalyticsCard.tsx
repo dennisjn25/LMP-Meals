@@ -65,20 +65,22 @@ export default function AnalyticsCard() {
     if (error) {
         return (
             <Card style={{ textAlign: 'center', borderColor: tokens.colors.text.error }}>
-                <CardContent style={{ padding: '32px', color: tokens.colors.text.error }}>
-                    <h3 style={{ fontSize: '1.25rem', fontWeight: 700 }}>Analytics Error</h3>
-                    <p style={{ color: tokens.colors.text.secondary, marginTop: '8px' }}>{error}</p>
+                <CardContent style={{ padding: tokens.spacing.xxl, color: tokens.colors.text.error }}>
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: 900, fontFamily: 'var(--font-heading)', textTransform: 'uppercase' }}>Analytics Error</h3>
+                    <p style={{ color: tokens.colors.text.secondary, marginTop: tokens.spacing.sm }}>{error}</p>
                     <button
                         onClick={() => setPeriod("7d")}
                         style={{
-                            marginTop: '20px',
-                            padding: '10px 20px',
+                            marginTop: tokens.spacing.lg,
+                            padding: '12px 24px',
                             background: '#fff',
                             color: '#000',
-                            borderRadius: '8px',
-                            fontWeight: 700,
+                            borderRadius: tokens.radius.md,
+                            fontWeight: 900,
                             border: 'none',
-                            cursor: 'pointer'
+                            cursor: 'pointer',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.05em'
                         }}
                     >
                         Retry
@@ -89,21 +91,21 @@ export default function AnalyticsCard() {
     }
 
     return (
-        <Card glass style={{ overflow: 'hidden', padding: '0', background: 'rgba(255,255,255,0.03)' }}>
-            <div style={{ padding: '32px' }}>
+        <Card style={{ overflow: 'hidden', padding: '0' }}>
+            <div style={{ padding: tokens.spacing.xl }}>
                 {/* Header */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '20px', marginBottom: '32px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: tokens.spacing.lg, marginBottom: tokens.spacing.xl }}>
                     <div>
-                        <h2 style={{ fontSize: '1.5rem', fontWeight: 900, color: 'white', fontFamily: 'var(--font-heading)', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                            <TrendingUp size={24} color={tokens.colors.accent.DEFAULT} /> Business Intelligence
+                        <h2 style={{ fontSize: '1.5rem', fontWeight: 900, color: 'white', fontFamily: 'var(--font-heading)', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: tokens.spacing.md, margin: 0 }}>
+                            <TrendingUp size={24} color={tokens.colors.accent.DEFAULT} /> BUSINESS INTELLIGENCE
                         </h2>
-                        <p style={{ color: tokens.colors.text.secondary, fontSize: '0.9rem', marginTop: '4px' }}>Real-time sales & performance metrics</p>
+                        <p style={{ color: tokens.colors.text.secondary, fontSize: '0.9rem', marginTop: '4px', margin: 0, fontWeight: 500 }}>Real-time sales & performance metrics</p>
                     </div>
 
                     <div
                         role="group"
                         aria-label="Time period selector"
-                        style={{ display: 'flex', background: 'rgba(255,255,255,0.05)', padding: '4px', borderRadius: '12px', border: `1px solid ${tokens.colors.border.dark}` }}
+                        style={{ display: 'flex', background: tokens.colors.surface.medium, padding: '4px', borderRadius: tokens.radius.md, border: `1px solid ${tokens.colors.border.dark}` }}
                     >
                         {(["24h", "7d", "30d"] as const).map((p) => (
                             <button
@@ -112,18 +114,19 @@ export default function AnalyticsCard() {
                                 aria-pressed={period === p}
                                 style={{
                                     padding: '8px 16px',
-                                    borderRadius: '8px',
+                                    borderRadius: tokens.radius.sm,
                                     border: 'none',
                                     background: period === p ? 'white' : 'transparent',
                                     color: period === p ? 'black' : tokens.colors.text.secondary,
-                                    fontSize: '0.8rem',
+                                    fontSize: '0.75rem',
                                     fontWeight: 800,
                                     cursor: 'pointer',
-                                    transition: 'all 0.2s',
-                                    textTransform: 'uppercase'
+                                    transition: tokens.transitions.fast,
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '0.05em'
                                 }}
                             >
-                                {p === "24h" ? "24 Hours" : p === "7d" ? "7 Days" : "30 Days"}
+                                {p === "24h" ? "24H" : p === "7d" ? "7D" : "30D"}
                             </button>
                         ))}
                     </div>
@@ -134,13 +137,13 @@ export default function AnalyticsCard() {
                 ) : data && (
                     <>
                         {/* Business Metrics Grid */}
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px', marginBottom: '32px' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: tokens.spacing.lg, marginBottom: tokens.spacing.xl }}>
                             {data.metrics.revenue && (
                                 <MetricBox
                                     icon={<DollarSign size={20} />}
                                     label="Total Revenue"
                                     data={data.metrics.revenue}
-                                    color={tokens.colors.text.success}
+                                    color={tokens.colors.accent.DEFAULT}
                                     isCurrency
                                 />
                             )}
@@ -156,57 +159,57 @@ export default function AnalyticsCard() {
                                 icon={<Eye size={20} />}
                                 label="Page Views"
                                 data={data.metrics.pageViews}
-                                color={tokens.colors.accent.DEFAULT}
+                                color="#8b5cf6"
                             />
                             <MetricBox
                                 icon={<Users size={20} />}
                                 label="Visitors"
                                 data={data.metrics.uniqueVisitors}
-                                color="#8b5cf6"
+                                color="#ec4899"
                             />
                         </div>
 
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '32px' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: tokens.spacing.xl }}>
                             {/* Top Meals */}
                             {data.topMeals && data.topMeals.length > 0 && (
-                                <Card style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${tokens.colors.border.dark}` }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                                        <h3 style={{ fontSize: '1rem', color: 'white', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Top Performing Meals</h3>
-                                        <TrendingUp size={18} color={tokens.colors.text.secondary} />
+                                <div style={{ background: tokens.colors.surface.medium, padding: tokens.spacing.xl, borderRadius: tokens.radius.lg, border: `1px solid ${tokens.colors.border.dark}` }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: tokens.spacing.xl }}>
+                                        <h3 style={{ fontSize: '1rem', color: 'white', fontWeight: 900, fontFamily: 'var(--font-heading)', textTransform: 'uppercase', letterSpacing: '0.05em', margin: 0 }}>Top Performing Meals</h3>
+                                        <TrendingUp size={18} color={tokens.colors.accent.DEFAULT} />
                                     </div>
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: tokens.spacing.lg }}>
                                         {data.topMeals.map((meal, i) => (
                                             <div key={i}>
-                                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '0.9rem', alignItems: 'center' }}>
-                                                    <span style={{ color: '#e2e8f0', fontWeight: 600 }}>{meal.name}</span>
-                                                    <span style={{ color: tokens.colors.accent.DEFAULT, fontWeight: 800 }}>{meal.count} orders</span>
+                                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: tokens.spacing.xs, fontSize: '0.9rem', alignItems: 'center' }}>
+                                                    <span style={{ color: 'white', fontWeight: 700 }}>{meal.name}</span>
+                                                    <span style={{ color: tokens.colors.accent.DEFAULT, fontWeight: 900 }}>{meal.count}</span>
                                                 </div>
-                                                <div style={{ width: '100%', height: '6px', background: 'rgba(255,255,255,0.05)', borderRadius: '99px', overflow: 'hidden' }}>
+                                                <div style={{ width: '100%', height: '6px', background: tokens.colors.surface.dark, borderRadius: '99px', overflow: 'hidden', border: `1px solid ${tokens.colors.border.dark}` }}>
                                                     <div style={{ width: `${(meal.count / (data.topMeals?.[0]?.count || 1)) * 100}%`, height: '100%', background: tokens.colors.accent.DEFAULT, borderRadius: '99px' }} />
                                                 </div>
                                             </div>
                                         ))}
                                     </div>
-                                </Card>
+                                </div>
                             )}
 
                             {/* Traffic Sources */}
-                            <Card style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${tokens.colors.border.dark}` }}>
-                                <h3 style={{ fontSize: '1rem', color: 'white', fontWeight: 800, marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Traffic Sources</h3>
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                            <div style={{ background: tokens.colors.surface.medium, padding: tokens.spacing.xl, borderRadius: tokens.radius.lg, border: `1px solid ${tokens.colors.border.dark}` }}>
+                                <h3 style={{ fontSize: '1rem', color: 'white', fontWeight: 900, fontFamily: 'var(--font-heading)', marginBottom: tokens.spacing.xl, textTransform: 'uppercase', letterSpacing: '0.05em', margin: 0 }}>Traffic Sources</h3>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: tokens.spacing.lg }}>
                                     {data.trafficSources.map((source) => (
                                         <div key={source.source}>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '0.85rem' }}>
-                                                <span style={{ color: '#cbd5e1', fontWeight: 600 }}>{source.source}</span>
-                                                <span style={{ color: 'white', fontWeight: 800 }}>{source.value}%</span>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: tokens.spacing.xs, fontSize: '0.85rem' }}>
+                                                <span style={{ color: tokens.colors.text.secondary, fontWeight: 800, textTransform: 'uppercase' }}>{source.source}</span>
+                                                <span style={{ color: 'white', fontWeight: 900 }}>{source.value}%</span>
                                             </div>
-                                            <div style={{ width: '100%', height: '6px', background: 'rgba(255,255,255,0.05)', borderRadius: '99px', overflow: 'hidden' }}>
+                                            <div style={{ width: '100%', height: '6px', background: tokens.colors.surface.dark, borderRadius: '99px', overflow: 'hidden', border: `1px solid ${tokens.colors.border.dark}` }}>
                                                 <div style={{ width: `${source.value}%`, height: '100%', background: source.color, borderRadius: '99px' }} />
                                             </div>
                                         </div>
                                     ))}
                                 </div>
-                            </Card>
+                            </div>
                         </div>
                     </>
                 )}
@@ -227,18 +230,22 @@ function MetricBox({ icon, label, data, color, invertTrend = false, isTime = fal
     }, [data.current, data.unit, isTime, isCurrency]);
 
     return (
-        <Card style={{
-            background: 'rgba(255,255,255,0.02)',
+        <div style={{
+            background: tokens.colors.surface.medium,
             border: `1px solid ${tokens.colors.border.dark}`,
+            borderRadius: tokens.radius.lg,
             position: 'relative',
-            padding: '24px'
+            padding: tokens.spacing.lg,
+            transition: tokens.transitions.normal,
+            display: 'flex',
+            flexDirection: 'column'
         }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: tokens.spacing.md }}>
                 <div style={{
                     width: '40px',
                     height: '40px',
-                    borderRadius: '12px',
-                    background: `${color}15`,
+                    borderRadius: tokens.radius.md,
+                    background: `${color}20`,
                     color: color,
                     display: 'flex',
                     alignItems: 'center',
@@ -251,59 +258,59 @@ function MetricBox({ icon, label, data, color, invertTrend = false, isTime = fal
                         display: 'flex',
                         alignItems: 'center',
                         gap: '4px',
-                        color: isGood ? '#10b981' : '#ef4444',
-                        fontSize: '0.75rem',
-                        fontWeight: 800,
-                        background: isGood ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+                        color: isGood ? tokens.colors.text.success : tokens.colors.text.error,
+                        fontSize: '0.7rem',
+                        fontWeight: 900,
+                        background: isGood ? `${tokens.colors.text.success}15` : `${tokens.colors.text.error}15`,
                         padding: '4px 8px',
-                        borderRadius: '99px'
+                        borderRadius: tokens.radius.sm,
+                        border: `1px solid ${isGood ? `${tokens.colors.text.success}30` : `${tokens.colors.text.error}30`}`
                     }}
-                    aria-label={`${Math.abs(percentageChange).toFixed(1)}% ${isUp ? 'increase' : 'decrease'} from previous period`}
                 >
-                    {isUp ? <ArrowUpRight size={14} aria-hidden="true" /> : <ArrowDownRight size={14} aria-hidden="true" />}
+                    {isUp ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
                     {Math.abs(percentageChange).toFixed(1)}%
                 </div>
             </div>
 
             <div>
-                <div style={{ fontSize: '0.8rem', color: tokens.colors.text.secondary, marginBottom: '4px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</div>
-                <div style={{ fontSize: '1.75rem', fontWeight: 900, color: 'white', lineHeight: 1 }}>{formattedValue}</div>
+                <div style={{ fontSize: '0.75rem', color: tokens.colors.text.secondary, marginBottom: '2px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</div>
+                <div style={{ fontSize: '1.75rem', fontWeight: 900, color: 'white', lineHeight: 1, fontFamily: 'var(--font-heading)' }}>{formattedValue}</div>
             </div>
 
             {/* Sparkline */}
-            <div style={{ marginTop: '20px', height: '30px', width: '100%' }}>
+            <div style={{ marginTop: tokens.spacing.lg, height: '30px', width: '100%', opacity: 0.6 }}>
                 <svg width="100%" height="100%" viewBox="0 0 100 30" preserveAspectRatio="none">
                     <path
                         d={generateSparklinePath(data.trend)}
                         fill="none"
                         stroke={color}
-                        strokeWidth="2"
+                        strokeWidth="2.5"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        style={{ opacity: 0.8 }}
                     />
                 </svg>
             </div>
-        </Card>
+        </div>
     );
 }
 
 function AnalyticsSkeleton() {
     return (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: tokens.spacing.lg }}>
             {[1, 2, 3, 4].map((i) => (
-                <Card key={i} style={{ height: '180px', background: 'rgba(255,255,255,0.02)' }}>
-                    <div style={{ padding: '24px' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
-                            <Skeleton width="40px" height="40px" borderRadius="12px" style={{ background: 'rgba(255,255,255,0.05)' }} />
-                            <Skeleton width="60px" height="24px" borderRadius="12px" style={{ background: 'rgba(255,255,255,0.05)' }} />
+                <div key={i} style={{ height: '180px', background: tokens.colors.surface.medium, borderRadius: tokens.radius.lg, border: `1px solid ${tokens.colors.border.dark}` }}>
+                    <div style={{ padding: tokens.spacing.lg }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: tokens.spacing.xl }}>
+                            <Skeleton width="40px" height="40px" borderRadius={tokens.radius.md} style={{ background: tokens.colors.surface.dark }} />
+                            <Skeleton width="60px" height="24px" borderRadius={tokens.radius.sm} style={{ background: tokens.colors.surface.dark }} />
                         </div>
-                        <Skeleton width="100px" height="16px" style={{ marginBottom: '8px', background: 'rgba(255,255,255,0.05)' }} />
-                        <Skeleton width="140px" height="32px" style={{ marginBottom: '20px', background: 'rgba(255,255,255,0.05)' }} />
-                        <Skeleton width="100%" height="30px" style={{ background: 'rgba(255,255,255,0.05)' }} />
+                        <Skeleton width="100px" height="12px" style={{ marginBottom: tokens.spacing.sm, background: tokens.colors.surface.dark }} />
+                        <Skeleton width="140px" height="32px" style={{ marginBottom: tokens.spacing.lg, background: tokens.colors.surface.dark }} />
+                        <Skeleton width="100%" height="30px" style={{ background: tokens.colors.surface.dark }} />
                     </div>
-                </Card>
+                </div>
             ))}
         </div>
     )
 }
+

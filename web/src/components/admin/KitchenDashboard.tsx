@@ -4,6 +4,10 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { getKitchenStats } from "@/actions/orders";
 import { Loader2, ChefHat, AlertCircle, RefreshCw } from "lucide-react";
+import { tokens } from "@/lib/design-tokens";
+import { Card } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
+import { Badge } from "@/components/ui/Badge";
 
 interface KitchenStat {
     title: string;
@@ -32,14 +36,13 @@ export default function KitchenDashboard() {
 
     useEffect(() => {
         fetchStats();
-        // Auto-refresh every 60 seconds
         const interval = setInterval(fetchStats, 60000);
         return () => clearInterval(interval);
     }, []);
 
     if (loading && stats.length === 0) {
         return (
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh', color: '#94a3b8' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh', color: tokens.colors.text.secondary }}>
                 <Loader2 className="animate-spin" size={48} />
             </div>
         );
@@ -47,60 +50,50 @@ export default function KitchenDashboard() {
 
     if (error) {
         return (
-            <div style={{ padding: '24px', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', borderRadius: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <AlertCircle />
-                {error}
-                <button onClick={() => window.location.reload()} style={{ marginLeft: 'auto', background: 'transparent', border: '1px solid #ef4444', color: '#ef4444', padding: '6px 12px', borderRadius: '8px', cursor: 'pointer' }}>Retry</button>
-            </div>
+            <Card style={{ padding: tokens.spacing.xl, background: 'rgba(239, 68, 68, 0.1)', borderColor: tokens.colors.text.error }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: tokens.spacing.md, color: tokens.colors.text.error }}>
+                    <AlertCircle />
+                    <span style={{ fontWeight: 600 }}>{error}</span>
+                    <Button onClick={() => fetchStats()} variant="danger" size="sm" style={{ marginLeft: 'auto' }}>
+                        Retry
+                    </Button>
+                </div>
+            </Card>
         );
     }
 
     return (
-        <div style={{ maxWidth: '1400px', margin: '0 auto', paddingBottom: '40px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                    <div style={{ background: '#fbbf24', padding: '12px', borderRadius: '16px', color: 'black' }}>
+        <div style={{ maxWidth: '1400px', margin: '0 auto', paddingBottom: tokens.spacing.xxl }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: tokens.spacing.xxl, flexWrap: 'wrap', gap: tokens.spacing.lg }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: tokens.spacing.lg }}>
+                    <div style={{ background: tokens.colors.accent.DEFAULT, padding: tokens.spacing.md, borderRadius: tokens.radius.lg, color: 'black' }}>
                         <ChefHat size={32} />
                     </div>
                     <div>
                         <h1 style={{ fontSize: '2.5rem', fontWeight: 900, color: 'white', fontFamily: 'var(--font-heading)', margin: 0, lineHeight: 1 }}>Kitchen Prep</h1>
-                        <p style={{ color: '#94a3b8', fontSize: '1rem', marginTop: '6px' }}>
-                            <span style={{ color: '#fbbf24', fontWeight: 700 }}>{totalOrders}</span> Active Orders  •  <span style={{ color: '#fbbf24', fontWeight: 700 }}>{stats.reduce((acc, curr) => acc + curr.count, 0)}</span> Total Meals
+                        <p style={{ color: tokens.colors.text.inverseSecondary, fontSize: '1rem', marginTop: tokens.spacing.xs }}>
+                            <span style={{ color: tokens.colors.accent.DEFAULT, fontWeight: 700 }}>{totalOrders}</span> Active Orders  •  <span style={{ color: tokens.colors.accent.DEFAULT, fontWeight: 700 }}>{stats.reduce((acc, curr) => acc + curr.count, 0)}</span> Total Meals
                         </p>
                     </div>
                 </div>
-                <button
+                <Button
                     onClick={fetchStats}
-                    style={{
-                        background: 'rgba(255,255,255,0.05)',
-                        border: '1px solid rgba(255,255,255,0.1)',
-                        color: 'white',
-                        padding: '12px',
-                        borderRadius: '12px',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s',
-                        display: 'flex', alignItems: 'center', gap: '8px'
-                    }}
+                    variant="ghost"
+                    style={{ border: `1px solid ${tokens.colors.border.dark}`, transition: tokens.transitions.normal }}
                 >
-                    <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
+                    <RefreshCw size={20} style={{ marginRight: tokens.spacing.sm }} className={loading ? 'animate-spin' : ''} />
                     Refresh
-                </button>
+                </Button>
             </div>
 
             <div style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-                gap: '24px'
+                gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+                gap: tokens.spacing.xl
             }}>
                 {stats.map((meal) => (
-                    <div key={meal.title} style={{
-                        background: 'rgba(255,255,255,0.03)',
-                        borderRadius: '24px',
-                        border: '1px solid rgba(255,255,255,0.08)',
-                        overflow: 'hidden',
-                        position: 'relative'
-                    }}>
-                        <div style={{ position: 'relative', height: '160px', width: '100%' }}>
+                    <Card key={meal.title} style={{ padding: 0, overflow: 'hidden' }}>
+                        <div style={{ position: 'relative', height: '180px', width: '100%' }}>
                             <Image
                                 src={meal.image || "/placeholder-meal.jpg"}
                                 fill
@@ -114,59 +107,62 @@ export default function KitchenDashboard() {
                             }} />
                             <div style={{
                                 position: 'absolute',
-                                bottom: '16px',
-                                left: '20px',
-                                right: '20px'
+                                bottom: tokens.spacing.md,
+                                left: tokens.spacing.lg,
+                                right: tokens.spacing.lg
                             }}>
                                 <h3 style={{
                                     color: 'white',
                                     fontWeight: 800,
-                                    fontSize: '1.2rem',
+                                    fontSize: '1.25rem',
                                     fontFamily: 'var(--font-heading)',
-                                    marginBottom: '4px',
-                                    textShadow: '0 2px 4px rgba(0,0,0,0.5)'
+                                    marginBottom: tokens.spacing.sm,
+                                    textShadow: '0 2px 4px rgba(0,0,0,0.5)',
+                                    textTransform: 'uppercase'
                                 }}>{meal.title}</h3>
                                 {meal.tags && (
-                                    <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                                    <div style={{ display: 'flex', gap: tokens.spacing.xs, flexWrap: 'wrap' }}>
                                         {meal.tags.split(',').map(tag => (
-                                            <span key={tag} style={{
-                                                fontSize: '0.7rem',
-                                                background: 'rgba(255,255,255,0.2)',
-                                                backdropFilter: 'blur(4px)',
-                                                padding: '2px 8px',
-                                                borderRadius: '4px',
-                                                color: 'white',
-                                                fontWeight: 600
-                                            }}>
-                                                {tag.trim()}
-                                            </span>
+                                            <Badge key={tag} variant="outline" style={{ background: 'rgba(255,255,255,0.1)', borderColor: 'rgba(255,255,255,0.2)', color: 'white', fontSize: '0.65rem' }}>
+                                                {tag.trim().toUpperCase()}
+                                            </Badge>
                                         ))}
                                     </div>
                                 )}
                             </div>
                         </div>
 
-                        <div style={{ padding: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div style={{ padding: tokens.spacing.xl, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: tokens.colors.surface.medium }}>
                             <div>
-                                <div style={{ fontSize: '0.8rem', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 700 }}>To Prepare</div>
-                                <div style={{ fontSize: '3rem', fontWeight: 900, color: 'white', lineHeight: 1, fontFamily: 'var(--font-heading)' }}>
+                                <div style={{ fontSize: '0.75rem', color: tokens.colors.text.inverseSecondary, textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 800 }}>To Prepare</div>
+                                <div style={{ fontSize: '3.5rem', fontWeight: 900, color: 'white', lineHeight: 1, fontFamily: 'var(--font-heading)' }}>
                                     {meal.count}
                                 </div>
                             </div>
 
-                            {/* Visual Progress Indication (Mockup) */}
-                            <div style={{ width: '60px', height: '60px', borderRadius: '50%', border: '4px solid rgba(255,255,255,0.1)', borderTop: '4px solid #fbbf24', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                <span style={{ fontSize: '0.7rem', color: '#fbbf24', fontWeight: 700 }}>0%</span>
+                            <div style={{
+                                width: '64px',
+                                height: '64px',
+                                borderRadius: '50%',
+                                border: `4px solid ${tokens.colors.border.dark}`,
+                                borderTop: `4px solid ${tokens.colors.accent.DEFAULT}`,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                background: 'rgba(0,0,0,0.2)'
+                            }}>
+                                <span style={{ fontSize: '0.8rem', color: tokens.colors.accent.DEFAULT, fontWeight: 900 }}>0%</span>
                             </div>
                         </div>
-                    </div>
+                    </Card>
                 ))}
             </div>
+
             {stats.length === 0 && !loading && (
-                <div style={{ textAlign: 'center', padding: '60px', color: '#64748b' }}>
-                    <ChefHat size={48} style={{ marginBottom: '16px', opacity: 0.5 }} />
-                    <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'white' }}>Kitchen is Quiet</h3>
-                    <p>No active orders to prepare right now.</p>
+                <div style={{ textAlign: 'center', padding: '80px 20px', color: tokens.colors.text.secondary }}>
+                    <ChefHat size={64} style={{ marginBottom: tokens.spacing.lg, opacity: 0.3, margin: '0 auto' }} />
+                    <h3 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'white', fontFamily: 'var(--font-heading)' }}>Kitchen is Quiet</h3>
+                    <p style={{ fontSize: '1.1rem' }}>No active orders to prepare right now.</p>
                 </div>
             )}
         </div>

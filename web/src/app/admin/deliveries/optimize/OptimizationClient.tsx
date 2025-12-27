@@ -1,21 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
     Map as MapIcon,
     Zap,
-    User,
-    ArrowRight,
-    Truck,
-    CheckCircle2,
     Settings,
     Layers,
-    Navigation
+    MapPin,
+    Navigation,
+    Truck,
+    Clock,
+    CheckCircle2
 } from "lucide-react";
 import { createRoute, assignDeliveryToRoute } from "@/actions/delivery";
 import DeliveryMap from "@/components/admin/DeliveryMap";
-import { useEffect, useMemo } from "react";
 import { geocodeAddress } from "@/lib/google-maps";
+import { tokens } from "@/lib/design-tokens";
+import { Card } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
 
 export default function OptimizationClient({ pendingDeliveries, drivers }: { pendingDeliveries: any[], drivers: any[] }) {
     const [selectedDriver, setSelectedDriver] = useState<string>("");
@@ -98,22 +100,19 @@ export default function OptimizationClient({ pendingDeliveries, drivers }: { pen
                 currentPos = { lat: next.latitude, lng: next.longitude };
             }
 
-            // Calculate total distance
             let totalDist = 0;
             let lastPos = LIBERTY_KITCHEN;
             optimized.forEach(d => {
                 totalDist += calculateDistance(lastPos.lat, lastPos.lng, d.latitude, d.longitude);
                 lastPos = { lat: d.latitude, lng: d.longitude };
             });
-            // Return to kitchen
             totalDist += calculateDistance(lastPos.lat, lastPos.lng, LIBERTY_KITCHEN.lat, LIBERTY_KITCHEN.lng);
 
             setPreviewRoute(optimized);
             setOptimizing(false);
-
             setOptimizedStats({
                 distance: totalDist.toFixed(1),
-                time: Math.round(totalDist * 2.5 + optimized.length * 5) // 2.5 min/km + 5 min per stop
+                time: Math.round(totalDist * 2.5 + optimized.length * 5)
             });
         }, 1500);
     };
@@ -125,7 +124,6 @@ export default function OptimizationClient({ pendingDeliveries, drivers }: { pen
         const routeRes = await createRoute(selectedDriver);
         if (routeRes.success) {
             const routeId = routeRes.success.id;
-            // Assign deliveries to route
             for (let i = 0; i < previewRoute.length; i++) {
                 await assignDeliveryToRoute(previewRoute[i].id, routeId, i + 1);
             }
@@ -135,169 +133,120 @@ export default function OptimizationClient({ pendingDeliveries, drivers }: { pen
     };
 
     return (
-        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(400px, 1fr) 2fr', gap: '32px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: tokens.spacing.xl }}>
             {/* Sidebar: Configuration */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                <div style={{
-                    background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9))',
-                    padding: '32px',
-                    borderRadius: '24px',
-                    border: '1px solid rgba(251, 191, 36, 0.2)'
-                }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: tokens.spacing.xl }}>
+                <Card style={{ padding: tokens.spacing.xl }}>
                     <h3 style={{
-                        fontSize: '1.4rem',
-                        fontWeight: 700,
-                        marginBottom: '24px',
+                        fontSize: '1.25rem',
+                        fontWeight: 900,
+                        marginBottom: tokens.spacing.xl,
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '12px',
+                        gap: tokens.spacing.md,
                         fontFamily: 'var(--font-heading)',
                         textTransform: 'uppercase',
                         letterSpacing: '0.05em',
                         color: '#ffffff'
                     }}>
-                        <Settings size={22} color="#fbbf24" /> Configuration
+                        <Settings size={22} color={tokens.colors.accent.DEFAULT} /> CONFIGURATION
                     </h3>
 
-                    <div style={{ marginBottom: '20px' }}>
-                        <label style={{ display: 'block', color: '#cbd5e1', fontSize: '0.9rem', marginBottom: '8px', fontWeight: 500 }}>Assign Driver</label>
+                    <div style={{ marginBottom: tokens.spacing.xl }}>
+                        <label style={{ display: 'block', color: tokens.colors.text.secondary, fontSize: '0.8rem', marginBottom: tokens.spacing.sm, fontWeight: 800, textTransform: 'uppercase' }}>ASSIGN DRIVER</label>
                         <select
                             value={selectedDriver}
                             onChange={(e) => setSelectedDriver(e.target.value)}
                             style={{
                                 width: '100%',
-                                padding: '12px',
-                                background: '#ffffff',
-                                border: '1px solid #d1d5db',
-                                borderRadius: '12px',
-                                color: '#000000',
+                                padding: '14px',
+                                background: tokens.colors.surface.medium,
+                                border: `1px solid ${tokens.colors.border.dark}`,
+                                borderRadius: tokens.radius.md,
+                                color: 'white',
                                 outline: 'none',
-                                fontSize: '0.95rem',
-                                cursor: 'pointer'
+                                fontSize: '1rem',
+                                cursor: 'pointer',
+                                transition: tokens.transitions.normal,
+                                appearance: 'none'
                             }}
                         >
-                            <option value="" style={{ color: '#6b7280' }}>Select a driver...</option>
+                            <option value="" disabled>Select a driver...</option>
                             {drivers.map(d => (
-                                <option key={d.id} value={d.id} style={{ color: '#000000', padding: '8px' }}>{d.name}</option>
+                                <option key={d.id} value={d.id}>{d.name}</option>
                             ))}
                         </select>
-                        <style jsx>{`
-                            select option {
-                                background-color: #ffffff;
-                                color: #000000;
-                                padding: 8px;
-                            }
-                            select option:hover {
-                                background-color: #374151 !important;
-                                color: #ffffff !important;
-                            }
-                            select option:checked {
-                                background-color: #374151;
-                                color: #ffffff;
-                            }
-                        `}</style>
                     </div>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.95rem' }}>
-                            <span style={{ color: '#cbd5e1' }}>Stops to Optimize:</span>
-                            <span style={{ fontWeight: 700, color: '#ffffff' }}>{pendingDeliveries.length}</span>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: tokens.spacing.md, padding: tokens.spacing.lg, background: tokens.colors.surface.medium, borderRadius: tokens.radius.md, border: `1px solid ${tokens.colors.border.dark}` }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem' }}>
+                            <span style={{ color: tokens.colors.text.inverseSecondary, fontWeight: 600 }}>STOPS TO OPTIMIZE</span>
+                            <span style={{ fontWeight: 800, color: 'white' }}>{pendingDeliveries.length}</span>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.95rem' }}>
-                            <span style={{ color: '#cbd5e1' }}>Est. Total Distance:</span>
-                            <span style={{ fontWeight: 700, color: '#ffffff' }}>{optimizedStats.distance} km</span>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem' }}>
+                            <span style={{ color: tokens.colors.text.inverseSecondary, fontWeight: 600 }}>EST. TOTAL DISTANCE</span>
+                            <span style={{ fontWeight: 800, color: tokens.colors.accent.DEFAULT }}>{optimizedStats.distance} km</span>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.95rem' }}>
-                            <span style={{ color: '#cbd5e1' }}>Est. Total Time:</span>
-                            <span style={{ fontWeight: 700, color: '#ffffff' }}>{optimizedStats.time} mins</span>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem' }}>
+                            <span style={{ color: tokens.colors.text.inverseSecondary, fontWeight: 600 }}>EST. TOTAL TIME</span>
+                            <span style={{ fontWeight: 800, color: tokens.colors.accent.DEFAULT }}>{optimizedStats.time} mins</span>
                         </div>
                     </div>
 
-                    <button
+                    <Button
                         onClick={handleOptimize}
                         disabled={optimizing || pendingDeliveries.length === 0}
-                        style={{
-                            width: '100%',
-                            marginTop: '28px',
-                            padding: '16px',
-                            background: 'linear-gradient(135deg, #fbbf24, #d97706)',
-                            color: '#000000',
-                            border: 'none',
-                            borderRadius: '16px',
-                            fontWeight: 800,
-                            fontSize: '1rem',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '10px',
-                            cursor: 'pointer',
-                            opacity: optimizing ? 0.7 : 1,
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.05em',
-                            boxShadow: '0 4px 20px rgba(251, 191, 36, 0.3)',
-                            transition: 'all 0.3s ease'
-                        }}
+                        isLoading={optimizing}
+                        variant="primary"
+                        style={{ width: '100%', marginTop: tokens.spacing.xl, height: '56px', fontSize: '1rem' }}
                     >
-                        {optimizing ? 'Optimizing...' : <><Zap size={20} fill="black" /> Generate Route</>}
-                    </button>
-                </div>
+                        <Zap size={20} style={{ marginRight: tokens.spacing.sm }} />
+                        GENERATE ROUTE
+                    </Button>
+                </Card>
 
                 {previewRoute.length > 0 && (
-                    <div style={{
-                        background: 'var(--card-bg)',
-                        padding: '24px',
-                        borderRadius: '24px',
-                        border: '1px solid var(--glass-border)'
-                    }}>
-                        <h3 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '20px' }}>Stop Sequence</h3>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <Card style={{ padding: tokens.spacing.xl }}>
+                        <h3 style={{ fontSize: '1.25rem', fontWeight: 900, marginBottom: tokens.spacing.xl, fontFamily: 'var(--font-heading)', textTransform: 'uppercase', color: 'white' }}>STOP SEQUENCE</h3>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: tokens.spacing.sm }}>
                             {previewRoute.map((d, i) => (
                                 <div key={d.id} style={{
                                     display: 'flex',
                                     alignItems: 'center',
-                                    gap: '12px',
-                                    padding: '12px',
-                                    background: 'rgba(255,255,255,0.03)',
-                                    borderRadius: '12px',
-                                    border: '1px solid var(--glass-border)'
+                                    gap: tokens.spacing.md,
+                                    padding: tokens.spacing.md,
+                                    background: tokens.colors.surface.medium,
+                                    borderRadius: tokens.radius.md,
+                                    border: `1px solid ${tokens.colors.border.dark}`
                                 }}>
-                                    <div style={{ width: '24px', height: '24px', background: 'var(--primary)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 800 }}>{i + 1}</div>
-                                    <div style={{ flex: 1, fontSize: '0.9rem' }}>
-                                        <div style={{ fontWeight: 600 }}>{d.order.customerName}</div>
-                                        <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>{d.order.shippingAddress}</div>
+                                    <div style={{ width: '28px', height: '28px', background: tokens.colors.accent.DEFAULT, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem', fontWeight: 900, color: 'black' }}>{i + 1}</div>
+                                    <div style={{ flex: 1 }}>
+                                        <div style={{ fontWeight: 800, color: 'white', fontSize: '0.9rem' }}>{d.order.customerName}</div>
+                                        <div style={{ fontSize: '0.75rem', color: tokens.colors.text.inverseSecondary }}>{d.order.shippingAddress}</div>
                                     </div>
                                 </div>
                             ))}
                         </div>
-                        <button
+                        <Button
                             onClick={handleConfirm}
-                            style={{
-                                width: '100%',
-                                marginTop: '24px',
-                                padding: '16px',
-                                background: 'var(--primary)',
-                                color: 'white',
-                                border: 'none',
-                                borderRadius: '16px',
-                                fontWeight: 700,
-                                cursor: 'pointer'
-                            }}
+                            variant="primary"
+                            style={{ width: '100%', marginTop: tokens.spacing.xl, height: '56px' }}
+                            isLoading={optimizing}
                         >
-                            Confirm & Assign Route
-                        </button>
-                    </div>
+                            <CheckCircle2 size={20} style={{ marginRight: tokens.spacing.sm }} />
+                            CONFIRM & ASSIGN
+                        </Button>
+                    </Card>
                 )}
             </div>
 
             {/* Map Preview Area */}
-            <div style={{
-                background: 'var(--card-bg)',
-                borderRadius: '32px',
-                border: '1px solid rgba(251, 191, 36, 0.15)',
+            <Card style={{
+                padding: 0,
                 overflow: 'hidden',
                 position: 'relative',
-                minHeight: '600px',
-                backgroundColor: '#0f172a'
+                minHeight: '650px',
+                background: tokens.colors.surface.dark
             }}>
                 <DeliveryMap markers={markers} />
 
@@ -306,25 +255,23 @@ export default function OptimizationClient({ pendingDeliveries, drivers }: { pen
                     <div style={{
                         position: 'absolute',
                         inset: 0,
-                        background: 'radial-gradient(circle at center, transparent, rgba(11, 14, 20, 0.8))',
+                        background: 'rgba(15, 23, 42, 0.8)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        pointerEvents: 'none'
+                        zIndex: 10
                     }}>
-                        <div style={{ textAlign: 'center', maxWidth: '450px', padding: '40px' }}>
-                            <MapIcon size={80} color="#fbbf24" style={{ marginBottom: '32px', opacity: 0.8 }} />
+                        <div style={{ textAlign: 'center', maxWidth: '400px', padding: tokens.spacing.xl }}>
+                            <MapIcon size={64} color={tokens.colors.accent.DEFAULT} style={{ marginBottom: tokens.spacing.xl, opacity: 0.8 }} />
                             <h3 style={{
-                                fontSize: '2rem',
+                                fontSize: '1.75rem',
                                 fontWeight: 900,
-                                marginBottom: '16px',
+                                marginBottom: tokens.spacing.md,
                                 fontFamily: 'var(--font-heading)',
                                 textTransform: 'uppercase',
-                                letterSpacing: '0.05em',
-                                color: '#ffffff',
-                                textShadow: '0 4px 20px rgba(0,0,0,0.5)'
-                            }}>Interactive Map View</h3>
-                            <p style={{ color: '#cbd5e1', fontSize: '1.1rem', lineHeight: '1.6' }}>Visualize routes, traffic conditions, and driver locations in real-time. Full Google Maps integration enabled.</p>
+                                color: '#ffffff'
+                            }}>INTERACTIVE MAP</h3>
+                            <p style={{ color: tokens.colors.text.inverseSecondary, fontSize: '1rem', lineHeight: '1.6' }}>Visualize routes and driver locations in real-time. Full geocoding integration enabled.</p>
                         </div>
                     </div>
                 )}
@@ -332,31 +279,33 @@ export default function OptimizationClient({ pendingDeliveries, drivers }: { pen
                 {/* Bottom Overlay Info */}
                 <div style={{
                     position: 'absolute',
-                    bottom: '24px',
-                    left: '24px',
-                    right: '24px',
+                    bottom: tokens.spacing.xl,
+                    left: tokens.spacing.xl,
+                    right: tokens.spacing.xl,
                     background: 'rgba(11, 14, 20, 0.9)',
                     backdropFilter: 'blur(10px)',
-                    padding: '20px',
-                    borderRadius: '20px',
-                    border: '1px solid var(--glass-border)',
+                    padding: tokens.spacing.lg,
+                    borderRadius: tokens.radius.lg,
+                    border: `1px solid ${tokens.colors.border.dark}`,
                     display: 'flex',
                     justifyContent: 'space-between',
-                    alignItems: 'center'
+                    alignItems: 'center',
+                    zIndex: 20
                 }}>
-                    <div style={{ display: 'flex', gap: '32px' }}>
+                    <div style={{ display: 'flex', gap: tokens.spacing.xxl }}>
                         <div>
-                            <div style={{ color: '#cbd5e1', fontSize: '0.8rem', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Region</div>
-                            <div style={{ fontWeight: 700, color: '#ffffff', fontSize: '1.1rem' }}>Scottsdale, Arizona</div>
+                            <div style={{ color: tokens.colors.text.secondary, fontSize: '0.7rem', marginBottom: '2px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 800 }}>REGION</div>
+                            <div style={{ fontWeight: 800, color: '#ffffff', fontSize: '1rem', fontFamily: 'var(--font-heading)' }}>SCOTTSDALE, AZ</div>
                         </div>
                         <div>
-                            <div style={{ color: '#cbd5e1', fontSize: '0.8rem', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Optimization Engine</div>
-                            <div style={{ fontWeight: 700, color: '#ffffff', fontSize: '1.1rem' }}>Google Routes v2</div>
+                            <div style={{ color: tokens.colors.text.secondary, fontSize: '0.7rem', marginBottom: '2px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 800 }}>ENGINE</div>
+                            <div style={{ fontWeight: 800, color: tokens.colors.accent.DEFAULT, fontSize: '1rem', fontFamily: 'var(--font-heading)' }}>GOOGLE ROUTES V2</div>
                         </div>
                     </div>
-                    <Layers color="#475569" />
+                    <Layers color={tokens.colors.text.secondary} size={20} />
                 </div>
-            </div>
+            </Card>
         </div>
     );
 }
+

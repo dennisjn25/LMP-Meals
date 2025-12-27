@@ -145,12 +145,12 @@ export const updateDeliveryStatus = async (deliveryId: string, status: string) =
     }
 };
 
-export const createRoute = async (driverId: string) => {
+export const createRoute = async (driverId?: string) => {
     if (!await checkAuth()) return { error: "Forbidden" };
     try {
         const route = await db.route.create({
             data: {
-                driverId,
+                driverId: driverId || null,
                 status: "PLANNED",
                 date: new Date()
             }
@@ -161,6 +161,7 @@ export const createRoute = async (driverId: string) => {
         return { error: "Failed to create route" };
     }
 };
+
 
 export const assignDeliveryToRoute = async (deliveryId: string, routeId: string, sequence: number) => {
     if (!await checkAuth()) return { error: "Forbidden" };
@@ -179,4 +180,23 @@ export const assignDeliveryToRoute = async (deliveryId: string, routeId: string,
         return { error: "Failed to assign to route" };
     }
 };
+
+export const getRoutes = async () => {
+    if (!await checkAuth()) return { error: "Forbidden" };
+    try {
+        const routes = await db.route.findMany({
+            include: {
+                driver: {
+                    select: { id: true, name: true }
+                },
+                deliveries: true
+            },
+            orderBy: { date: 'desc' }
+        });
+        return { success: routes };
+    } catch (error) {
+        return { error: "Failed to fetch routes" };
+    }
+};
+
 
