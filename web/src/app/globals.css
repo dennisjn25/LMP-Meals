@@ -1,26 +1,25 @@
 :root {
-  /* Design System - 'Liberty Prime' Aesthetic */
-  --background: #f8f9fa;
-  /* Very Light Gray/White */
-  --surface: #ffffff;
-  /* Pure White */
+  /* Design System - 'Liberty Prime' Aesthetic (Dark) */
+  --background: #0B0E14;
+  /* Dark Navy/Black */
+  --surface: #1e293b;
+  /* Deep Blue/Slate */
 
   /* Core Colors */
-  --primary: #000000;
-  --primary-inverse: #ffffff;
+  --primary: #ffffff;
+  --primary-inverse: #000000;
   --accent: #fbbf24;
   --accent-hover: #f59e0b;
   --accent-light: rgba(251, 191, 36, 0.1);
 
   /* Text Colors */
-  --foreground: #000000;
-  /* Pure Black for strong contrast */
-  --text-body: #374151;
-  /* Dark Gray for readability */
+  --foreground: #ffffff;
+  --text-body: #94a3b8;
+  /* Slate 400 */
   --text-muted: #64748b;
-  /* Better contrast secondary text */
-  --text-inverse: #ffffff;
-  --text-inverse-muted: #94a3b8;
+  /* Slate 500 */
+  --text-inverse: #000000;
+  --text-inverse-muted: #475569;
 
   /* Status Colors */
   --error: #ef4444;
@@ -28,9 +27,10 @@
   --warning: #f59e0b;
 
   /* Borders */
-  --border-light: #e5e7eb;
-  --border-medium: #d1d5db;
-  --border-dark: rgba(255, 255, 255, 0.1);
+  --border-light: rgba(255, 255, 255, 0.1);
+  --border-medium: rgba(255, 255, 255, 0.15);
+  --border-dark: rgba(255, 255, 255, 0.05);
+
 
   /* Typography */
   --font-heading: 'Oswald', sans-serif;

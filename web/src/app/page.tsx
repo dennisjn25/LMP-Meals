@@ -175,7 +175,7 @@ export default function Home() {
       </section>
 
       {/* FEATURES SECTION */}
-      <section style={{ padding: '100px 0', background: 'white', position: 'relative' }}>
+      <section style={{ padding: '100px 0', background: tokens.colors.background, position: 'relative' }}>
         <div className="container">
           <h2 className="section-title" style={{ animation: 'fadeInUp 0.6s ease-out', color: tokens.colors.text.primary, fontFamily: 'var(--font-heading)', fontSize: '2.5rem', fontWeight: 800, textAlign: 'center', marginBottom: tokens.spacing.sm }}>WHY CHOOSE LIBERTY MEAL PREP?</h2>
           <p className="section-subtitle" style={{ animation: 'fadeInUp 0.6s ease-out 0.1s backwards', color: tokens.colors.text.secondary, textAlign: 'center', marginBottom: tokens.spacing.xxl }}>Experience the difference quality makes</p>
@@ -291,7 +291,7 @@ export default function Home() {
       </section>
 
       {/* SOCIAL MEDIA SECTION */}
-      <section style={{ padding: '100px 0', background: 'white' }}>
+      <section style={{ padding: '100px 0', background: tokens.colors.background }}>
         <div className="container">
           <div style={{ textAlign: 'center', marginBottom: '50px' }}>
             <h2 className="section-title text-outline-glow" style={{ color: tokens.colors.text.primary, fontFamily: 'var(--font-heading)', fontSize: '2.5rem', fontWeight: 800 }}>FOLLOW OUR JOURNEY</h2>
@@ -487,7 +487,7 @@ function FeatureCard({ icon, title, text, delay }: { icon: any, title: string, t
   return (
     <div className="feature-card" style={{
       animation: `fadeInUp 0.6s ease-out ${delay}s backwards`,
-      background: 'white',
+      background: tokens.colors.surface.light,
       padding: '32px',
       borderRadius: tokens.radius.xl,
       boxShadow: tokens.shadows.md,
@@ -536,7 +536,7 @@ function SmallFeature({ icon, title, sub }: { icon: any, title: string, sub: str
 function TestimonialCard({ name, role, text, rating }: { name: string, role: string, text: string, rating: number }) {
   return (
     <div style={{
-      background: 'white',
+      background: tokens.colors.surface.light,
       padding: '30px',
       borderRadius: tokens.radius.lg,
       boxShadow: tokens.shadows.md,

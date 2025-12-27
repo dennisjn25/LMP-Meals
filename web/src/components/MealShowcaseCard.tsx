@@ -5,7 +5,7 @@ import { tokens } from "@/lib/design-tokens";
 export default function MealShowcaseCard({ image, title, description, tag }: { image: string, title: string, description: string, tag: string }) {
     return (
         <div style={{
-            background: 'white',
+            background: tokens.colors.surface.light,
             borderRadius: tokens.radius.xl,
             overflow: 'hidden',
             boxShadow: tokens.shadows.md,

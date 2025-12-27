@@ -18,7 +18,7 @@ export function Card({ children, padding = 'md', style, glass = false }: CardPro
     };
 
     const cardStyle: React.CSSProperties = {
-        background: glass ? tokens.colors.surface.glass : 'white',
+        background: glass ? tokens.colors.surface.glass : tokens.colors.surface.light,
         border: `1px solid ${tokens.colors.border.light}`,
         borderRadius: tokens.radius.xl, // 20px
         padding: paddingMap[padding],
