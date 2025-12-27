@@ -41,7 +41,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
                     outline: 'none',
                     fontSize: '1rem',
                     transition: tokens.transitions.fast,
-                    color: tokens.colors.text.primary,
+                    color: '#000000',
                     ...style
                 }}
                 onFocus={(e) => {
