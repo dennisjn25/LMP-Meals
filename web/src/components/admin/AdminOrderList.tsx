@@ -672,8 +672,7 @@ export default function AdminOrderList({ initialOrders, meals }: { initialOrders
                 </div>
             </div>
         )}
-    </div>
-    );
+    </div>;
 }
 
 
