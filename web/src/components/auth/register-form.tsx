@@ -170,6 +170,12 @@ export default function RegisterForm() {
                                 {...form.register("billingZip")}
                             />
                         </div>
+                        <Input
+                            placeholder="State"
+                            disabled={isPending}
+                            style={inputStyle}
+                            {...form.register("billingState")}
+                        />
                     </div>
 
                     {error && (
