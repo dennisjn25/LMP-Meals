@@ -55,7 +55,7 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
         return { error: "Email does not exist!" };
     }
 
-    const redirectTo = existingUser.role === "ADMIN" ? "/admin" : "/";
+    const redirectTo = (existingUser.role === "ADMIN" || existingUser.role === "EMPLOYEE") ? "/admin" : "/";
 
     try {
         const result = await signIn("credentials", {

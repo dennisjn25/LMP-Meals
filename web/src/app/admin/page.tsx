@@ -10,7 +10,7 @@ export default async function AdminDashboard() {
     const skipAuth = process.env.SKIP_AUTH === 'true';
 
     // @ts-ignore
-    if (!skipAuth && session?.user?.role !== "ADMIN") {
+    if (!skipAuth && session?.user?.role !== "ADMIN" && session?.user?.role !== "EMPLOYEE") {
         redirect("/");
     }
 

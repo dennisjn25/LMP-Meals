@@ -40,23 +40,21 @@ export const authConfig = {
             const isOnAdmin = nextUrl.pathname.startsWith('/admin');
 
             if (isOnAdmin) {
-                // CRITICAL: Admin portal requires BOTH authentication AND admin role
-                const isAdmin = (auth?.user as any)?.role === "ADMIN";
-
+                // Admin portal requires authentication
+                // specific role checks are handled in the page components/layout
                 if (!isLoggedIn) {
                     // Not logged in - redirect to login
                     return false;
                 }
 
-                if (!isAdmin) {
-                    // Logged in but not admin - redirect to home
-                    return Response.redirect(new URL('/', nextUrl));
-                }
-
-                // Logged in AND admin - allow access
+                // Logged in - allow access (page will verify role)
                 return true;
             } else if (isLoggedIn && (nextUrl.pathname === '/auth/login' || nextUrl.pathname === '/auth/register')) {
                 // Redirect logged in users away from auth pages
+                const userRole = (auth?.user as any)?.role;
+                if (userRole === "ADMIN" || userRole === "EMPLOYEE") {
+                    return Response.redirect(new URL('/admin', nextUrl));
+                }
                 return Response.redirect(new URL('/', nextUrl));
             }
             return true;
