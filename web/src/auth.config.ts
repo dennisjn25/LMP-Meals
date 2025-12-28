@@ -12,7 +12,20 @@ export const authConfig = {
     pages: {
         signIn: "/auth/login",
     },
+    session: { strategy: "jwt" },
     callbacks: {
+        async session({ session, token }) {
+            if (token?.sub && session.user) {
+                session.user.id = token.sub;
+            }
+
+            if (token?.role && session.user) {
+                // @ts-ignore
+                session.user.role = token.role;
+            }
+
+            return session;
+        },
         authorized({ auth, request: { nextUrl } }) {
             // CRITICAL SECURITY: Development bypass - ONLY works in development, NEVER in production
             const isDevelopment = process.env.NODE_ENV !== 'production';

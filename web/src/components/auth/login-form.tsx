@@ -44,10 +44,16 @@ export default function LoginForm() {
         });
     };
 
+    const inputStyle = {
+        background: 'rgba(255,255,255,0.05)',
+        borderColor: tokens.colors.border.light,
+        color: 'white'
+    };
+
     return (
         <Card glass style={{ maxWidth: '450px', width: '100%', margin: '0 auto', border: `1px solid ${tokens.colors.border.light}` }}>
             <CardHeader style={{ textAlign: 'center', marginBottom: '24px' }}>
-                <CardTitle style={{ fontSize: '1.75rem' }}>WELCOME BACK</CardTitle>
+                <CardTitle style={{ fontSize: '1.75rem', color: 'white' }}>WELCOME BACK</CardTitle>
                 <div style={{ color: tokens.colors.text.secondary, fontSize: '0.9rem' }}>Sign in to manage your meal prep</div>
             </CardHeader>
 
@@ -59,6 +65,7 @@ export default function LoginForm() {
                         disabled={isPending}
                         error={form.formState.errors.email?.message}
                         placeholder="you@example.com"
+                        style={inputStyle}
                         {...form.register("email")}
                     />
 
@@ -69,6 +76,7 @@ export default function LoginForm() {
                             disabled={isPending}
                             error={form.formState.errors.password?.message}
                             placeholder="••••••••"
+                            style={inputStyle}
                             {...form.register("password")}
                         />
                         <div style={{ textAlign: 'right', marginTop: '-8px', marginBottom: '16px' }}>
@@ -106,7 +114,7 @@ export default function LoginForm() {
 
 
                 <div style={{ marginTop: '24px', textAlign: 'center', fontSize: '0.9rem', color: tokens.colors.text.secondary }}>
-                    Don't have an account? <Link href="/auth/register" style={{ fontWeight: 700, color: tokens.colors.text.primary }}>Sign Up</Link>
+                    Don't have an account? <Link href="/auth/register" style={{ fontWeight: 700, color: tokens.colors.accent.DEFAULT }}>Sign Up</Link>
                 </div>
             </CardContent>
         </Card>
