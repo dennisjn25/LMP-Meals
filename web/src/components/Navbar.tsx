@@ -1,7 +1,7 @@
 "use client";
 // Force rebuild for LFS sync
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -10,12 +10,39 @@ import { useSession, signOut } from "next-auth/react";
 import { useCart } from "@/context/CartContext";
 import { Button } from "@/components/ui/Button";
 import { tokens } from "@/lib/design-tokens";
+import { getSystemSetting } from "@/actions/settings";
 
 export default function Navbar() {
     const pathname = usePathname();
     const { toggleCart, cartCount } = useCart();
     const { data: session } = useSession();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [bannerData, setBannerData] = useState<{ text: string; enabled: boolean } | null>({
+        text: "Weekly deliveries beginning January 18th. Get your orders locked in today!",
+        enabled: true
+    });
+
+    useEffect(() => {
+        async function fetchBanner() {
+            try {
+                const setting = await getSystemSetting("announcement_banner");
+                if (setting) {
+                    setBannerData({
+                        text: setting.value.text || "",
+                        enabled: setting.isEnabled
+                    });
+                }
+            } catch (error) {
+                console.error("Error fetching banner:", error);
+            }
+        }
+        fetchBanner();
+    }, []);
+
+    useEffect(() => {
+        const height = (bannerData?.enabled) ? '120px' : '80px';
+        document.documentElement.style.setProperty('--header-height', height);
+    }, [bannerData?.enabled]);
 
     return (
         <header style={{
@@ -27,19 +54,21 @@ export default function Navbar() {
             display: 'flex',
             flexDirection: 'column',
         }}>
-            <div style={{
-                background: tokens.colors.accent.DEFAULT,
-                color: '#000',
-                padding: '8px 24px',
-                textAlign: 'center',
-                fontWeight: 700,
-                fontSize: '0.9rem',
-                letterSpacing: '0.02em',
-                paddingTop: 'calc(8px + env(safe-area-inset-top))',
-                width: '100%',
-            }}>
-                Weekly deliveries beginning January 18th. Get your orders locked in today!
-            </div>
+            {bannerData?.enabled && (
+                <div style={{
+                    background: tokens.colors.accent.DEFAULT,
+                    color: '#000',
+                    padding: '8px 24px',
+                    textAlign: 'center',
+                    fontWeight: 700,
+                    fontSize: '0.9rem',
+                    letterSpacing: '0.02em',
+                    paddingTop: 'calc(8px + env(safe-area-inset-top))',
+                    width: '100%',
+                }}>
+                    {bannerData.text}
+                </div>
+            )}
             <nav style={{
                 background: tokens.colors.surface.dark, // Keep dark for nav
                 backdropFilter: 'blur(10px)',
@@ -48,6 +77,7 @@ export default function Navbar() {
                 width: '100%',
                 display: 'flex',
                 alignItems: 'center',
+                paddingTop: bannerData?.enabled ? '0' : 'env(safe-area-inset-top)' // Add padding if banner is missing
             }}>
                 <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', maxWidth: '1280px', margin: '0 auto', padding: '0 24px' }}>
 

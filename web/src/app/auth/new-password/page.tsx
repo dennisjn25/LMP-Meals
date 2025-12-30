@@ -6,7 +6,7 @@ export default function NewPasswordPage() {
     return (
         <main style={{ minHeight: '100vh', background: '#f8fafc' }}>
             <Navbar />
-            <div style={{ paddingTop: '160px', paddingBottom: '60px' }}>
+            <div style={{ paddingTop: 'calc(var(--header-height, 120px) + env(safe-area-inset-top))', paddingBottom: '60px' }}>
                 <Suspense fallback={<div style={{ textAlign: 'center' }}>Loading...</div>}>
                     <NewPasswordForm />
                 </Suspense>

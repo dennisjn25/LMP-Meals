@@ -5,7 +5,7 @@ export default function ResetPage() {
     return (
         <main style={{ minHeight: '100vh', background: '#f8fafc' }}>
             <Navbar />
-            <div style={{ paddingTop: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 120px)' }}>
+            <div style={{ paddingTop: 'calc(var(--header-height, 120px) + env(safe-area-inset-top))', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 120px)' }}>
                 <ResetForm />
             </div>
         </main>

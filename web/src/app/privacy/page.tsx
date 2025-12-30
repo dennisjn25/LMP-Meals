@@ -7,7 +7,7 @@ export default function PrivacyPolicyPage() {
     return (
         <main style={{ background: tokens.colors.background, minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
             <Navbar />
-            <div className="container" style={{ flex: 1, paddingTop: 'calc(160px + env(safe-area-inset-top))', paddingBottom: tokens.spacing.xxl }}>
+            <div className="container" style={{ flex: 1, paddingTop: 'calc(var(--header-height, 120px) + env(safe-area-inset-top))', paddingBottom: tokens.spacing.xxl }}>
                 <Card style={{ maxWidth: '800px', margin: '0 auto', background: 'white', padding: tokens.spacing.xxl, borderColor: tokens.colors.border.light }}>
                     <h1 style={{ fontSize: '2.5rem', fontFamily: 'var(--font-heading)', marginBottom: tokens.spacing.xl, color: tokens.colors.text.primary }}>Privacy Policy</h1>
                     <p style={{ color: tokens.colors.text.secondary, marginBottom: tokens.spacing.xl }}>Last Updated: December 22, 2025</p>

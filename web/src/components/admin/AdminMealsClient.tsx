@@ -3,7 +3,7 @@
 import { createMeal, updateMeal, deleteMeal, toggleFeaturedMeal } from "@/actions/meals";
 import { useState } from "react";
 import Image from "next/image";
-import { Trash2, Edit2, Plus, X, Save, UploadCloud, Loader2, Star } from "lucide-react";
+import { Trash2, Edit2, Plus, X, Save, UploadCloud, Loader2, Star, Printer } from "lucide-react";
 import { useDropzone } from "react-dropzone";
 
 interface Meal {
@@ -21,6 +21,11 @@ interface Meal {
     available: boolean;
     featured: boolean;
     featuredOrder: number | null;
+    ingredients?: {
+        ingredient: {
+            name: string;
+        }
+    }[];
 }
 
 const ImageDropzone = ({ currentImage, onUploadComplete, onClear }: { currentImage?: string, onUploadComplete: (url: string) => void, onClear?: () => void }) => {
@@ -284,39 +289,193 @@ export default function AdminMealsClient({ initialMeals }: { initialMeals: Meal[
         }
     };
 
+    const handlePrint = (mealsToPrint: Meal[]) => {
+        const printWindow = window.open('', '_blank');
+        if (!printWindow) {
+            alert("Please allow popups for printing");
+            return;
+        }
+
+        const html = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Print Labels</title>
+                <style>
+                    @media print {
+                        @page {
+                            size: 62mm;
+                            margin: 0;
+                        }
+                        body {
+                            margin: 0;
+                            padding: 0;
+                        }
+                    }
+                    body {
+                        font-family: Arial, sans-serif;
+                        width: 58mm; /* Slightly less than 62mm to ensure fit */
+                        padding: 1mm;
+                        box-sizing: border-box;
+                    }
+                    .label {
+                        page-break-after: always;
+                        padding-bottom: 2mm;
+                        border-bottom: 1px dashed #ccc;
+                        margin-bottom: 2mm;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        text-align: center;
+                    }
+                    .logo {
+                        width: 40px;
+                        height: 40px;
+                        object-fit: contain;
+                        margin-bottom: 5px;
+                    }
+                    h2 {
+                        font-size: 14px;
+                        margin: 0 0 5px 0;
+                        line-height: 1.2;
+                    }
+                    .meta {
+                        font-size: 10px;
+                        margin-bottom: 5px;
+                        font-weight: bold;
+                    }
+                    .ingredients {
+                        font-size: 8px;
+                        margin-bottom: 5px;
+                        text-align: center;
+                        line-height: 1.2;
+                    }
+                    .macros {
+                        font-size: 9px;
+                        border-top: 1px solid black;
+                        border-bottom: 1px solid black;
+                        width: 100%;
+                        padding: 2px 0;
+                        display: flex;
+                        justify-content: space-around;
+                        font-weight: bold;
+                    }
+                    .date {
+                         font-size: 8px;
+                         margin-top: 5px;
+                    }
+                    /* Hide cut line on print if using continuous roll cutter settings, otherwise keep */
+                    @media print {
+                        .label {
+                            border-bottom: none;
+                            height: auto; /* Allow dynamic height */
+                        }
+                    }
+                </style>
+            </head>
+            <body>
+                ${mealsToPrint.map(meal => `
+                    <div class="label">
+                        <img src="/logo.png" class="logo" alt="Logo" />
+                        <h2>${meal.title}</h2>
+                        
+                        <div class="macros">
+                            <span>${meal.calories} Cal</span>
+                            <span>${meal.protein}g P</span>
+                            <span>${meal.carbs}g C</span>
+                            <span>${meal.fat}g F</span>
+                        </div>
+
+                        ${meal.ingredients && meal.ingredients.length > 0 ? `
+                        <div style="margin-top: 4px; font-weight: bold; font-size: 8px;">INGREDIENTS:</div>
+                        <div class="ingredients">
+                            ${meal.ingredients.map(i => i.ingredient.name).join(', ')}
+                        </div>
+                        ` : ''}
+                        
+                        <div class="date">
+                            Packed: ${new Date().toLocaleDateString()}
+                        </div>
+                    </div>
+                `).join('')}
+                <script>
+                    window.onload = function() {
+                         window.print();
+                         // window.close(); // Optional: close after print
+                    }
+                </script>
+            </body>
+            </html>
+        `;
+
+        printWindow.document.write(html);
+        printWindow.document.close();
+    };
+
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h2 style={{ fontSize: '1.5rem', fontFamily: 'var(--font-heading)', color: 'white', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Meal Management</h2>
-                <button
-                    onClick={() => { resetForm(); setIsEditing(true); }}
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        background: 'transparent',
-                        color: '#fbbf24',
-                        border: '2px solid #fbbf24',
-                        padding: '10px 24px',
-                        borderRadius: '12px',
-                        fontWeight: 800,
-                        fontFamily: 'var(--font-heading)',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.05em',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s'
-                    }}
-                    onMouseOver={(e) => {
-                        e.currentTarget.style.background = '#fbbf24';
-                        e.currentTarget.style.color = 'black';
-                    }}
-                    onMouseOut={(e) => {
-                        e.currentTarget.style.background = 'transparent';
-                        e.currentTarget.style.color = '#fbbf24';
-                    }}
-                >
-                    <Plus size={18} /> Add New Meal
-                </button>
+
+                <div style={{ display: 'flex', gap: '12px' }}>
+                    <button
+                        onClick={() => handlePrint(initialMeals)}
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            background: 'rgba(255,255,255,0.1)',
+                            color: 'white',
+                            border: '1px solid rgba(255,255,255,0.2)',
+                            padding: '10px 24px',
+                            borderRadius: '12px',
+                            fontWeight: 800,
+                            fontFamily: 'var(--font-heading)',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.05em',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s'
+                        }}
+                        onMouseOver={(e) => {
+                            e.currentTarget.style.background = 'rgba(255,255,255,0.2)';
+                        }}
+                        onMouseOut={(e) => {
+                            e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
+                        }}
+                    >
+                        <Printer size={18} /> Print All Labels
+                    </button>
+
+                    <button
+                        onClick={() => { resetForm(); setIsEditing(true); }}
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            background: 'transparent',
+                            color: '#fbbf24',
+                            border: '2px solid #fbbf24',
+                            padding: '10px 24px',
+                            borderRadius: '12px',
+                            fontWeight: 800,
+                            fontFamily: 'var(--font-heading)',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.05em',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s'
+                        }}
+                        onMouseOver={(e) => {
+                            e.currentTarget.style.background = '#fbbf24';
+                            e.currentTarget.style.color = 'black';
+                        }}
+                        onMouseOut={(e) => {
+                            e.currentTarget.style.background = 'transparent';
+                            e.currentTarget.style.color = '#fbbf24';
+                        }}
+                    >
+                        <Plus size={18} /> Add New Meal
+                    </button>
+                </div>
             </div>
 
             {/* List */}
@@ -411,7 +570,7 @@ export default function AdminMealsClient({ initialMeals }: { initialMeals: Meal[
                                         <span style={{ color: 'white' }}>{meal.protein}G</span> PROTEIN
                                     </span>
                                 </div>
-                                <div style={{ display: 'flex', gap: '12px' }}>
+                                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
                                     <button
                                         onClick={() => handleEdit(meal)}
                                         style={{
@@ -428,12 +587,38 @@ export default function AdminMealsClient({ initialMeals }: { initialMeals: Meal[
                                             gap: '8px',
                                             fontWeight: 700,
                                             fontSize: '0.85rem',
-                                            transition: 'all 0.2s'
+                                            transition: 'all 0.2s',
+                                            minWidth: '80px'
                                         }}
                                         onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
                                         onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
                                     >
                                         <Edit2 size={14} /> EDIT
+                                    </button>
+                                    <button
+                                        onClick={() => handlePrint([meal])}
+                                        style={{
+                                            flex: 1,
+                                            padding: '12px',
+                                            background: 'rgba(255,255,255,0.05)',
+                                            color: 'white',
+                                            border: '1px solid rgba(255,255,255,0.1)',
+                                            borderRadius: '12px',
+                                            cursor: 'pointer',
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            gap: '8px',
+                                            fontWeight: 700,
+                                            fontSize: '0.85rem',
+                                            transition: 'all 0.2s',
+                                            minWidth: '80px'
+                                        }}
+                                        title="Print Label"
+                                        onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+                                        onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                                    >
+                                        <Printer size={14} /> PRINT
                                     </button>
                                     <button
                                         onClick={() => handleToggleFeatured(meal.id, meal.featured)}
@@ -447,7 +632,8 @@ export default function AdminMealsClient({ initialMeals }: { initialMeals: Meal[
                                             display: 'flex',
                                             justifyContent: 'center',
                                             alignItems: 'center',
-                                            transition: 'all 0.2s'
+                                            transition: 'all 0.2s',
+                                            width: '42px'
                                         }}
                                         title={meal.featured ? `Week's Menu #${meal.featuredOrder} - Click to remove` : 'Add to this week\'s menu (max 5)'}
                                         onMouseOver={(e) => {
@@ -471,7 +657,8 @@ export default function AdminMealsClient({ initialMeals }: { initialMeals: Meal[
                                             display: 'flex',
                                             justifyContent: 'center',
                                             alignItems: 'center',
-                                            transition: 'all 0.2s'
+                                            transition: 'all 0.2s',
+                                            width: '42px'
                                         }}
                                         onMouseOver={(e) => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)'}
                                         onMouseOut={(e) => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'}

@@ -6,6 +6,9 @@ import { toast } from "sonner";
 import { tokens } from "@/lib/design-tokens";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+import { getSystemSetting, updateSystemSetting } from "@/actions/settings";
+import { useEffect } from "react";
+import { MessageSquareWarning } from "lucide-react";
 
 export default function AdminSettings() {
     const [settings, setSettings] = useState({
@@ -23,12 +26,50 @@ export default function AdminSettings() {
         kitchen: {
             prepBufferMinutes: 30,
             kitchenDisplayRefresh: 60
+        },
+        banner: {
+            text: "Weekly deliveries beginning January 18th. Get your orders locked in today!",
+            enabled: true
         }
     });
 
     const [loading, setLoading] = useState(false);
+    const [initialLoading, setInitialLoading] = useState(true);
+
+    useEffect(() => {
+        async function loadSettings() {
+            try {
+                const bannerSetting = await getSystemSetting("announcement_banner");
+                if (bannerSetting) {
+                    setSettings(prev => ({
+                        ...prev,
+                        banner: {
+                            text: bannerSetting.value.text || "",
+                            enabled: bannerSetting.isEnabled
+                        }
+                    }));
+                }
+            } catch (err) {
+                console.error("Failed to load settings", err);
+            } finally {
+                setInitialLoading(false);
+            }
+        }
+        loadSettings();
+    }, []);
 
     const handleToggle = (category: keyof typeof settings, key: string) => {
+        if (category === 'banner' && key === 'enabled') {
+            setSettings(prev => ({
+                ...prev,
+                banner: {
+                    ...prev.banner,
+                    enabled: !prev.banner.enabled
+                }
+            }));
+            return;
+        }
+
         setSettings(prev => ({
             ...prev,
             [category]: {
@@ -41,6 +82,17 @@ export default function AdminSettings() {
     };
 
     const handleChange = (category: keyof typeof settings, key: string, value: any) => {
+        if (category === 'banner') {
+            setSettings(prev => ({
+                ...prev,
+                banner: {
+                    ...prev.banner,
+                    [key]: value
+                }
+            }));
+            return;
+        }
+
         setSettings(prev => ({
             ...prev,
             [category]: {
@@ -54,8 +106,12 @@ export default function AdminSettings() {
 
     const handleSave = async () => {
         setLoading(true);
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // Save banner settings
+        await updateSystemSetting("announcement_banner", { text: settings.banner.text }, settings.banner.enabled);
+
+        // Simulate API call for other settings (placeholder)
+        await new Promise(resolve => setTimeout(resolve, 500));
+
         setLoading(false);
         toast.success("Settings saved successfully");
     };
@@ -122,6 +178,44 @@ export default function AdminSettings() {
                     Save Changes
                 </Button>
             </div>
+
+            {/* Website Banner */}
+            <Card style={{ marginBottom: tokens.spacing.xl, padding: tokens.spacing.xl }}>
+                <h2 style={headerStyle}><MessageSquareWarning size={24} color={tokens.colors.accent.DEFAULT} /> Announcement Banner</h2>
+
+                <div style={rowStyle}>
+                    <div>
+                        <div style={{ color: 'white', fontWeight: 600 }}>Enable Banner</div>
+                        <div style={{ fontSize: '0.85rem', color: tokens.colors.text.inverseSecondary, opacity: 0.7 }}>Show or hide the top announcement banner</div>
+                    </div>
+                    <div onClick={() => handleToggle('banner', 'enabled')} style={toggleStyle(settings.banner.enabled)}>
+                        <div style={knobStyle(settings.banner.enabled)} />
+                    </div>
+                </div>
+
+                <div style={{ ...rowStyle, borderBottom: 'none', flexDirection: 'column', alignItems: 'flex-start', gap: '12px' }}>
+                    <div>
+                        <div style={{ color: 'white', fontWeight: 600 }}>Banner Text</div>
+                        <div style={{ fontSize: '0.85rem', color: tokens.colors.text.inverseSecondary, opacity: 0.7 }}>The message displayed at the top of the site</div>
+                    </div>
+                    <input
+                        type="text"
+                        value={settings.banner.text}
+                        onChange={(e) => handleChange('banner', 'text', e.target.value)}
+                        placeholder="Enter announcement text..."
+                        style={{
+                            width: '100%',
+                            background: tokens.colors.surface.medium,
+                            border: `1px solid ${tokens.colors.border.dark}`,
+                            color: 'white',
+                            padding: '12px',
+                            borderRadius: tokens.radius.md,
+                            fontFamily: 'inherit',
+                            fontSize: '0.95rem'
+                        }}
+                    />
+                </div>
+            </Card>
 
             {/* Email Notifications */}
             <Card style={{ marginBottom: tokens.spacing.xl, padding: tokens.spacing.xl }}>

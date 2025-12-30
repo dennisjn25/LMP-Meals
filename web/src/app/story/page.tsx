@@ -18,7 +18,7 @@ export default function StoryPage() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                paddingTop: 'calc(120px + env(safe-area-inset-top))',
+                paddingTop: 'calc(var(--header-height, 120px) + env(safe-area-inset-top))',
                 marginBottom: '80px',
                 overflow: 'hidden'
             }}>

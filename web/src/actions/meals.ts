@@ -23,7 +23,14 @@ export async function getFeaturedMeals() {
 
 export async function getAllMealsAdmin() {
     return await db.meal.findMany({
-        orderBy: { createdAt: 'desc' }
+        orderBy: { createdAt: 'desc' },
+        include: {
+            ingredients: {
+                include: {
+                    ingredient: true
+                }
+            }
+        }
     });
 }
 

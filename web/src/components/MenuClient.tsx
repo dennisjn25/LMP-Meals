@@ -78,7 +78,7 @@ export default function MenuClient({ meals }: { meals: Meal[] }) {
                 <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(11, 14, 20, 0.85)', zIndex: 1 }}></div>
                 <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '150px', background: `linear-gradient(to bottom, transparent, ${tokens.colors.background})`, zIndex: 1, pointerEvents: 'none' }}></div>
 
-                <div className="container" style={{ paddingTop: 'calc(160px + env(safe-area-inset-top))', paddingBottom: '60px', position: 'relative', zIndex: 2 }}>
+                <div className="container" style={{ paddingTop: 'calc(var(--header-height, 120px) + 40px + env(safe-area-inset-top))', paddingBottom: '60px', position: 'relative', zIndex: 2 }}>
                     <header style={{ textAlign: 'center' }}>
 
                         {/* Logo with Shimmer Effect */}

@@ -26,7 +26,7 @@ export default function Home() {
         alignItems: 'center',
         justifyContent: 'center',
         overflow: 'hidden',
-        paddingTop: 'calc(120px + env(safe-area-inset-top))'
+        paddingTop: 'calc(var(--header-height, 120px) + env(safe-area-inset-top))'
       }}>
         {/* Animated Logo Background */}
         <AnimatedLogoBackground />
