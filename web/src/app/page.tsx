@@ -21,12 +21,12 @@ export default function Home() {
       {/* HERO SECTION */}
       <section style={{
         position: 'relative',
-        minHeight: 'calc(100dvh - 80px)',
+        minHeight: 'calc(100dvh - 120px)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         overflow: 'hidden',
-        paddingTop: 'calc(80px + env(safe-area-inset-top))'
+        paddingTop: 'calc(120px + env(safe-area-inset-top))'
       }}>
         {/* Animated Logo Background */}
         <AnimatedLogoBackground />

@@ -18,20 +18,36 @@ export default function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     return (
-        <>
+        <header style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            zIndex: 1000,
+            display: 'flex',
+            flexDirection: 'column',
+        }}>
+            <div style={{
+                background: tokens.colors.accent.DEFAULT,
+                color: '#000',
+                padding: '8px 24px',
+                textAlign: 'center',
+                fontWeight: 700,
+                fontSize: '0.9rem',
+                letterSpacing: '0.02em',
+                paddingTop: 'calc(8px + env(safe-area-inset-top))',
+                width: '100%',
+            }}>
+                Weekly deliveries beginning January 18th. Get your orders locked in today!
+            </div>
             <nav style={{
                 background: tokens.colors.surface.dark, // Keep dark for nav
                 backdropFilter: 'blur(10px)',
                 borderBottom: `1px solid ${tokens.colors.border.dark}`,
                 height: '80px',
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                right: 0,
-                zIndex: 1000,
+                width: '100%',
                 display: 'flex',
                 alignItems: 'center',
-                paddingTop: 'env(safe-area-inset-top)'
             }}>
                 <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', maxWidth: '1280px', margin: '0 auto', padding: '0 24px' }}>
 
@@ -162,13 +178,13 @@ export default function Navbar() {
             {isMenuOpen && (
                 <div style={{
                     position: 'fixed',
-                    top: '80px', // Header height
+                    top: 0,
                     left: 0,
                     right: 0,
                     bottom: 0,
                     background: tokens.colors.surface.dark,
                     zIndex: 999,
-                    padding: '24px',
+                    padding: '140px 24px 24px 24px', // 140px top padding to clear header + banner
                     display: 'flex',
                     flexDirection: 'column',
                     gap: '20px',
@@ -241,7 +257,7 @@ export default function Navbar() {
                     }
                 }
             `}</style>
-        </>
+        </header>
     );
 }
 
