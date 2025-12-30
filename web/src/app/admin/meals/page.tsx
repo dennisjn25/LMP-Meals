@@ -1,4 +1,5 @@
 import { getAllMealsAdmin } from "@/actions/meals";
+import { getIngredients } from "@/actions/ingredients";
 import AdminMealsClient from "@/components/admin/AdminMealsClient";
 import Navbar from "@/components/Navbar";
 
@@ -21,6 +22,10 @@ export default async function AdminMealsPage() {
 
     const meals = await getAllMealsAdmin();
 
+    // Fetch ingredients for selection
+    const ingredientsRes = await getIngredients();
+    const ingredients = 'success' in ingredientsRes ? ingredientsRes.success : [];
+
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
             <div>
@@ -36,7 +41,7 @@ export default async function AdminMealsPage() {
                 </p>
             </div>
 
-            <AdminMealsClient initialMeals={meals} />
+            <AdminMealsClient initialMeals={meals} initialIngredients={ingredients} />
         </div>
     );
 }

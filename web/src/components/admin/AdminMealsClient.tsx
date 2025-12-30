@@ -23,9 +23,15 @@ interface Meal {
     featuredOrder: number | null;
     ingredients?: {
         ingredient: {
+            id: string;
             name: string;
         }
     }[];
+}
+
+interface Ingredient {
+    id: string;
+    name: string;
 }
 
 const ImageDropzone = ({ currentImage, onUploadComplete, onClear }: { currentImage?: string, onUploadComplete: (url: string) => void, onClear?: () => void }) => {
@@ -197,7 +203,7 @@ const ImageDropzone = ({ currentImage, onUploadComplete, onClear }: { currentIma
 </div>
 */
 
-export default function AdminMealsClient({ initialMeals }: { initialMeals: Meal[] }) {
+export default function AdminMealsClient({ initialMeals, initialIngredients }: { initialMeals: Meal[], initialIngredients?: Ingredient[] }) {
     const [meals, setMeals] = useState(initialMeals); // Local state for optimistic updates / immediate feedback, though revalidatePath works too.
     // Actually, if we use server actions with revalidate, we might not need complex local state syncing if we refresh router, but simple state is faster.
 
@@ -221,7 +227,8 @@ export default function AdminMealsClient({ initialMeals }: { initialMeals: Meal[
         carbs: 40,
         fat: 15,
         tags: "",
-        category: "Balanced"
+        category: "Balanced",
+        ingredientIds: [] as string[]
     });
 
     const resetForm = () => {
@@ -235,7 +242,8 @@ export default function AdminMealsClient({ initialMeals }: { initialMeals: Meal[
             carbs: 40,
             fat: 15,
             tags: "",
-            category: "Balanced"
+            category: "Balanced",
+            ingredientIds: []
         });
         setEditingId(null);
         setIsEditing(false);
@@ -252,7 +260,8 @@ export default function AdminMealsClient({ initialMeals }: { initialMeals: Meal[
             carbs: meal.carbs,
             fat: meal.fat,
             tags: meal.tags,
-            category: meal.category
+            category: meal.category,
+            ingredientIds: meal.ingredients?.map(i => i.ingredient.id) || []
         });
         setEditingId(meal.id);
         setIsEditing(true);
@@ -278,6 +287,17 @@ export default function AdminMealsClient({ initialMeals }: { initialMeals: Meal[
             console.error("Failed to save meal", error);
             alert("Failed to save meal");
         }
+    };
+
+    const toggleIngredient = (id: string) => {
+        setFormData(prev => {
+            const exists = prev.ingredientIds.includes(id);
+            if (exists) {
+                return { ...prev, ingredientIds: prev.ingredientIds.filter(i => i !== id) };
+            } else {
+                return { ...prev, ingredientIds: [...prev.ingredientIds, id] };
+            }
+        });
     };
 
     const handleToggleFeatured = async (id: string, currentFeatured: boolean) => {
@@ -376,7 +396,7 @@ export default function AdminMealsClient({ initialMeals }: { initialMeals: Meal[
             <body>
                 ${mealsToPrint.map(meal => `
                     <div class="label">
-                        <img src="/logo.png" class="logo" alt="Logo" />
+                        <img src="${window.location.origin}/logo.png" class="logo" alt="Logo" />
                         <h2>${meal.title}</h2>
                         
                         <div class="macros">
@@ -736,6 +756,53 @@ export default function AdminMealsClient({ initialMeals }: { initialMeals: Meal[
                                 onChange={e => setFormData({ ...formData, description: e.target.value })}
                             />
                         </div>
+
+                        {/* Ingredients Selection - Only if available */}
+                        {initialIngredients && initialIngredients.length > 0 && (
+                            <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '32px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                                    <h4 style={{ fontSize: '0.85rem', color: '#fbbf24', fontFamily: 'var(--font-heading)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Meal Ingredients (For Label)</h4>
+                                </div>
+                                <div style={{
+                                    display: 'flex',
+                                    flexWrap: 'wrap',
+                                    gap: '8px',
+                                    maxHeight: '200px',
+                                    overflowY: 'auto',
+                                    padding: '12px',
+                                    background: 'rgba(0,0,0,0.2)',
+                                    borderRadius: '12px',
+                                    border: '1px solid rgba(255,255,255,0.05)'
+                                }}>
+                                    {initialIngredients.map(ingredient => {
+                                        const isSelected = formData.ingredientIds.includes(ingredient.id);
+                                        return (
+                                            <button
+                                                key={ingredient.id}
+                                                type="button"
+                                                onClick={() => toggleIngredient(ingredient.id)}
+                                                style={{
+                                                    padding: '6px 12px',
+                                                    borderRadius: '20px',
+                                                    border: isSelected ? '1px solid #fbbf24' : '1px solid rgba(255,255,255,0.1)',
+                                                    background: isSelected ? 'rgba(251, 191, 36, 0.2)' : 'transparent',
+                                                    color: isSelected ? '#fbbf24' : '#94a3b8',
+                                                    fontSize: '0.75rem',
+                                                    fontWeight: 600,
+                                                    cursor: 'pointer',
+                                                    transition: 'all 0.1s'
+                                                }}
+                                            >
+                                                {ingredient.name}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                                <p style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '8px' }}>
+                                    Select ingredients to appear on the nutrition label.
+                                </p>
+                            </div>
+                        )}
 
                         {/* Macros Header */}
                         <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '32px' }}>

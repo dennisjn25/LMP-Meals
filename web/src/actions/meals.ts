@@ -49,6 +49,7 @@ export async function createMeal(data: {
     fat: number;
     tags: string;
     category: string;
+    ingredientIds?: string[];
 }) {
     const session = await auth();
 
@@ -60,12 +61,31 @@ export async function createMeal(data: {
         throw new Error("Unauthorized");
     }
 
-    await db.meal.create({
+    const meal = await db.meal.create({
         data: {
-            ...data,
+            title: data.title,
             description: data.description || "",
+            image: data.image,
+            price: data.price,
+            calories: data.calories,
+            protein: data.protein,
+            carbs: data.carbs,
+            fat: data.fat,
+            tags: data.tags,
+            category: data.category
         }
     });
+
+    if (data.ingredientIds && data.ingredientIds.length > 0) {
+        await db.mealIngredient.createMany({
+            data: data.ingredientIds.map(id => ({
+                mealId: meal.id,
+                ingredientId: id,
+                quantity: 1 // Default quantity
+            }))
+        });
+    }
+
     revalidatePath("/menu");
     revalidatePath("/admin/meals");
     revalidatePath("/");
@@ -83,6 +103,7 @@ export async function updateMeal(id: string, data: Partial<{
     tags: string;
     category: string;
     available: boolean;
+    ingredientIds: string[];
 }>) {
     const session = await auth();
 
@@ -94,10 +115,30 @@ export async function updateMeal(id: string, data: Partial<{
         throw new Error("Unauthorized");
     }
 
+    const { ingredientIds, ...mealData } = data;
+
     await db.meal.update({
         where: { id },
-        data
+        data: mealData
     });
+
+    if (ingredientIds !== undefined) {
+        // Replace ingredients
+        await db.mealIngredient.deleteMany({
+            where: { mealId: id }
+        });
+
+        if (ingredientIds.length > 0) {
+            await db.mealIngredient.createMany({
+                data: ingredientIds.map(ingId => ({
+                    mealId: id,
+                    ingredientId: ingId,
+                    quantity: 1 // Default quantity
+                }))
+            });
+        }
+    }
+
     revalidatePath("/menu");
     revalidatePath("/admin/meals");
     revalidatePath("/");
