@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Bell, Mail, Clock, CheckCircle, Smartphone, Globe, Save } from "lucide-react";
+import { Bell, Mail, Clock, CheckCircle, Smartphone, Globe, Save, ShieldAlert } from "lucide-react";
 import { toast } from "sonner";
 import { tokens } from "@/lib/design-tokens";
 import { Card } from "@/components/ui/Card";
@@ -30,6 +30,9 @@ export default function AdminSettings() {
         banner: {
             text: "Weekly deliveries beginning January 18th. Get your orders locked in today!",
             enabled: true
+        },
+        maintenance: {
+            enabled: false
         }
     });
 
@@ -46,6 +49,16 @@ export default function AdminSettings() {
                         banner: {
                             text: bannerSetting.value.text || "",
                             enabled: bannerSetting.isEnabled
+                        }
+                    }));
+                }
+
+                const maintenanceSetting = await getSystemSetting("maintenance_mode");
+                if (maintenanceSetting) {
+                    setSettings(prev => ({
+                        ...prev,
+                        maintenance: {
+                            enabled: maintenanceSetting.isEnabled
                         }
                     }));
                 }
@@ -108,6 +121,9 @@ export default function AdminSettings() {
         setLoading(true);
         // Save banner settings
         await updateSystemSetting("announcement_banner", { text: settings.banner.text }, settings.banner.enabled);
+
+        // Save maintenance settings
+        await updateSystemSetting("maintenance_mode", { enabled: settings.maintenance.enabled }, settings.maintenance.enabled);
 
         // Simulate API call for other settings (placeholder)
         await new Promise(resolve => setTimeout(resolve, 500));
@@ -178,6 +194,25 @@ export default function AdminSettings() {
                     Save Changes
                 </Button>
             </div>
+
+            {/* Site Status - Maintenance Mode */}
+            <Card style={{ marginBottom: tokens.spacing.xl, padding: tokens.spacing.xl, border: '1px solid #eab308' }}>
+                <h2 style={headerStyle}><ShieldAlert size={24} color="#eab308" /> Site Status</h2>
+
+                <div style={rowStyle}>
+                    <div>
+                        <div style={{ color: 'white', fontWeight: 600 }}>Maintenance Mode</div>
+                        <div style={{ fontSize: '0.85rem', color: tokens.colors.text.inverseSecondary, opacity: 0.7 }}>
+                            When enabled, the site shows an "Under Construction" page to all non-admin users.
+                        </div>
+                    </div>
+                    // @ts-ignore
+                    <div onClick={() => handleToggle('maintenance', 'enabled')} style={toggleStyle(settings.maintenance.enabled)}>
+                        // @ts-ignore
+                        <div style={knobStyle(settings.maintenance.enabled)} />
+                    </div>
+                </div>
+            </Card>
 
             {/* Website Banner */}
             <Card style={{ marginBottom: tokens.spacing.xl, padding: tokens.spacing.xl }}>

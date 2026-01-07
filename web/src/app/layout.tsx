@@ -25,22 +25,22 @@ import SessionProvider from "@/components/SessionProvider";
 import ScrollProgress from "@/components/effects/ScrollProgress";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
 import { Suspense } from "react";
-
-// ... existing imports
-
-
-
+import MaintenanceGate from "@/components/MaintenanceGate";
+import { getSystemSetting } from "@/actions/settings";
 import { Toaster } from "sonner";
 
-// ... existing imports
 
 
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Fetch maintenance mode setting
+  const maintenanceSetting = await getSystemSetting("maintenance_mode");
+  const maintenanceEnabled = maintenanceSetting?.isEnabled || false;
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} ${oswald.variable} antialiased`}>
@@ -49,12 +49,14 @@ export default function RootLayout({
           <AnalyticsTracker />
         </Suspense>
         <ScrollProgress />
-        <SessionProvider>
-          <CartProvider>
-            {children}
-            <SidebarCart />
-          </CartProvider>
-        </SessionProvider>
+        <MaintenanceGate isEnabled={maintenanceEnabled}>
+          <SessionProvider>
+            <CartProvider>
+              {children}
+              <SidebarCart />
+            </CartProvider>
+          </SessionProvider>
+        </MaintenanceGate>
       </body>
     </html>
   );

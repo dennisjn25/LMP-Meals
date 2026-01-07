@@ -309,11 +309,25 @@ export default function AdminMealsClient({ initialMeals, initialIngredients }: {
         }
     };
 
-    const handlePrint = (mealsToPrint: Meal[]) => {
+    const handlePrint = async (mealsToPrint: Meal[]) => {
         const printWindow = window.open('', '_blank');
         if (!printWindow) {
             alert("Please allow popups for printing");
             return;
+        }
+
+        // Fetch logo and convert to base64 to ensure it prints correctly
+        let logoDataUrl = '';
+        try {
+            const response = await fetch('/logo.png');
+            const blob = await response.blob();
+            logoDataUrl = await new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result as string);
+                reader.readAsDataURL(blob);
+            });
+        } catch (error) {
+            console.error("Failed to load logo for printing", error);
         }
 
         const html = `
@@ -396,7 +410,7 @@ export default function AdminMealsClient({ initialMeals, initialIngredients }: {
             <body>
                 ${mealsToPrint.map(meal => `
                     <div class="label">
-                        <img src="${window.location.origin}/logo.png" class="logo" alt="Logo" />
+                        ${logoDataUrl ? `<img src="${logoDataUrl}" class="logo" alt="Logo" />` : ''}
                         <h2>${meal.title}</h2>
                         
                         <div class="macros">
