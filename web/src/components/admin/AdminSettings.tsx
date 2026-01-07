@@ -206,9 +206,7 @@ export default function AdminSettings() {
                             When enabled, the site shows an "Under Construction" page to all non-admin users.
                         </div>
                     </div>
-                    // @ts-ignore
                     <div onClick={() => handleToggle('maintenance', 'enabled')} style={toggleStyle(settings.maintenance.enabled)}>
-                        // @ts-ignore
                         <div style={knobStyle(settings.maintenance.enabled)} />
                     </div>
                 </div>
