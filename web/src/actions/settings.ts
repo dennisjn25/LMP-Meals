@@ -47,7 +47,7 @@ export async function updateSystemSetting(key: string, value: any, isEnabled?: b
             });
         }
 
-        revalidatePath("/");
+        revalidatePath("/", "layout");
         return { success: true };
     } catch (error) {
         console.error("Error updating system setting:", error);

@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Inter, Oswald } from "next/font/google"; // Changed from Outfit to Oswald for military look
 import "./globals.css";
 
+// Force dynamic rendering to ensure DB settings are checked on every request
+export const dynamic = 'force-dynamic';
+
 const oswald = Oswald({
   subsets: ["latin"],
   variable: "--font-heading",
