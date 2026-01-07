@@ -4,8 +4,9 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { Menu, X, LayoutDashboard, ShoppingBag, Truck, Users, Tag, DollarSign, UtensilsCrossed, Package, Home, Settings, ChefHat } from "lucide-react";
+import { Menu, X, LayoutDashboard, ShoppingBag, Truck, Users, Tag, DollarSign, UtensilsCrossed, Package, Home, Settings, ChefHat, LogOut } from "lucide-react";
 import { tokens } from "@/lib/design-tokens";
+import { signOut } from "next-auth/react";
 
 export default function AdminLayout({
     children,
@@ -123,7 +124,20 @@ export default function AdminLayout({
 
                     <div style={{ flex: 1 }}></div>
 
-                    <div style={{ paddingTop: '24px', borderTop: `1px solid ${tokens.colors.border.light}`, marginTop: '24px' }}>
+                    <div style={{ paddingTop: '24px', borderTop: `1px solid ${tokens.colors.border.light}`, marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                        <button
+                            onClick={() => signOut({ callbackUrl: '/auth/login' })}
+                            style={{
+                                background: 'none',
+                                border: 'none',
+                                padding: 0,
+                                margin: 0,
+                                width: '100%',
+                                textAlign: 'left'
+                            }}
+                        >
+                            <NavItem href="#" icon={<LogOut size={20} />}>Log Out</NavItem>
+                        </button>
                         <NavItem href="/" icon={<Home size={20} />}>Back to Site</NavItem>
                     </div>
                 </aside>
