@@ -119,7 +119,7 @@ export default function UnderConstruction() {
                     </div>
                     <div style={{ padding: '16px', background: 'rgba(255,255,255,0.02)', textAlign: 'center' }}>
                         <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#64748b', marginBottom: '4px', letterSpacing: '0.05em' }}>Estimated Return</div>
-                        <div style={{ color: 'white', fontWeight: 700 }}>0600 HRS</div>
+                        <div style={{ color: 'white', fontWeight: 700 }}>TBD</div>
                     </div>
                     <div style={{ padding: '16px', background: 'rgba(255,255,255,0.02)', textAlign: 'center' }}>
                         <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#64748b', marginBottom: '4px', letterSpacing: '0.05em' }}>Security</div>
